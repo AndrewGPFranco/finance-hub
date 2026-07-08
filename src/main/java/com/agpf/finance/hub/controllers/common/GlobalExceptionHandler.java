@@ -1,4 +1,4 @@
-package com.agpf.finance.hub.controllers;
+package com.agpf.finance.hub.controllers.common;
 
 import com.agpf.finance.hub.exceptions.BusinessException;
 import com.agpf.finance.hub.exceptions.NotFoundException;

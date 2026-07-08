@@ -1,4 +1,4 @@
-package com.agpf.finance.hub.controllers;
+package com.agpf.finance.hub.controllers.common;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
