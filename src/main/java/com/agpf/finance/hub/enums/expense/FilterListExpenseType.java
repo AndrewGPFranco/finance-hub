@@ -1,4 +1,4 @@
-package com.agpf.finance.hub.dtos.expense;
+package com.agpf.finance.hub.enums.expense;
 
 import lombok.Getter;
 

@@ -1,12 +1,8 @@
 package com.agpf.finance.hub.controllers.expense;
 
+import com.agpf.finance.hub.dtos.expense.EditExpenseDTO;
 import com.agpf.finance.hub.dtos.expense.ExpenseRegisterDTO;
-import com.agpf.finance.hub.dtos.expense.FilterListExpenseType;
-import com.agpf.finance.hub.enums.expense.CategoryExpenseType;
-import com.agpf.finance.hub.enums.expense.PaymentMethod;
-import com.agpf.finance.hub.enums.expense.StatusExpenseType;
-import com.agpf.finance.hub.models.user.User;
-import com.agpf.finance.hub.services.auth.AuthenticatedUser;
+import com.agpf.finance.hub.enums.expense.FilterListExpenseType;
 import com.agpf.finance.hub.services.expense.ExpenseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,7 +28,7 @@ public class ExpenseController {
     @GetMapping(value = "/register")
     String registerForm(Model model) {
         model.addAttribute("expense", new ExpenseRegisterDTO());
-        addRegisterOptions(model);
+        expenseService.addRegisterOptions(model);
 
         return EXPENSE_REGISTER;
     }
@@ -40,13 +36,13 @@ public class ExpenseController {
     @PostMapping(value = "/register")
     String register(@Valid @ModelAttribute("expense") ExpenseRegisterDTO dto,
                     BindingResult bindingResult, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
-        addRegisterOptions(model);
+        expenseService.addRegisterOptions(model);
 
         if (bindingResult.hasErrors())
             return EXPENSE_REGISTER;
 
         try {
-            expenseService.register(dto, getUser(authentication));
+            expenseService.register(dto, expenseService.getUser(authentication));
             redirectAttributes.addFlashAttribute("result", "Despesa cadastrada com sucesso.");
             return "redirect:/expense/register";
         } catch (Exception _) {
@@ -61,7 +57,7 @@ public class ExpenseController {
     String getExpensesByUser(Model model, Authentication authentication,
                              @RequestParam(defaultValue = "ASC") Sort.Direction direction,
                              @RequestParam(defaultValue = "TITLE") FilterListExpenseType filter) {
-        var user = getUser(authentication);
+        var user = expenseService.getUser(authentication);
 
         try {
             var expenses = expenseService.byUser(user, filter, direction);
@@ -78,15 +74,25 @@ public class ExpenseController {
         return "expense/list";
     }
 
-    private User getUser(Authentication authentication) {
-        var principal = (AuthenticatedUser) Objects.requireNonNull(authentication.getPrincipal());
-        return principal.user();
+    @GetMapping(value = "/{idExpense}/edit")
+    String editForm(Model model, Authentication authentication, @PathVariable UUID idExpense) {
+        var user = expenseService.getUser(authentication);
+        var expense = expenseService.getExpenseByIdAndUser(idExpense, user);
+
+        model.addAttribute("expense", expense);
+        model.addAttribute("idExpense", idExpense);
+        expenseService.addRegisterOptions(model);
+
+        return "expense/edit";
     }
 
-    private void addRegisterOptions(Model model) {
-        model.addAttribute("status", StatusExpenseType.values());
-        model.addAttribute("categories", CategoryExpenseType.values());
-        model.addAttribute("paymentMethods", PaymentMethod.values());
+    @PutMapping(value = "/{idExpense}")
+    String editExpense(Authentication authentication, EditExpenseDTO dto, @PathVariable UUID idExpense) {
+        var user = expenseService.getUser(authentication);
+
+        expenseService.editExpense(dto, idExpense, user);
+
+        return "redirect:/expense/by-user";
     }
 
 }

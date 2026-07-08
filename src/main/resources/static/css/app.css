@@ -260,7 +260,7 @@ select {
 }
 
 .app-main {
-    width: min(100%, 1180px);
+    width: 100%;
     margin: 0 auto;
     padding: 34px 24px;
 }
@@ -321,6 +321,8 @@ select {
 
 .expense-form-panel {
     max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .form-section + .form-section {
@@ -400,7 +402,7 @@ select {
 
 .data-table {
     width: 100%;
-    min-width: 920px;
+    min-width: 1000px;
     border-collapse: collapse;
 }
 

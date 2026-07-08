@@ -25,4 +25,5 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
     )
     List<OutputExpenseDTO> findByUser(@Param("user") User user, Sort sort);
 
+    Expense findByIdAndUser(UUID idExpense, User user);
 }

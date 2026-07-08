@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Editar despesa')}"></head>
+<body>
+<div class="app-shell">
+    <header class="app-header">
+        <div class="app-brand">
+            <span class="brand-symbol">F</span>
+            <span>Finance</span>
+        </div>
+
+        <nav class="app-nav" aria-label="Navegação principal">
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/expense/by-user}">Despesas</a>
+            <a th:href="@{/expense/register}">Nova despesa</a>
+        </nav>
+
+        <form th:action="@{/auth/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button class="btn btn-secondary" type="submit">Sair</button>
+        </form>
+    </header>
+
+    <main class="app-main">
+        <section class="dashboard-header">
+            <div>
+                <h1 class="page-title">Editar despesa</h1>
+                <p class="page-subtitle">Altere os dados da despesa cadastrada.</p>
+            </div>
+        </section>
+
+        <section class="content-panel expense-form-panel">
+            <div class="message message-error" th:if="${editError}" th:text="${editError}"></div>
+            <div class="message message-success" th:if="${result}" th:text="${result}"></div>
+
+            <form th:action="@{/expense/{id}(id=${idExpense})}" method="post">
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <div class="form-section">
+                    <h2 class="panel-title">Dados principais</h2>
+
+                    <div class="field-group">
+                        <label class="field-label" for="title">Título</label>
+                        <input class="field-input" id="title" name="title" th:value="${expense.title()}" maxlength="120"
+                               required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="field-label" for="amount">Valor</label>
+                            <input class="field-input" id="amount" name="amount" th:value="${expense.amount()}"
+                                   type="number" min="0.01" step="0.01" inputmode="decimal" required>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label" for="category">Categoria</label>
+                            <select class="field-input" id="category" name="category" required>
+                                <option value="">Selecione</option>
+                                <option th:each="categoryOption : ${categories}"
+                                        th:value="${categoryOption}"
+                                        th:selected="${expense.category() == categoryOption}"
+                                        th:text="${categoryOption.name() == 'FOOD' ? 'Alimentação' :
+                                            categoryOption.name() == 'HOUSING' ? 'Moradia' :
+                                            categoryOption.name() == 'TRANSPORT' ? 'Transporte' :
+                                            categoryOption.name() == 'HEALTH' ? 'Saúde' :
+                                            categoryOption.name() == 'EDUCATION' ? 'Educação' :
+                                            categoryOption.name() == 'ENTERTAINMENT' ? 'Entretenimento' : 'Outros'}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="panel-title">Pagamento</h2>
+
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="field-label" for="dueDate">Vencimento</label>
+                            <input class="field-input" id="dueDate" name="dueDate" th:value="${expense.dueDate()}"
+                                   type="date" required>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label" for="paymentDate">Data de pagamento</label>
+                            <input class="field-input" id="paymentDate" name="paymentDate"
+                                   th:value="${expense.paymentDate()}" type="date">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="field-label" for="status">Status</label>
+                            <select class="field-input" id="status" name="status" required>
+                                <option value="">Selecione</option>
+                                <option th:each="statusOption : ${status}"
+                                        th:value="${statusOption}"
+                                        th:selected="${expense.status() == statusOption}"
+                                        th:text="${statusOption.name() == 'PAID' ? 'Pago' :
+                                            statusOption.name() == 'PENDING' ? 'Pendente' :
+                                            statusOption.name() == 'OVERDUE' ? 'Atrasado' : 'Cancelado'}"></option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label" for="paymentMethod">Forma de pagamento</label>
+                            <select class="field-input" id="paymentMethod" name="paymentMethod" required>
+                                <option value="">Selecione</option>
+                                <option th:each="paymentMethodOption : ${paymentMethods}"
+                                        th:value="${paymentMethodOption}"
+                                        th:selected="${expense.paymentMethod() == paymentMethodOption}"
+                                        th:text="${paymentMethodOption.name() == 'PIX' ? 'PIX' :
+                                            paymentMethodOption.name() == 'DEBIT_CARD' ? 'Cartão de débito' :
+                                            paymentMethodOption.name() == 'CREDIT_CARD' ? 'Cartão de crédito' :
+                                            paymentMethodOption.name() == 'TRANSFER' ? 'Transferência' : 'Outro'}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="panel-title">Parcelamento</h2>
+
+                    <label class="checkbox-field" for="recurring">
+                        <input id="recurring" name="recurring" type="checkbox" th:checked="${expense.recurring()}">
+                        <span>Despesa recorrente</span>
+                    </label>
+
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="field-label" for="installmentNumber">Parcela atual</label>
+                            <input class="field-input" id="installmentNumber" name="installmentNumber"
+                                   th:value="${expense.installmentNumber()}" type="number" min="1" inputmode="numeric">
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label" for="totalInstallments">Total de parcelas</label>
+                            <input class="field-input" id="totalInstallments" name="totalInstallments"
+                                   th:value="${expense.totalInstallments()}" type="number" min="1" inputmode="numeric">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a class="btn btn-secondary" th:href="@{/expense/by-user}">Cancelar</a>
+                    <button class="btn btn-primary btn-primary-inline" type="submit">Salvar alterações</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

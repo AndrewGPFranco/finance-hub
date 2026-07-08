@@ -79,6 +79,7 @@
                         <th>Forma</th>
                         <th>Parcelas</th>
                         <th class="amount-column">Valor</th>
+                        <th>Ações</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -98,6 +99,18 @@
                         <td th:text="${expense.paymentMethodLabel()}">PIX</td>
                         <td th:text="${expense.installmentsLabel()}">-</td>
                         <td class="amount-column" th:text="${expense.formattedAmount()}">R$ 0,00</td>
+                        <td>
+                            <a class="btn btn-secondary btn-sm" th:href="@{/expense/{id}/edit(id=${expense.id()})}"
+                               style="min-height: 32px; padding: 0 10px; font-size: 13px; gap: 6px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                                </svg>
+                                <span>Editar</span>
+                            </a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
