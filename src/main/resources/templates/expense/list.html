@@ -37,8 +37,26 @@
             <div class="list-toolbar">
                 <div>
                     <h2 class="panel-title">Lançamentos</h2>
-                    <p class="panel-text" th:text="${#lists.size(expenses)} + ' despesa(s) cadastrada(s)'">0 despesa(s) cadastrada(s)</p>
+                    <p class="panel-text" th:text="${#lists.size(expenses)} + ' despesa(s) cadastrada(s)'">0 despesa(s)
+                        cadastrada(s)</p>
                 </div>
+                <form th:action="@{/expense/by-user}" method="get" class="sort-form">
+                    <label class="field-label" for="filter">Ordenar por</label>
+                    <select id="filter" name="filter" class="field-input sort-select">
+                        <option th:each="entry : ${filters}" th:value="${entry.key}" th:text="${entry.value}"
+                                th:selected="${param.filter != null and param.filter[0] == entry.key.name()}">—
+                        </option>
+                    </select>
+                    <label class="field-label" for="direction">Direção</label>
+                    <select id="direction" name="direction" class="field-input sort-select">
+                        <option value="ASC" th:selected="${param.direction == null or param.direction[0] == 'ASC'}">
+                            Crescente
+                        </option>
+                        <option value="DESC" th:selected="${param.direction != null and param.direction[0] == 'DESC'}">
+                            Decrescente
+                        </option>
+                    </select>
+                </form>
             </div>
 
             <div class="empty-state" th:if="${#lists.isEmpty(expenses)}">
@@ -85,5 +103,27 @@
         </section>
     </main>
 </div>
+<script>
+    document.querySelector('.list-panel').addEventListener('change', function (e) {
+        if (!e.target.matches('.sort-form select')) return;
+        var form = e.target.closest('form');
+        var params = new URLSearchParams(new FormData(form));
+        var url = form.action + '?' + params.toString();
+
+        fetch(url)
+            .then(function (response) {
+                return response.text();
+            })
+            .then(function (html) {
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                var newPanel = doc.querySelector('.list-panel');
+                if (newPanel) {
+                    document.querySelector('.list-panel').innerHTML = newPanel.innerHTML;
+                }
+                history.replaceState(null, '', url);
+            });
+    });
+</script>
 </body>
 </html>

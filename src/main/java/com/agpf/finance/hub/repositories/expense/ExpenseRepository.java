@@ -3,6 +3,7 @@ package com.agpf.finance.hub.repositories.expense;
 import com.agpf.finance.hub.dtos.expense.OutputExpenseDTO;
 import com.agpf.finance.hub.models.expense.Expense;
 import com.agpf.finance.hub.models.user.User;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,9 +20,9 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
                 e.id, e.title, e.amount, e.dueDate, e.paymentDate,
                             e.status, e.category, e.paymentMethod, e.recurring,
                                         e.installmentNumber, e.totalInstallments
-             ) from Expense e where e.user = :user order by e.dueDate asc, e.title asc
+             ) from Expense e where e.user = :user
             """
     )
-    List<OutputExpenseDTO> findByUser(@Param("user") User user);
+    List<OutputExpenseDTO> findByUser(@Param("user") User user, Sort sort);
 
 }

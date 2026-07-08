@@ -1,6 +1,7 @@
 package com.agpf.finance.hub.controllers.expense;
 
 import com.agpf.finance.hub.dtos.expense.ExpenseRegisterDTO;
+import com.agpf.finance.hub.dtos.expense.FilterListExpenseType;
 import com.agpf.finance.hub.enums.expense.CategoryExpenseType;
 import com.agpf.finance.hub.enums.expense.PaymentMethod;
 import com.agpf.finance.hub.enums.expense.StatusExpenseType;
@@ -9,14 +10,12 @@ import com.agpf.finance.hub.services.auth.AuthenticatedUser;
 import com.agpf.finance.hub.services.expense.ExpenseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -59,13 +58,16 @@ public class ExpenseController {
     }
 
     @GetMapping(value = "/by-user")
-    String getExpensesByUser(Model model, Authentication authentication) {
+    String getExpensesByUser(Model model, Authentication authentication,
+                             @RequestParam(defaultValue = "TITLE") FilterListExpenseType filter,
+                             @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
         var user = getUser(authentication);
 
         try {
-            var expenses = expenseService.byUser(user);
+            var expenses = expenseService.byUser(user, filter, direction);
 
             model.addAttribute("expenses", expenses);
+            model.addAttribute("filters", expenseService.getPossibleFilters());
         } catch (Exception _) {
             model.addAttribute("expenses", List.of());
             model.addAttribute("listError", """
