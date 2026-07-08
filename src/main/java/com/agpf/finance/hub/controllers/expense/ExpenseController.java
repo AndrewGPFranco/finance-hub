@@ -59,8 +59,8 @@ public class ExpenseController {
 
     @GetMapping(value = "/by-user")
     String getExpensesByUser(Model model, Authentication authentication,
-                             @RequestParam(defaultValue = "TITLE") FilterListExpenseType filter,
-                             @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
+                             @RequestParam(defaultValue = "ASC") Sort.Direction direction,
+                             @RequestParam(defaultValue = "TITLE") FilterListExpenseType filter) {
         var user = getUser(authentication);
 
         try {

@@ -49,10 +49,12 @@
                     </select>
                     <label class="field-label" for="direction">Direção</label>
                     <select id="direction" name="direction" class="field-input sort-select">
-                        <option value="ASC" th:selected="${param.direction == null or param.direction[0] == 'ASC'}">
+                        <option value="ASC"
+                                th:selected="${param.direction == null or param.direction[0] == 'ASC'}">
                             Crescente
                         </option>
-                        <option value="DESC" th:selected="${param.direction != null and param.direction[0] == 'DESC'}">
+                        <option value="DESC"
+                                th:selected="${param.direction != null and param.direction[0] == 'DESC'}">
                             Decrescente
                         </option>
                     </select>
@@ -104,9 +106,8 @@
     </main>
 </div>
 <script>
-    document.querySelector('.list-panel').addEventListener('change', function (e) {
-        if (!e.target.matches('.sort-form select')) return;
-        var form = e.target.closest('form');
+    function fetchSorted() {
+        var form = document.querySelector('.sort-form');
         var params = new URLSearchParams(new FormData(form));
         var url = form.action + '?' + params.toString();
 
@@ -118,11 +119,41 @@
                 var parser = new DOMParser();
                 var doc = parser.parseFromString(html, 'text/html');
                 var newPanel = doc.querySelector('.list-panel');
-                if (newPanel) {
+                if (newPanel)
                     document.querySelector('.list-panel').innerHTML = newPanel.innerHTML;
-                }
+
                 history.replaceState(null, '', url);
             });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var filterSelect = document.getElementById("filter");
+        var directionSelect = document.getElementById("direction");
+        var savedFilter = localStorage.getItem("ORDER_BY");
+        var savedDirection = localStorage.getItem("DIRECTION");
+        var changed = false;
+
+        if (savedFilter != null && filterSelect.value !== savedFilter) {
+            filterSelect.value = savedFilter;
+            changed = true;
+        }
+
+        if (savedDirection != null && directionSelect.value !== savedDirection) {
+            directionSelect.value = savedDirection;
+            changed = true;
+        }
+
+        if (changed)
+            fetchSorted();
+    });
+
+    document.querySelector('.list-panel').addEventListener('change', function (e) {
+        if (!e.target.matches('.sort-form select')) return;
+
+        localStorage.setItem("ORDER_BY", document.getElementById("filter").value);
+        localStorage.setItem("DIRECTION", document.getElementById("direction").value);
+
+        fetchSorted();
     });
 </script>
 </body>
