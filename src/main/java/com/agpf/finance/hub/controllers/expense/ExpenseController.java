@@ -66,7 +66,9 @@ public class ExpenseController {
             model.addAttribute("expenses", expenses);
         } catch (Exception _) {
             model.addAttribute("expenses", List.of());
-            model.addAttribute("listError", "Ocorreu um erro ao carregar as despesas. Tente novamente mais tarde.");
+            model.addAttribute("listError", """
+                    Ocorreu um erro ao carregar as despesas. Tente novamente mais tarde.
+                    """);
         }
 
         return "expense/list";
