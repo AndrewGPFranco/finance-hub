@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +40,7 @@ public class ExpenseController {
 
     @PostMapping(value = "/register")
     String register(@Valid @ModelAttribute("expense") ExpenseRegisterDTO dto,
-                    BindingResult bindingResult, Model model, Authentication authentication) {
+                    BindingResult bindingResult, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
         addRegisterOptions(model);
 
         if (bindingResult.hasErrors())
@@ -47,6 +48,7 @@ public class ExpenseController {
 
         try {
             expenseService.register(dto, getUser(authentication));
+            redirectAttributes.addFlashAttribute("result", "Despesa cadastrada com sucesso.");
             return "redirect:/expense/register";
         } catch (Exception _) {
             model.addAttribute("registerError", """

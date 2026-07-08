@@ -1,0 +1,1 @@
+ALTER TABLE expenses ALTER COLUMN payment_date DROP NOT NULL;
