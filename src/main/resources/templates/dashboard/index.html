@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Dashboard')}"></head>
+<body>
+<div class="app-shell">
+    <header class="app-header">
+        <div class="app-brand">
+            <span class="brand-symbol">F</span>
+            <span>Finance</span>
+        </div>
+        <form th:action="@{/auth/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button class="btn btn-secondary" type="submit">Sair</button>
+        </form>
+    </header>
+
+    <main class="app-main">
+        <section class="dashboard-header">
+            <div>
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle">Resumo financeiro do mês.</p>
+            </div>
+        </section>
+
+        <section class="dashboard-grid" aria-label="Resumo financeiro">
+            <article class="metric-card">
+                <p class="metric-label">Saldo previsto</p>
+                <p class="metric-value">R$ 0,00</p>
+            </article>
+            <article class="metric-card">
+                <p class="metric-label">Receitas</p>
+                <p class="metric-value">R$ 0,00</p>
+            </article>
+            <article class="metric-card">
+                <p class="metric-label">Despesas</p>
+                <p class="metric-value">R$ 0,00</p>
+            </article>
+            <article class="metric-card">
+                <p class="metric-label">Pendências</p>
+                <p class="metric-value">0</p>
+            </article>
+        </section>
+
+        <section class="content-panel">
+            <h2 class="panel-title">Próximos passos</h2>
+            <p class="panel-text">Cadastre receitas, despesas mensais e cartões para montar sua visão financeira.</p>
+        </section>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Cadastro')}"></head>
+<body class="auth-page">
+<main class="auth-panel auth-panel-wide">
+    <div class="brand-mark">
+        <span class="brand-symbol">F</span>
+        <span>Finance</span>
+    </div>
+
+    <h1 class="page-title">Criar cadastro</h1>
+    <p class="page-subtitle">Configure seu acesso ao sistema.</p>
+
+    <div class="message message-error" th:if="${registerError}" th:text="${registerError}"></div>
+
+    <form th:action="@{/auth/register}" th:object="${form}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <div class="form-row">
+            <div class="field-group">
+                <label class="field-label" for="firstName">Nome</label>
+                <input class="field-input" id="firstName" th:field="*{firstName}" autocomplete="given-name" required maxlength="40">
+                <span class="field-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+            </div>
+
+            <div class="field-group">
+                <label class="field-label" for="lastName">Sobrenome</label>
+                <input class="field-input" id="lastName" th:field="*{lastName}" autocomplete="family-name" required maxlength="40">
+                <span class="field-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label" for="username">Usuário</label>
+            <input class="field-input" id="username" th:field="*{username}" autocomplete="username" required maxlength="30">
+            <span class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label" for="email">Email</label>
+            <input class="field-input" id="email" th:field="*{email}" type="email" autocomplete="email" required>
+            <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label" for="password">Senha</label>
+            <input class="field-input" id="password" th:field="*{password}" type="password" autocomplete="new-password" required minlength="8" maxlength="100">
+            <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Cadastrar</button>
+    </form>
+
+    <p class="auth-footer">Já tem conta? <a th:href="@{/auth/login}">Entrar</a></p>
+</main>
+</body>
+</html>
