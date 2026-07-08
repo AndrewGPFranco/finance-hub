@@ -3,6 +3,7 @@ package com.agpf.finance.hub.controllers.auth;
 import com.agpf.finance.hub.dtos.auth.RegisterRequestDTO;
 import com.agpf.finance.hub.services.auth.AuthService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,15 +16,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthPageController {
 
     private final AuthService authService;
     private static final String AUTH_REGISTER = "auth/register";
     private static final String REDIRECT_DASHBOARD = "redirect:/dashboard";
-
-    public AuthPageController(AuthService authService) {
-        this.authService = authService;
-    }
 
     @GetMapping("/login")
     public String login(Authentication authentication) {
