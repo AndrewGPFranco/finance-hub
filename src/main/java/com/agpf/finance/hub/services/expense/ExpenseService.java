@@ -7,6 +7,7 @@ import com.agpf.finance.hub.dtos.expense.OutputExpenseDTO;
 import com.agpf.finance.hub.enums.expense.CategoryExpenseType;
 import com.agpf.finance.hub.enums.expense.PaymentMethod;
 import com.agpf.finance.hub.enums.expense.StatusExpenseType;
+import com.agpf.finance.hub.exceptions.NotFoundException;
 import com.agpf.finance.hub.models.expense.Expense;
 import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.util.*;
@@ -28,6 +30,7 @@ public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
 
+    @Transactional
     public void register(ExpenseRegisterDTO dto, User user) {
         var entity = ExpenseRegisterDTO.toEntity(dto, user);
 
@@ -58,6 +61,7 @@ public class ExpenseService {
         return OutputExpenseDTO.fromEntity(expenseRepository.findByIdAndUser(idExpense, user));
     }
 
+    @Transactional
     public void editExpense(EditExpenseDTO dto, UUID idExpense, User user) {
         var expense = expenseRepository.findByIdAndUser(idExpense, user);
 
@@ -73,5 +77,15 @@ public class ExpenseService {
         UtilsCrud.updateField(dto.installmentNumber(), expense::setInstallmentNumber);
 
         expenseRepository.save(expense);
+    }
+
+    @Transactional
+    public void deleteExpense(UUID idExpense, User user) {
+        var expense = expenseRepository.findByIdAndUser(idExpense, user);
+
+        if (expense == null)
+            throw new NotFoundException("Despesa não encontrada!");
+
+        expenseRepository.deleteById(idExpense);
     }
 }

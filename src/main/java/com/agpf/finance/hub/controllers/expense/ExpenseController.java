@@ -95,4 +95,13 @@ public class ExpenseController {
         return "redirect:/expense/by-user";
     }
 
+    @DeleteMapping(value = "/{idExpense}")
+    String deleteExpense(Authentication authentication, @PathVariable UUID idExpense) {
+        var user = expenseService.getUser(authentication);
+
+        expenseService.deleteExpense(idExpense, user);
+
+        return "redirect:/expense/by-user";
+    }
+
 }
