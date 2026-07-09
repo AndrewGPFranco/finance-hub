@@ -11,7 +11,7 @@ public record EditExpenseDTO(
         String title,
         BigDecimal amount,
         LocalDate dueDate,
-        boolean recurring,
+        Boolean recurring,
         LocalDate paymentDate,
         StatusExpenseType status,
         Integer totalInstallments,

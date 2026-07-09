@@ -66,7 +66,7 @@ public class ExpenseService {
         UtilsCrud.updateField(dto.status(), expense::setStatus);
         UtilsCrud.updateField(dto.dueDate(), expense::setDueDate);
         UtilsCrud.updateField(dto.category(), expense::setCategory);
-        UtilsCrud.updateField(dto.recurring(), expense::setRecurring);
+        UtilsCrud.updateField(dto.recurring() != null && dto.recurring(), expense::setRecurring);
         UtilsCrud.updateField(dto.paymentDate(), expense::setPaymentDate);
         UtilsCrud.updateField(dto.paymentMethod(), expense::setPaymentMethod);
         UtilsCrud.updateField(dto.totalInstallments(), expense::setTotalInstallments);
