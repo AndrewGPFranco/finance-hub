@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Cadastrar subdomínio')}"></head>
+<body>
+<div class="app-shell">
+    <header class="app-header">
+        <div class="app-brand">
+            <span class="brand-symbol">F</span>
+            <span>Finance</span>
+        </div>
+
+        <nav class="app-nav" aria-label="Navegação principal">
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/expense/by-user}">Despesas</a>
+            <a th:href="@{/expense/register}">Nova despesa</a>
+            <a class="active" th:href="@{/subdomain/by-user}">Subdomínios</a>
+        </nav>
+
+        <form th:action="@{/auth/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button class="btn btn-secondary" type="submit">Sair</button>
+        </form>
+    </header>
+
+    <main class="app-main">
+        <section class="dashboard-header">
+            <div>
+                <h1 class="page-title">Cadastrar subdomínio</h1>
+                <p class="page-subtitle">Crie um novo subdomínio para organizar seus acessos.</p>
+            </div>
+        </section>
+
+        <section class="content-panel expense-form-panel">
+            <div class="message message-error" th:if="${registerError}" th:text="${registerError}"></div>
+
+            <form th:action="@{/subdomain/register}" th:object="${subdomain}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <div class="form-section">
+                    <h2 class="panel-title">Dados do subdomínio</h2>
+
+                    <div class="field-group">
+                        <label class="field-label" for="name">Nome</label>
+                        <input class="field-input" id="name" th:field="*{name}" maxlength="120" required>
+                        <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label" for="urlPhoto">URL da imagem</label>
+                        <input class="field-input" id="urlPhoto" th:field="*{urlPhoto}" type="url" maxlength="500">
+                        <span class="field-error" th:if="${#fields.hasErrors('urlPhoto')}" th:errors="*{urlPhoto}"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a class="btn btn-secondary" th:href="@{/subdomain/by-user}">Cancelar</a>
+                    <button class="btn btn-primary btn-primary-inline" type="submit">Salvar subdomínio</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>
