@@ -16,6 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.UUID;
 
 @Setter
@@ -89,5 +90,10 @@ public class Expense {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subdomain_id", nullable = false)
     private Subdomain subdomain;
+
+    @NotNull
+    @Column(name = "month", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Month month;
 
 }

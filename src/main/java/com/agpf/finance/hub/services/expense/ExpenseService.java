@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import java.time.Month;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -39,11 +40,13 @@ public class ExpenseService {
         expenseRepository.save(entity);
     }
 
-    public List<OutputExpenseDTO> byUser(User user, UUID subdomainId, FilterListExpenseType filter, Sort.Direction direction) {
+    public List<OutputExpenseDTO> byUser(User user, UUID subdomainId, FilterListExpenseType filter,
+                                         Sort.Direction direction, Month month) {
         if (subdomainId == null)
             return List.of();
 
-        return expenseRepository.findByUserAndSubdomainId(user, subdomainId, Sort.by(direction, filter.getFieldName()));
+        return expenseRepository.findByUserAndSubdomainId(user, subdomainId,
+                Sort.by(direction, filter.getFieldName()), month.name());
     }
 
     public Map<FilterListExpenseType, String> getPossibleFilters() {
@@ -89,10 +92,9 @@ public class ExpenseService {
         expenseRepository.deleteById(idExpense);
     }
 
-    public List<OutputExpenseDTO> getExpensesByUser(User user, UUID subdomainId) {
-        if (subdomainId == null)
-            return List.of();
+    public List<OutputExpenseDTO> getExpensesByUser(User user, UUID subdomainId, Month month) {
+        if (subdomainId == null) return List.of();
 
-        return expenseRepository.findByUserAndSubdomainId(user, subdomainId);
+        return expenseRepository.findByUserAndSubdomainId(user, subdomainId, month.name());
     }
 }

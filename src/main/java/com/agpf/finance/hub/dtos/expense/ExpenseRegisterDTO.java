@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.UUID;
 
 import static com.agpf.finance.hub.utils.DateUtils.getLocalDateTimeAmericaSP;
@@ -64,9 +65,13 @@ public record ExpenseRegisterDTO(
     public static Expense toEntity(ExpenseRegisterDTO dto, User user, Subdomain subdomain) {
         return Expense.builder()
                 .title(dto.title()).paymentDate(dto.paymentDate()).amount(dto.amount())
-                .paymentMethod(dto.paymentMethod()).user(user).dueDate(dto.dueDate())
+                .paymentMethod(dto.paymentMethod()).user(user).dueDate(dto.dueDate()).month(getMonth(dto.dueDate))
                 .createdAt(getLocalDateTimeAmericaSP()).status(dto.status()).category(dto.category())
                 .recurring(dto.recurring()).installmentNumber(dto.installmentNumber()).subdomain(subdomain)
                 .totalInstallments(dto.totalInstallments()).build();
+    }
+
+    public static Month getMonth(LocalDate dueDate) {
+        return dueDate.getMonth();
     }
 }

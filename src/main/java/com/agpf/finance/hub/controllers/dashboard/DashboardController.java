@@ -6,10 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.Month;
 import java.util.UUID;
 
 @Controller
@@ -20,11 +19,11 @@ public class DashboardController {
     private final DashboardService dashboardService;
 
     @GetMapping
-    public String dashboard(Model model, Authentication authentication,
+    public String dashboard(Model model, Authentication authentication, @RequestParam("month") Month month,
                             @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {
         var user = UserUtils.getUser(authentication);
 
-        model.addAttribute("output", dashboardService.outputExpenses(user, selectedSubdomainId));
+        model.addAttribute("output", dashboardService.outputExpenses(user, selectedSubdomainId, month));
         return "dashboard/index";
     }
 

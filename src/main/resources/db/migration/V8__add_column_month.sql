@@ -1,0 +1,1 @@
+alter table expenses add column month VARCHAR(20) NOT NULL DEFAULT 'JULY';
