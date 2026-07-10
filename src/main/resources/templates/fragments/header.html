@@ -2,8 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <header class="app-header" th:fragment="appHeader(active)">
     <div class="app-brand">
-        <span class="brand-symbol">F</span>
-        <span>Finance</span>
+        <a th:href="@{/dashboard}" style="text-decoration: none">
+            <span class="brand-symbol">F</span>
+            <span>Finance</span>
+        </a>
     </div>
 
     <nav class="app-nav" aria-label="Navegação principal">
