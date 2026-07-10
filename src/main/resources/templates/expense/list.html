@@ -13,7 +13,8 @@
             </div>
 
             <a class="btn btn-primary btn-primary-inline"
-               th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Nova despesa</a>
+               th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Nova
+                despesa</a>
         </section>
 
         <section class="content-panel list-panel">
@@ -25,40 +26,50 @@
                     <p class="panel-text" th:text="${#lists.size(expenses)} + ' despesa(s) cadastrada(s)'">0 despesa(s)
                         cadastrada(s)</p>
                 </div>
-                <form th:action="@{/expense/by-user}" method="get" class="sort-form">
-                    <input type="hidden" name="subdomainId" th:value="${selectedSubdomainId}">
-                    <input type="hidden" name="month" th:value="${selectedMonth}">
-                    <label class="field-label" for="filter">Ordenar por</label>
-                    <select id="filter" name="filter" class="field-input sort-select">
-                        <option th:each="entry : ${filters}" th:value="${entry.key}" th:text="${entry.value}"
-                                th:selected="${param.filter != null and param.filter[0] == entry.key.name()}">—
-                        </option>
-                    </select>
-                    <label class="field-label" for="direction">Direção</label>
-                    <select id="direction" name="direction" class="field-input sort-select">
-                        <option value="ASC"
-                                th:selected="${param.direction == null or param.direction[0] == 'ASC'}">
-                            Crescente
-                        </option>
-                        <option value="DESC"
-                                th:selected="${param.direction != null and param.direction[0] == 'DESC'}">
-                            Decrescente
-                        </option>
-                    </select>
-                </form>
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary btn-sm btn-repeat-selected" type="button" disabled
+                            style="min-height: 38px; padding: 0 12px; font-size: 13px; gap: 6px; margin-top: 0;">
+                        Repetir selecionadas
+                    </button>
+                    <form th:action="@{/expense/by-user}" method="get" class="sort-form">
+                        <input type="hidden" name="subdomainId" th:value="${selectedSubdomainId}">
+                        <input type="hidden" name="month" th:value="${selectedMonth}">
+                        <label class="field-label" for="filter">Ordenar por</label>
+                        <select id="filter" name="filter" class="field-input sort-select">
+                            <option th:each="entry : ${filters}" th:value="${entry.key}" th:text="${entry.value}"
+                                    th:selected="${param.filter != null and param.filter[0] == entry.key.name()}">—
+                            </option>
+                        </select>
+                        <label class="field-label" for="direction">Direção</label>
+                        <select id="direction" name="direction" class="field-input sort-select">
+                            <option value="ASC"
+                                    th:selected="${param.direction == null or param.direction[0] == 'ASC'}">
+                                Crescente
+                            </option>
+                            <option value="DESC"
+                                    th:selected="${param.direction != null and param.direction[0] == 'DESC'}">
+                                Decrescente
+                            </option>
+                        </select>
+                    </form>
+                </div>
             </div>
 
             <div class="empty-state" th:if="${#lists.isEmpty(expenses)}">
                 <h3>Nenhuma despesa cadastrada</h3>
                 <p>Cadastre sua primeira despesa para começar a acompanhar os gastos.</p>
                 <a class="btn btn-primary btn-primary-inline"
-                   th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Cadastrar despesa</a>
+                   th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Cadastrar
+                    despesa</a>
             </div>
 
             <div class="table-wrapper" th:if="${!#lists.isEmpty(expenses)}">
                 <table class="data-table">
                     <thead>
                     <tr>
+                        <th>
+                            <input id="selectAllExpenses" type="checkbox" aria-label="Selecionar todas as despesas">
+                        </th>
                         <th>Despesa</th>
                         <th>Categoria</th>
                         <th>Vencimento</th>
@@ -72,6 +83,11 @@
                     </thead>
                     <tbody>
                     <tr th:each="expense : ${expenses}">
+                        <td>
+                            <input class="expense-checkbox" type="checkbox" name="idExpense"
+                                   th:value="${expense.id()}" th:data-title="${expense.title()}"
+                                   aria-label="Selecionar despesa">
+                        </td>
                         <td>
                             <span class="table-title" th:text="${expense.title()}">Mercado</span>
                             <span class="table-meta" th:text="${expense.recurringLabel()}">Única</span>
@@ -144,6 +160,29 @@
     </div>
 </div>
 
+<div id="repeatModal" class="modal-overlay"
+     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center;">
+    <div class="modal-container"
+         style="background: var(--surface); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); width: min(90%, 420px); border: 1px solid var(--border-soft);">
+        <h3 style="margin-top: 0; font-size: 18px; color: var(--text);">Repetir despesa</h3>
+        <p style="color: var(--text-muted); font-size: 14px; margin: 12px 0 24px;">Deseja repetir
+            <strong id="repeatSelectedCount">0</strong> despesa(s) para o próximo mês?</p>
+        <form id="repeatForm" th:action="@{/expense/repeat-next-month}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div id="repeatSelectedIds"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <button type="button" class="btn btn-secondary" onclick="closeRepeatModal()" style="min-height: 38px;">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary"
+                        style="min-height: 38px; margin-top: 0; width: auto;">
+                    Repetir despesa
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     function fetchSorted() {
         var form = document.querySelector('.sort-form');
@@ -189,6 +228,29 @@
     var deleteModal = document.getElementById('deleteModal');
     var deleteForm = document.getElementById('deleteForm');
     var deleteTargetTitle = document.getElementById('deleteTargetTitle');
+    var repeatModal = document.getElementById('repeatModal');
+    var repeatForm = document.getElementById('repeatForm');
+    var repeatSelectedIds = document.getElementById('repeatSelectedIds');
+    var repeatSelectedCount = document.getElementById('repeatSelectedCount');
+
+    function getSelectedExpenseCheckboxes() {
+        return Array.prototype.slice.call(document.querySelectorAll('.expense-checkbox:checked'));
+    }
+
+    function updateSelectionState() {
+        var selectedCount = getSelectedExpenseCheckboxes().length;
+        var repeatSelectedButton = document.querySelector('.btn-repeat-selected');
+        var selectAll = document.getElementById('selectAllExpenses');
+        var checkboxes = document.querySelectorAll('.expense-checkbox');
+
+        if (repeatSelectedButton)
+            repeatSelectedButton.disabled = selectedCount === 0;
+
+        if (selectAll) {
+            selectAll.checked = checkboxes.length > 0 && selectedCount === checkboxes.length;
+            selectAll.indeterminate = selectedCount > 0 && selectedCount < checkboxes.length;
+        }
+    }
 
     document.querySelector('.list-panel').addEventListener('click', function (e) {
         var btn = e.target.closest('.btn-delete');
@@ -202,8 +264,31 @@
         deleteModal.style.display = 'flex';
     });
 
+    document.querySelector('.list-panel').addEventListener('click', function (e) {
+        var btn = e.target.closest('.btn-repeat-selected');
+        if (!btn) return;
+
+        var selectedCheckboxes = getSelectedExpenseCheckboxes();
+        if (selectedCheckboxes.length === 0) return;
+
+        repeatSelectedIds.innerHTML = '';
+        selectedCheckboxes.forEach(function (checkbox) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'idExpense';
+            input.value = checkbox.value;
+            repeatSelectedIds.appendChild(input);
+        });
+        repeatSelectedCount.textContent = selectedCheckboxes.length;
+        repeatModal.style.display = 'flex';
+    });
+
     function closeDeleteModal() {
         deleteModal.style.display = 'none';
+    }
+
+    function closeRepeatModal() {
+        repeatModal.style.display = 'none';
     }
 
     if (deleteModal) {
@@ -214,7 +299,28 @@
         });
     }
 
+    if (repeatModal) {
+        repeatModal.addEventListener('click', function (e) {
+            if (e.target === repeatModal) {
+                closeRepeatModal();
+            }
+        });
+    }
+
     document.querySelector('.list-panel').addEventListener('change', function (e) {
+        if (e.target.matches('#selectAllExpenses')) {
+            document.querySelectorAll('.expense-checkbox').forEach(function (checkbox) {
+                checkbox.checked = e.target.checked;
+            });
+            updateSelectionState();
+            return;
+        }
+
+        if (e.target.matches('.expense-checkbox')) {
+            updateSelectionState();
+            return;
+        }
+
         if (!e.target.matches('.sort-form select')) return;
 
         localStorage.setItem("ORDER_BY", document.getElementById("filter").value);
@@ -222,6 +328,8 @@
 
         fetchSorted();
     });
+
+    updateSelectionState();
 </script>
 </body>
 </html>

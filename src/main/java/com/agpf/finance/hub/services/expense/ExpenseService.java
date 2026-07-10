@@ -97,4 +97,19 @@ public class ExpenseService {
 
         return expenseRepository.findByUserAndSubdomainId(user, subdomainId, month);
     }
+
+    @Transactional
+    public void repeatExpenseForNextMonth(List<UUID> idsExpense, UUID idSubdomain, User user) {
+        var subdomain = subdomainRepository.findByIdAndUser(idSubdomain, user)
+                .orElseThrow(() -> new NotFoundException("Subdomínio não encontrado!"));
+
+        var expenses = expenseRepository.findAllByIdAndUser(idsExpense, user);
+
+        var listNewEntities = expenses.stream().map(expense -> {
+            var dto = ExpenseRegisterDTO.cloneNextMonthFromEntity(expense);
+            return ExpenseRegisterDTO.toEntity(dto, user, subdomain);
+        }).toList();
+
+        expenseRepository.saveAll(listNewEntities);
+    }
 }

@@ -26,6 +26,7 @@ public class ExpenseController {
 
     private final ExpenseService expenseService;
     private static final String EXPENSE_REGISTER = "expense/register";
+    private static final String REDIRECT_EXPENSE_BY_USER = "redirect:/expense/by-user";
 
     @GetMapping(value = "/register")
     String registerForm(Model model, @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {
@@ -100,7 +101,7 @@ public class ExpenseController {
 
         expenseService.editExpense(dto, idExpense, user);
 
-        return "redirect:/expense/by-user";
+        return REDIRECT_EXPENSE_BY_USER;
     }
 
     @DeleteMapping(value = "/{idExpense}")
@@ -109,7 +110,17 @@ public class ExpenseController {
 
         expenseService.deleteExpense(idExpense, user);
 
-        return "redirect:/expense/by-user";
+        return REDIRECT_EXPENSE_BY_USER;
+    }
+
+    @PostMapping(value = "/repeat-next-month")
+    String repeatExpenseForNextMonth(@RequestParam List<UUID> idExpense, Authentication authentication,
+                                     @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {
+        var user = UserUtils.getUser(authentication);
+
+        expenseService.repeatExpenseForNextMonth(idExpense, selectedSubdomainId, user);
+
+        return REDIRECT_EXPENSE_BY_USER;
     }
 
 }

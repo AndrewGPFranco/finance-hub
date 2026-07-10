@@ -40,4 +40,12 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
                                                     @Param("subdomainId") UUID subdomainId, @Param("month") Month month);
 
     Expense findByIdAndUser(UUID idExpense, User user);
+
+    @Query("""
+                select e
+                from Expense e
+                where e.id in :ids
+                  and e.user = :user
+            """)
+    List<Expense> findAllByIdAndUser(@Param("ids") List<UUID> ids, @Param("user") User user);
 }

@@ -71,6 +71,15 @@ public record ExpenseRegisterDTO(
                 .totalInstallments(dto.totalInstallments()).build();
     }
 
+    public static ExpenseRegisterDTO cloneNextMonthFromEntity(Expense expense) {
+        return new ExpenseRegisterDTO(
+                expense.getTitle(), null, expense.getAmount(), expense.getDueDate().plusMonths(1),
+                StatusExpenseType.PENDING, expense.getCategory(), expense.getPaymentMethod(), expense.isRecurring(),
+                expense.getInstallmentNumber() == null ? null : expense.getInstallmentNumber() + 1,
+                expense.getTotalInstallments(), expense.getSubdomain().getId()
+        );
+    }
+
     public static Month getMonth(LocalDate dueDate) {
         return dueDate.getMonth();
     }
