@@ -31,26 +31,26 @@
 
         <section class="dashboard-grid" aria-label="Resumo financeiro">
             <article class="metric-card">
-                <p class="metric-label">Saldo previsto</p>
-                <p class="metric-value">R$ 0,00</p>
+                <p class="metric-label">Total de despesas</p>
+                <p class="metric-value" th:text="${output.totalExpenses()}">0</p>
             </article>
             <article class="metric-card">
-                <p class="metric-label">Receitas</p>
-                <p class="metric-value">R$ 0,00</p>
-            </article>
-            <article class="metric-card">
-                <p class="metric-label">Despesas</p>
-                <p class="metric-value">R$ 0,00</p>
+                <p class="metric-label">Despesas pagas</p>
+                <p class="metric-value" th:text="${output.expensesPaid()}">0</p>
             </article>
             <article class="metric-card">
                 <p class="metric-label">Pendências</p>
-                <p class="metric-value">0</p>
+                <p class="metric-value" th:text="${output.outstandingExpenses()}">0</p>
+            </article>
+            <article class="metric-card">
+                <p class="metric-label">Pagamentos atrasados</p>
+                <p class="metric-value" th:text="${output.overduePayments()}">0</p>
             </article>
         </section>
 
         <section class="content-panel">
-            <h2 class="panel-title">Próximos passos</h2>
-            <p class="panel-text">Cadastre receitas, despesas mensais e cartões para montar sua visão financeira.</p>
+            <h2 class="panel-title">Valor total das despesas</h2>
+            <p class="panel-text" th:text="${output.formattedAmountPayableExpenses()}">R$ 0,00</p>
         </section>
     </main>
 </div>
