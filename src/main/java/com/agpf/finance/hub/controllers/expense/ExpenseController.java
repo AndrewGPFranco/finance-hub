@@ -62,11 +62,12 @@ public class ExpenseController {
     String getExpensesByUser(Model model, Authentication authentication,
                              @RequestParam(defaultValue = "ASC") Sort.Direction direction,
                              @RequestParam(defaultValue = "TITLE") FilterListExpenseType filter,
-                             @RequestParam Month month, @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {
+                             @ModelAttribute("selectedMonth") Month selectedMonth,
+                             @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {
         var user = UserUtils.getUser(authentication);
 
         try {
-            var expenses = expenseService.byUser(user, selectedSubdomainId, filter, direction, month);
+            var expenses = expenseService.byUser(user, selectedSubdomainId, filter, direction, selectedMonth);
 
             model.addAttribute("expenses", expenses);
             model.addAttribute("filters", expenseService.getPossibleFilters());

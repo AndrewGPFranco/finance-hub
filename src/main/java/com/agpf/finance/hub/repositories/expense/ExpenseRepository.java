@@ -26,7 +26,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
             """
     )
     List<OutputExpenseDTO> findByUserAndSubdomainId(@Param("user") User user, @Param("subdomainId") UUID subdomainId,
-                                                    Sort sort, @Param("month") String month);
+                                                    Sort sort, @Param("month") Month month);
 
     @Query("""
             select new com.agpf.finance.hub.dtos.expense.OutputExpenseDTO(
@@ -37,7 +37,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
             """
     )
     List<OutputExpenseDTO> findByUserAndSubdomainId(@Param("user") User user,
-                                                    @Param("subdomainId") UUID subdomainId, @Param("month") String month);
+                                                    @Param("subdomainId") UUID subdomainId, @Param("month") Month month);
 
     Expense findByIdAndUser(UUID idExpense, User user);
 }

@@ -13,7 +13,7 @@
             </div>
 
             <a class="btn btn-primary btn-primary-inline"
-               th:href="@{/expense/register(subdomainId=${selectedSubdomainId})}">Nova despesa</a>
+               th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Nova despesa</a>
         </section>
 
         <section class="content-panel list-panel">
@@ -27,6 +27,7 @@
                 </div>
                 <form th:action="@{/expense/by-user}" method="get" class="sort-form">
                     <input type="hidden" name="subdomainId" th:value="${selectedSubdomainId}">
+                    <input type="hidden" name="month" th:value="${selectedMonth}">
                     <label class="field-label" for="filter">Ordenar por</label>
                     <select id="filter" name="filter" class="field-input sort-select">
                         <option th:each="entry : ${filters}" th:value="${entry.key}" th:text="${entry.value}"
@@ -51,7 +52,7 @@
                 <h3>Nenhuma despesa cadastrada</h3>
                 <p>Cadastre sua primeira despesa para começar a acompanhar os gastos.</p>
                 <a class="btn btn-primary btn-primary-inline"
-                   th:href="@{/expense/register(subdomainId=${selectedSubdomainId})}">Cadastrar despesa</a>
+                   th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Cadastrar despesa</a>
             </div>
 
             <div class="table-wrapper" th:if="${!#lists.isEmpty(expenses)}">

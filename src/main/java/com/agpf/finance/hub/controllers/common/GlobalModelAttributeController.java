@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Arrays;
 import java.util.UUID;
 
 @ControllerAdvice
@@ -17,12 +20,14 @@ import java.util.UUID;
 public class GlobalModelAttributeController {
 
     private static final String SELECTED_SUBDOMAIN_ID = "selectedSubdomainId";
+    private static final String SELECTED_MONTH = "selectedMonth";
 
     private final SubdomainService subdomainService;
 
     @ModelAttribute
     public void addGlobalAttributes(Model model, Authentication authentication,
                                     @RequestParam(required = false) UUID subdomainId,
+                                    @RequestParam(required = false) Month month,
                                     HttpSession session) {
         if (authentication == null || !(authentication.getPrincipal() instanceof AuthenticatedUser authenticatedUser))
             return;
@@ -38,8 +43,13 @@ public class GlobalModelAttributeController {
         else
             session.removeAttribute(SELECTED_SUBDOMAIN_ID);
 
+        var selectedMonth = month != null ? month : getSessionMonth(session);
+        session.setAttribute(SELECTED_MONTH, selectedMonth.name());
+
         model.addAttribute("navbarSubdomains", subdomainService.subdomainsByUser(user));
         model.addAttribute(SELECTED_SUBDOMAIN_ID, resolvedSubdomainId);
+        model.addAttribute("monthOptions", Arrays.asList(Month.values()));
+        model.addAttribute(SELECTED_MONTH, selectedMonth);
     }
 
     private UUID getSessionSubdomainId(HttpSession session) {
@@ -52,6 +62,19 @@ public class GlobalModelAttributeController {
             return UUID.fromString(value);
         } catch (IllegalArgumentException _) {
             return null;
+        }
+    }
+
+    private Month getSessionMonth(HttpSession session) {
+        var selectedMonth = session.getAttribute(SELECTED_MONTH);
+
+        if (!(selectedMonth instanceof String value))
+            return LocalDate.now().getMonth();
+
+        try {
+            return Month.valueOf(value);
+        } catch (IllegalArgumentException _) {
+            return LocalDate.now().getMonth();
         }
     }
 }

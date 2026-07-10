@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     let subdomainSelect = document.querySelector("[data-global-subdomain-select]");
+    let monthSelect = document.querySelector("[data-global-month-select]");
 
     if (subdomainSelect) {
         subdomainSelect.addEventListener("change", function () {
@@ -9,6 +10,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 url.searchParams.set("subdomainId", subdomainSelect.value);
             else
                 url.searchParams.delete("subdomainId");
+
+            window.location.assign(url.toString());
+        });
+    }
+
+    if (monthSelect) {
+        monthSelect.addEventListener("change", function () {
+            let url = new URL(window.location.href);
+
+            if (monthSelect.value)
+                url.searchParams.set("month", monthSelect.value);
+            else
+                url.searchParams.delete("month");
 
             window.location.assign(url.toString());
         });

@@ -8,16 +8,37 @@
 
     <nav class="app-nav" aria-label="Navegação principal">
         <a th:classappend="${active == 'dashboard'} ? 'active' : ''"
-           th:href="@{/dashboard(subdomainId=${selectedSubdomainId})}">Dashboard</a>
+           th:href="@{/dashboard(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Dashboard</a>
         <a th:classappend="${active == 'expense'} ? 'active' : ''"
-           th:href="@{/expense/by-user(subdomainId=${selectedSubdomainId})}">Despesas</a>
+           th:href="@{/expense/by-user(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Despesas</a>
         <a th:classappend="${active == 'expense-register'} ? 'active' : ''"
-           th:href="@{/expense/register(subdomainId=${selectedSubdomainId})}">Nova despesa</a>
+           th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Nova despesa</a>
         <a th:classappend="${active == 'subdomain'} ? 'active' : ''"
            th:href="@{/subdomain/by-user}">Subdomínios</a>
     </nav>
 
     <div class="app-actions">
+        <div class="navbar-subdomain" th:if="${monthOptions != null}">
+            <label class="field-label" for="globalMonth">Mês</label>
+            <select class="field-input" id="globalMonth" data-global-month-select>
+                <option th:each="monthOption : ${monthOptions}" th:value="${monthOption}"
+                        th:text="${monthOption.name() == 'JANUARY' ? 'Janeiro' :
+                            monthOption.name() == 'FEBRUARY' ? 'Fevereiro' :
+                            monthOption.name() == 'MARCH' ? 'Março' :
+                            monthOption.name() == 'APRIL' ? 'Abril' :
+                            monthOption.name() == 'MAY' ? 'Maio' :
+                            monthOption.name() == 'JUNE' ? 'Junho' :
+                            monthOption.name() == 'JULY' ? 'Julho' :
+                            monthOption.name() == 'AUGUST' ? 'Agosto' :
+                            monthOption.name() == 'SEPTEMBER' ? 'Setembro' :
+                            monthOption.name() == 'OCTOBER' ? 'Outubro' :
+                            monthOption.name() == 'NOVEMBER' ? 'Novembro' : 'Dezembro'}"
+                        th:selected="${selectedMonth == monthOption}">
+                    Janeiro
+                </option>
+            </select>
+        </div>
+
         <div class="navbar-subdomain" th:if="${navbarSubdomains != null}">
             <label class="field-label" for="globalSubdomainId">Subdomínio</label>
             <select class="field-input" id="globalSubdomainId" data-global-subdomain-select

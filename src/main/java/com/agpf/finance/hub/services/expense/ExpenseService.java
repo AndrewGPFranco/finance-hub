@@ -46,7 +46,7 @@ public class ExpenseService {
             return List.of();
 
         return expenseRepository.findByUserAndSubdomainId(user, subdomainId,
-                Sort.by(direction, filter.getFieldName()), month.name());
+                Sort.by(direction, filter.getFieldName()), month);
     }
 
     public Map<FilterListExpenseType, String> getPossibleFilters() {
@@ -95,6 +95,6 @@ public class ExpenseService {
     public List<OutputExpenseDTO> getExpensesByUser(User user, UUID subdomainId, Month month) {
         if (subdomainId == null) return List.of();
 
-        return expenseRepository.findByUserAndSubdomainId(user, subdomainId, month.name());
+        return expenseRepository.findByUserAndSubdomainId(user, subdomainId, month);
     }
 }
