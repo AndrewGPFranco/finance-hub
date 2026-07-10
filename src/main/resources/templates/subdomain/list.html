@@ -3,24 +3,7 @@
 <head th:replace="~{fragments/head :: head('Subdomínios')}"></head>
 <body>
 <div class="app-shell">
-    <header class="app-header">
-        <div class="app-brand">
-            <span class="brand-symbol">F</span>
-            <span>Finance</span>
-        </div>
-
-        <nav class="app-nav" aria-label="Navegação principal">
-            <a th:href="@{/dashboard}">Dashboard</a>
-            <a th:href="@{/expense/by-user}">Despesas</a>
-            <a th:href="@{/expense/register}">Nova despesa</a>
-            <a class="active" th:href="@{/subdomain/by-user}">Subdomínios</a>
-        </nav>
-
-        <form th:action="@{/auth/logout}" method="post">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <button class="btn btn-secondary" type="submit">Sair</button>
-        </form>
-    </header>
+    <header th:replace="~{fragments/header :: appHeader('subdomain')}"></header>
 
     <main class="app-main">
         <section class="dashboard-header">
@@ -67,7 +50,9 @@
                         </td>
                         <td>
                             <a th:if="${subdomain.urlPhoto() != null and !subdomain.urlPhoto().isBlank()}"
-                               th:href="${subdomain.urlPhoto()}" target="_blank" rel="noopener">Abrir imagem</a>
+                               th:href="${subdomain.urlPhoto()}" target="_blank" rel="noopener">
+                                <img class="subdomain-photo" th:src="${subdomain.urlPhoto()}" alt="">
+                            </a>
                             <span th:if="${subdomain.urlPhoto() == null or subdomain.urlPhoto().isBlank()}">-</span>
                         </td>
                         <td>

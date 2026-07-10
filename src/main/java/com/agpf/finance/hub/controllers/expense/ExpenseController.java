@@ -4,7 +4,6 @@ import com.agpf.finance.hub.dtos.expense.EditExpenseDTO;
 import com.agpf.finance.hub.dtos.expense.ExpenseRegisterDTO;
 import com.agpf.finance.hub.enums.expense.FilterListExpenseType;
 import com.agpf.finance.hub.services.expense.ExpenseService;
-import com.agpf.finance.hub.services.subdomain.SubdomainService;
 import com.agpf.finance.hub.utils.UserUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +24,11 @@ import java.util.UUID;
 public class ExpenseController {
 
     private final ExpenseService expenseService;
-    private final SubdomainService subdomainService;
     private static final String EXPENSE_REGISTER = "expense/register";
 
     @GetMapping(value = "/register")
-    String registerForm(Model model, Authentication authentication,
-                        @RequestParam(required = false) UUID subdomainId) {
-        var user = UserUtils.getUser(authentication);
-        var selectedSubdomainId = subdomainService.resolveSelectedSubdomainId(user, subdomainId);
-
+    String registerForm(Model model, @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {
         model.addAttribute("expense", new ExpenseRegisterDTO(selectedSubdomainId));
-        model.addAttribute("subdomains", subdomainService.subdomainsByUser(user));
-        model.addAttribute("selectedSubdomainId", selectedSubdomainId);
         expenseService.addRegisterOptions(model);
 
         return EXPENSE_REGISTER;
@@ -46,7 +38,6 @@ public class ExpenseController {
     String register(@Valid @ModelAttribute("expense") ExpenseRegisterDTO dto,
                     BindingResult bindingResult, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
         var user = UserUtils.getUser(authentication);
-        model.addAttribute("subdomains", subdomainService.subdomainsByUser(user));
         model.addAttribute("selectedSubdomainId", dto.subdomainId());
         expenseService.addRegisterOptions(model);
 
@@ -70,25 +61,20 @@ public class ExpenseController {
     String getExpensesByUser(Model model, Authentication authentication,
                              @RequestParam(defaultValue = "ASC") Sort.Direction direction,
                              @RequestParam(defaultValue = "TITLE") FilterListExpenseType filter,
-                             @RequestParam(required = false) UUID subdomainId) {
+                             @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {
         var user = UserUtils.getUser(authentication);
-        var selectedSubdomainId = subdomainService.resolveSelectedSubdomainId(user, subdomainId);
 
         try {
             var expenses = expenseService.byUser(user, selectedSubdomainId, filter, direction);
 
             model.addAttribute("expenses", expenses);
             model.addAttribute("filters", expenseService.getPossibleFilters());
-            model.addAttribute("subdomains", subdomainService.subdomainsByUser(user));
-            model.addAttribute("selectedSubdomainId", selectedSubdomainId);
         } catch (Exception _) {
             model.addAttribute("expenses", List.of());
             model.addAttribute("listError", """
                     Ocorreu um erro ao carregar as despesas. Tente novamente mais tarde.
                     """);
             model.addAttribute("filters", expenseService.getPossibleFilters());
-            model.addAttribute("subdomains", subdomainService.subdomainsByUser(user));
-            model.addAttribute("selectedSubdomainId", selectedSubdomainId);
         }
 
         return "expense/list";
