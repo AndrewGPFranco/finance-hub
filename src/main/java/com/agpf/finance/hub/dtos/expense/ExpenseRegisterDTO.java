@@ -75,9 +75,18 @@ public record ExpenseRegisterDTO(
         return new ExpenseRegisterDTO(
                 expense.getTitle(), null, expense.getAmount(), expense.getDueDate().plusMonths(1),
                 StatusExpenseType.PENDING, expense.getCategory(), expense.getPaymentMethod(), expense.isRecurring(),
-                expense.getInstallmentNumber() == null ? null : expense.getInstallmentNumber() + 1,
+                getNextInstallmentNumber(expense.getInstallmentNumber(), expense.getTotalInstallments()),
                 expense.getTotalInstallments(), expense.getSubdomain().getId()
         );
+    }
+
+    public static Integer getNextInstallmentNumber(Integer installmentNumber, Integer totalInstallment) {
+        if (installmentNumber == null) return null;
+
+        if (installmentNumber + 1 > totalInstallment)
+            return totalInstallment;
+
+        return installmentNumber + 1;
     }
 
     public static Month getMonth(LocalDate dueDate) {
