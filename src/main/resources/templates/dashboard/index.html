@@ -10,9 +10,9 @@
         </div>
 
         <nav class="app-nav" aria-label="Navegação principal">
-            <a class="active" th:href="@{/dashboard}">Dashboard</a>
-            <a th:href="@{/expense/by-user}">Despesas</a>
-            <a th:href="@{/expense/register}">Nova despesa</a>
+            <a class="active" th:href="@{/dashboard(subdomainId=${selectedSubdomainId})}">Dashboard</a>
+            <a th:href="@{/expense/by-user(subdomainId=${selectedSubdomainId})}">Despesas</a>
+            <a th:href="@{/expense/register(subdomainId=${selectedSubdomainId})}">Nova despesa</a>
             <a th:href="@{/subdomain/by-user}">Subdomínios</a>
         </nav>
 
@@ -28,6 +28,20 @@
                 <h1 class="page-title">Dashboard</h1>
                 <p class="page-subtitle">Resumo financeiro do mês.</p>
             </div>
+
+            <form th:action="@{/dashboard}" method="get" class="subdomain-selector">
+                <label class="field-label" for="subdomainId">Subdomínio atual</label>
+                <select class="field-input sort-select" id="subdomainId" name="subdomainId"
+                        onchange="this.form.submit()" th:disabled="${#lists.isEmpty(subdomains)}">
+                    <option value="" th:if="${#lists.isEmpty(subdomains)}">Nenhum subdomínio cadastrado</option>
+                    <option th:each="subdomain : ${subdomains}"
+                            th:value="${subdomain.id()}"
+                            th:text="${subdomain.name()}"
+                            th:selected="${selectedSubdomainId != null and subdomain.id().equals(selectedSubdomainId)}">
+                        Principal
+                    </option>
+                </select>
+            </form>
         </section>
 
         <section class="dashboard-grid" aria-label="Resumo financeiro">

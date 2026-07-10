@@ -1,0 +1,1 @@
+alter table expenses add column subdomain_id UUID;

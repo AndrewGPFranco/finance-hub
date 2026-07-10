@@ -10,6 +10,7 @@ import com.agpf.finance.hub.enums.expense.StatusExpenseType;
 import com.agpf.finance.hub.exceptions.NotFoundException;
 import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
+import com.agpf.finance.hub.repositories.subdomains.SubdomainRepository;
 import com.agpf.finance.hub.utils.CrudUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -26,16 +27,23 @@ import java.util.stream.Collectors;
 public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
+    private final SubdomainRepository subdomainRepository;
 
     @Transactional
     public void register(ExpenseRegisterDTO dto, User user) {
-        var entity = ExpenseRegisterDTO.toEntity(dto, user);
+        var subdomain = subdomainRepository.findByIdAndUser(dto.subdomainId(), user)
+                .orElseThrow(() -> new NotFoundException("Subdomínio não encontrado!"));
+
+        var entity = ExpenseRegisterDTO.toEntity(dto, user, subdomain);
 
         expenseRepository.save(entity);
     }
 
-    public List<OutputExpenseDTO> byUser(User user, FilterListExpenseType filter, Sort.Direction direction) {
-        return expenseRepository.findByUser(user, Sort.by(direction, filter.getFieldName()));
+    public List<OutputExpenseDTO> byUser(User user, UUID subdomainId, FilterListExpenseType filter, Sort.Direction direction) {
+        if (subdomainId == null)
+            return List.of();
+
+        return expenseRepository.findByUserAndSubdomainId(user, subdomainId, Sort.by(direction, filter.getFieldName()));
     }
 
     public Map<FilterListExpenseType, String> getPossibleFilters() {
@@ -81,7 +89,10 @@ public class ExpenseService {
         expenseRepository.deleteById(idExpense);
     }
 
-    public List<OutputExpenseDTO> getExpensesByUser(User user) {
-        return expenseRepository.findByUser(user);
+    public List<OutputExpenseDTO> getExpensesByUser(User user, UUID subdomainId) {
+        if (subdomainId == null)
+            return List.of();
+
+        return expenseRepository.findByUserAndSubdomainId(user, subdomainId);
     }
 }

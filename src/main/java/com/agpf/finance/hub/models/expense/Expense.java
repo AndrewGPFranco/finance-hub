@@ -3,6 +3,7 @@ package com.agpf.finance.hub.models.expense;
 import com.agpf.finance.hub.enums.expense.CategoryExpenseType;
 import com.agpf.finance.hub.enums.expense.PaymentMethod;
 import com.agpf.finance.hub.enums.expense.StatusExpenseType;
+import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -84,5 +85,9 @@ public class Expense {
 
     @Column(name = "total_installments")
     private Integer totalInstallments;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "subdomain_id", nullable = false)
+    private Subdomain subdomain;
 
 }

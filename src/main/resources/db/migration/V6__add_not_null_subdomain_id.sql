@@ -1,0 +1,1 @@
+alter table expenses alter column subdomain_id set not null;

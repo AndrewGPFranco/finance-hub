@@ -4,6 +4,7 @@ import com.agpf.finance.hub.enums.expense.CategoryExpenseType;
 import com.agpf.finance.hub.enums.expense.PaymentMethod;
 import com.agpf.finance.hub.enums.expense.StatusExpenseType;
 import com.agpf.finance.hub.models.expense.Expense;
+import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static com.agpf.finance.hub.utils.DateUtils.getLocalDateTimeAmericaSP;
 
@@ -42,18 +44,29 @@ public record ExpenseRegisterDTO(
 
         Integer installmentNumber,
 
-        Integer totalInstallments
+        Integer totalInstallments,
+
+        @NotNull(message = "Um subdomínio precisa estar vínculado a despesa.")
+        UUID subdomainId
 ) {
     public ExpenseRegisterDTO() {
-        this(null, null, null, null, null, null, null, false, null, null);
+        this(null, null, null,
+                null, null, null, null,
+                false, null, null, null);
     }
 
-    public static Expense toEntity(ExpenseRegisterDTO dto, User user) {
+    public ExpenseRegisterDTO(UUID subdomainId) {
+        this(null, null, null,
+                null, null, null, null,
+                false, null, null, subdomainId);
+    }
+
+    public static Expense toEntity(ExpenseRegisterDTO dto, User user, Subdomain subdomain) {
         return Expense.builder()
                 .title(dto.title()).paymentDate(dto.paymentDate()).amount(dto.amount())
                 .paymentMethod(dto.paymentMethod()).user(user).dueDate(dto.dueDate())
                 .createdAt(getLocalDateTimeAmericaSP()).status(dto.status()).category(dto.category())
-                .recurring(dto.recurring()).installmentNumber(dto.installmentNumber())
+                .recurring(dto.recurring()).installmentNumber(dto.installmentNumber()).subdomain(subdomain)
                 .totalInstallments(dto.totalInstallments()).build();
     }
 }

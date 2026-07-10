@@ -37,6 +37,14 @@ public class SubdomainService {
         return subdomainRepository.subdomainsByUser(user.getId());
     }
 
+    public UUID resolveSelectedSubdomainId(User user, UUID idSubdomain) {
+        if (idSubdomain != null && subdomainRepository.findByIdAndUser(idSubdomain, user).isPresent())
+            return idSubdomain;
+
+        return subdomainsByUser(user).stream().findFirst().map(OutputSubdomain::id)
+                .orElseThrow(() -> new NotFoundException("Subdomain não encontrado!"));
+    }
+
     public OutputSubdomain getSubdomainByIdAndUser(UUID idSubdomain, User user) {
         return OutputSubdomain.fromEntity(resolve(user, idSubdomain));
     }

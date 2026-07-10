@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -15,8 +16,8 @@ public class DashboardService {
 
     private final ExpenseService expenseService;
 
-    public OutputDashboardDTO outputExpenses(User user) {
-        var expenses = expenseService.getExpensesByUser(user);
+    public OutputDashboardDTO outputExpenses(User user, UUID subdomainId) {
+        var expenses = expenseService.getExpensesByUser(user, subdomainId);
 
         var expensesPaid = (int) expenses.stream()
                 .filter(expense -> expense.status() == StatusExpenseType.PAID).count();

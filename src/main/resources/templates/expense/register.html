@@ -10,9 +10,9 @@
         </div>
 
         <nav class="app-nav" aria-label="Navegação principal">
-            <a th:href="@{/dashboard}">Dashboard</a>
-            <a th:href="@{/expense/by-user}">Despesas</a>
-            <a class="active" th:href="@{/expense/register}">Nova despesa</a>
+            <a th:href="@{/dashboard(subdomainId=${selectedSubdomainId})}">Dashboard</a>
+            <a th:href="@{/expense/by-user(subdomainId=${selectedSubdomainId})}">Despesas</a>
+            <a class="active" th:href="@{/expense/register(subdomainId=${selectedSubdomainId})}">Nova despesa</a>
             <a th:href="@{/subdomain/by-user}">Subdomínios</a>
         </nav>
 
@@ -41,6 +41,19 @@
                     <h2 class="panel-title">Dados principais</h2>
 
                     <div class="field-group">
+                        <label class="field-label" for="subdomainId">Subdomínio</label>
+                        <select class="field-input" id="subdomainId" th:field="*{subdomainId}" required>
+                            <option value="">Selecione</option>
+                            <option th:each="subdomain : ${subdomains}"
+                                    th:value="${subdomain.id()}"
+                                    th:text="${subdomain.name()}">Principal
+                            </option>
+                        </select>
+                        <span class="field-error" th:if="${#fields.hasErrors('subdomainId')}"
+                              th:errors="*{subdomainId}"></span>
+                    </div>
+
+                    <div class="field-group">
                         <label class="field-label" for="title">Título</label>
                         <input class="field-input" id="title" th:field="*{title}" maxlength="120" required>
                         <span class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
@@ -49,8 +62,10 @@
                     <div class="form-row">
                         <div class="field-group">
                             <label class="field-label" for="amount">Valor</label>
-                            <input class="field-input" id="amount" th:field="*{amount}" type="number" min="0.01" step="0.01" inputmode="decimal" required>
-                            <span class="field-error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
+                            <input class="field-input" id="amount" th:field="*{amount}" type="number" min="0.01"
+                                   step="0.01" inputmode="decimal" required>
+                            <span class="field-error" th:if="${#fields.hasErrors('amount')}"
+                                  th:errors="*{amount}"></span>
                         </div>
 
                         <div class="field-group">
@@ -66,7 +81,8 @@
                                             categoryOption.name() == 'EDUCATION' ? 'Educação' :
                                             categoryOption.name() == 'ENTERTAINMENT' ? 'Entretenimento' : 'Outros'}"></option>
                             </select>
-                            <span class="field-error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></span>
+                            <span class="field-error" th:if="${#fields.hasErrors('category')}"
+                                  th:errors="*{category}"></span>
                         </div>
                     </div>
                 </div>
@@ -78,13 +94,15 @@
                         <div class="field-group">
                             <label class="field-label" for="dueDate">Vencimento</label>
                             <input class="field-input" id="dueDate" th:field="*{dueDate}" type="date" required>
-                            <span class="field-error" th:if="${#fields.hasErrors('dueDate')}" th:errors="*{dueDate}"></span>
+                            <span class="field-error" th:if="${#fields.hasErrors('dueDate')}"
+                                  th:errors="*{dueDate}"></span>
                         </div>
 
                         <div class="field-group">
                             <label class="field-label" for="paymentDate">Data de pagamento</label>
                             <input class="field-input" id="paymentDate" th:field="*{paymentDate}" type="date">
-                            <span class="field-error" th:if="${#fields.hasErrors('paymentDate')}" th:errors="*{paymentDate}"></span>
+                            <span class="field-error" th:if="${#fields.hasErrors('paymentDate')}"
+                                  th:errors="*{paymentDate}"></span>
                         </div>
                     </div>
 
@@ -99,7 +117,8 @@
                                             statusOption.name() == 'PENDING' ? 'Pendente' :
                                             statusOption.name() == 'OVERDUE' ? 'Atrasado' : 'Cancelado'}"></option>
                             </select>
-                            <span class="field-error" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></span>
+                            <span class="field-error" th:if="${#fields.hasErrors('status')}"
+                                  th:errors="*{status}"></span>
                         </div>
 
                         <div class="field-group">
@@ -113,7 +132,8 @@
                                             paymentMethodOption.name() == 'CREDIT_CARD' ? 'Cartão de crédito' :
                                             paymentMethodOption.name() == 'TRANSFER' ? 'Transferência' : 'Outro'}"></option>
                             </select>
-                            <span class="field-error" th:if="${#fields.hasErrors('paymentMethod')}" th:errors="*{paymentMethod}"></span>
+                            <span class="field-error" th:if="${#fields.hasErrors('paymentMethod')}"
+                                  th:errors="*{paymentMethod}"></span>
                         </div>
                     </div>
                 </div>
@@ -129,20 +149,25 @@
                     <div class="form-row">
                         <div class="field-group">
                             <label class="field-label" for="installmentNumber">Parcela atual</label>
-                            <input class="field-input" id="installmentNumber" th:field="*{installmentNumber}" type="number" min="1" inputmode="numeric">
-                            <span class="field-error" th:if="${#fields.hasErrors('installmentNumber')}" th:errors="*{installmentNumber}"></span>
+                            <input class="field-input" id="installmentNumber" th:field="*{installmentNumber}"
+                                   type="number" min="1" inputmode="numeric">
+                            <span class="field-error" th:if="${#fields.hasErrors('installmentNumber')}"
+                                  th:errors="*{installmentNumber}"></span>
                         </div>
 
                         <div class="field-group">
                             <label class="field-label" for="totalInstallments">Total de parcelas</label>
-                            <input class="field-input" id="totalInstallments" th:field="*{totalInstallments}" type="number" min="1" inputmode="numeric">
-                            <span class="field-error" th:if="${#fields.hasErrors('totalInstallments')}" th:errors="*{totalInstallments}"></span>
+                            <input class="field-input" id="totalInstallments" th:field="*{totalInstallments}"
+                                   type="number" min="1" inputmode="numeric">
+                            <span class="field-error" th:if="${#fields.hasErrors('totalInstallments')}"
+                                  th:errors="*{totalInstallments}"></span>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-actions">
-                    <a class="btn btn-secondary" th:href="@{/dashboard}">Cancelar</a>
+                    <a class="btn btn-secondary"
+                       th:href="@{/dashboard(subdomainId=${selectedSubdomainId})}">Cancelar</a>
                     <button class="btn btn-primary btn-primary-inline" type="submit">Salvar despesa</button>
                 </div>
             </form>

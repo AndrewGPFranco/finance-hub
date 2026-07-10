@@ -21,9 +21,12 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
                             e.status, e.category, e.paymentMethod, e.recurring,
                                         e.installmentNumber, e.totalInstallments
              ) from Expense e where e.user = :user
+                and e.subdomain.id = :subdomainId
             """
     )
-    List<OutputExpenseDTO> findByUser(@Param("user") User user, Sort sort);
+    List<OutputExpenseDTO> findByUserAndSubdomainId(@Param("user") User user,
+                                                    @Param("subdomainId") UUID subdomainId,
+                                                    Sort sort);
 
     @Query("""
             select new com.agpf.finance.hub.dtos.expense.OutputExpenseDTO(
@@ -31,9 +34,11 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
                             e.status, e.category, e.paymentMethod, e.recurring,
                                         e.installmentNumber, e.totalInstallments
              ) from Expense e where e.user = :user
+                and e.subdomain.id = :subdomainId
             """
     )
-    List<OutputExpenseDTO> findByUser(@Param("user") User user);
+    List<OutputExpenseDTO> findByUserAndSubdomainId(@Param("user") User user,
+                                                    @Param("subdomainId") UUID subdomainId);
 
     Expense findByIdAndUser(UUID idExpense, User user);
 }

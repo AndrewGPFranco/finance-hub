@@ -10,9 +10,9 @@
         </div>
 
         <nav class="app-nav" aria-label="Navegação principal">
-            <a th:href="@{/dashboard}">Dashboard</a>
-            <a class="active" th:href="@{/expense/by-user}">Despesas</a>
-            <a th:href="@{/expense/register}">Nova despesa</a>
+            <a th:href="@{/dashboard(subdomainId=${selectedSubdomainId})}">Dashboard</a>
+            <a class="active" th:href="@{/expense/by-user(subdomainId=${selectedSubdomainId})}">Despesas</a>
+            <a th:href="@{/expense/register(subdomainId=${selectedSubdomainId})}">Nova despesa</a>
             <a th:href="@{/subdomain/by-user}">Subdomínios</a>
         </nav>
 
@@ -29,7 +29,8 @@
                 <p class="page-subtitle">Acompanhe os gastos cadastrados para sua conta.</p>
             </div>
 
-            <a class="btn btn-primary btn-primary-inline" th:href="@{/expense/register}">Nova despesa</a>
+            <a class="btn btn-primary btn-primary-inline"
+               th:href="@{/expense/register(subdomainId=${selectedSubdomainId})}">Nova despesa</a>
         </section>
 
         <section class="content-panel list-panel">
@@ -42,6 +43,17 @@
                         cadastrada(s)</p>
                 </div>
                 <form th:action="@{/expense/by-user}" method="get" class="sort-form">
+                    <label class="field-label" for="subdomainId">Subdomínio</label>
+                    <select id="subdomainId" name="subdomainId" class="field-input sort-select"
+                            th:disabled="${#lists.isEmpty(subdomains)}">
+                        <option value="" th:if="${#lists.isEmpty(subdomains)}">Nenhum subdomínio</option>
+                        <option th:each="subdomain : ${subdomains}"
+                                th:value="${subdomain.id()}"
+                                th:text="${subdomain.name()}"
+                                th:selected="${selectedSubdomainId != null and subdomain.id().equals(selectedSubdomainId)}">
+                            Principal
+                        </option>
+                    </select>
                     <label class="field-label" for="filter">Ordenar por</label>
                     <select id="filter" name="filter" class="field-input sort-select">
                         <option th:each="entry : ${filters}" th:value="${entry.key}" th:text="${entry.value}"
@@ -65,7 +77,8 @@
             <div class="empty-state" th:if="${#lists.isEmpty(expenses)}">
                 <h3>Nenhuma despesa cadastrada</h3>
                 <p>Cadastre sua primeira despesa para começar a acompanhar os gastos.</p>
-                <a class="btn btn-primary btn-primary-inline" th:href="@{/expense/register}">Cadastrar despesa</a>
+                <a class="btn btn-primary btn-primary-inline"
+                   th:href="@{/expense/register(subdomainId=${selectedSubdomainId})}">Cadastrar despesa</a>
             </div>
 
             <div class="table-wrapper" th:if="${!#lists.isEmpty(expenses)}">
