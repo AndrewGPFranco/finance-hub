@@ -4,6 +4,7 @@ import com.agpf.finance.hub.dtos.expense.EditExpenseDTO;
 import com.agpf.finance.hub.dtos.expense.ExpenseRegisterDTO;
 import com.agpf.finance.hub.enums.expense.FilterListExpenseType;
 import com.agpf.finance.hub.services.expense.ExpenseService;
+import com.agpf.finance.hub.utils.UserUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -42,7 +43,7 @@ public class ExpenseController {
             return EXPENSE_REGISTER;
 
         try {
-            expenseService.register(dto, expenseService.getUser(authentication));
+            expenseService.register(dto, UserUtils.getUser(authentication));
             redirectAttributes.addFlashAttribute("result", "Despesa cadastrada com sucesso.");
             return "redirect:/expense/register";
         } catch (Exception _) {
@@ -57,7 +58,7 @@ public class ExpenseController {
     String getExpensesByUser(Model model, Authentication authentication,
                              @RequestParam(defaultValue = "ASC") Sort.Direction direction,
                              @RequestParam(defaultValue = "TITLE") FilterListExpenseType filter) {
-        var user = expenseService.getUser(authentication);
+        var user = UserUtils.getUser(authentication);
 
         try {
             var expenses = expenseService.byUser(user, filter, direction);
@@ -76,7 +77,7 @@ public class ExpenseController {
 
     @GetMapping(value = "/{idExpense}/edit")
     String editForm(Model model, Authentication authentication, @PathVariable UUID idExpense) {
-        var user = expenseService.getUser(authentication);
+        var user = UserUtils.getUser(authentication);
         var expense = expenseService.getExpenseByIdAndUser(idExpense, user);
 
         model.addAttribute("expense", expense);
@@ -88,7 +89,7 @@ public class ExpenseController {
 
     @PutMapping(value = "/{idExpense}")
     String editExpense(Authentication authentication, EditExpenseDTO dto, @PathVariable UUID idExpense) {
-        var user = expenseService.getUser(authentication);
+        var user = UserUtils.getUser(authentication);
 
         expenseService.editExpense(dto, idExpense, user);
 
@@ -97,7 +98,7 @@ public class ExpenseController {
 
     @DeleteMapping(value = "/{idExpense}")
     String deleteExpense(Authentication authentication, @PathVariable UUID idExpense) {
-        var user = expenseService.getUser(authentication);
+        var user = UserUtils.getUser(authentication);
 
         expenseService.deleteExpense(idExpense, user);
 

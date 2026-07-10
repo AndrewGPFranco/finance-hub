@@ -25,5 +25,15 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
     )
     List<OutputExpenseDTO> findByUser(@Param("user") User user, Sort sort);
 
+    @Query("""
+            select new com.agpf.finance.hub.dtos.expense.OutputExpenseDTO(
+                e.id, e.title, e.amount, e.dueDate, e.paymentDate,
+                            e.status, e.category, e.paymentMethod, e.recurring,
+                                        e.installmentNumber, e.totalInstallments
+             ) from Expense e where e.user = :user
+            """
+    )
+    List<OutputExpenseDTO> findByUser(@Param("user") User user);
+
     Expense findByIdAndUser(UUID idExpense, User user);
 }

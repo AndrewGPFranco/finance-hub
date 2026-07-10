@@ -2,9 +2,9 @@ package com.agpf.finance.hub.utils;
 
 import java.util.function.Consumer;
 
-public class UtilsCrud {
+public class CrudUtils {
 
-    private UtilsCrud() {
+    private CrudUtils() {
     }
 
     public static <T> void updateField(T fieldValue, Consumer<T> setter) {
