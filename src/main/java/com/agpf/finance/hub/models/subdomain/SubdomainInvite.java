@@ -67,8 +67,8 @@ public class SubdomainInvite {
     @NotNull(message = "A data de expiração é obrigatória.")
     private Instant expiresAt;
 
-    @Column(name = "accepted_at")
-    private Instant acceptedAt;
+    @Column(name = "answered_at")
+    private Instant answeredAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "permission", nullable = false)

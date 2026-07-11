@@ -23,7 +23,7 @@ public record RegisterSubdomainInviteDTO(
                 .invitedBy(user).subdomain(subdomain).emailGuest(dto.emailGuest())
                 .status(StatusInviteSubdomain.PENDING).token(UUID.randomUUID())
                 .expiresAt(Instant.now().plus(7, ChronoUnit.DAYS))
-                .acceptedAt(null).permission(dto.permission()).build();
+                .answeredAt(null).permission(dto.permission()).build();
     }
 
 }

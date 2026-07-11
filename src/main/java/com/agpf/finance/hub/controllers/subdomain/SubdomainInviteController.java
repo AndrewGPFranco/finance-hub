@@ -1,6 +1,8 @@
 package com.agpf.finance.hub.controllers.subdomain;
 
 import com.agpf.finance.hub.dtos.subdomain.invite.RegisterSubdomainInviteDTO;
+import com.agpf.finance.hub.dtos.subdomain.invite.ResponseInvitationDTO;
+import com.agpf.finance.hub.enums.subdomain.ResponseInvitationType;
 import com.agpf.finance.hub.exceptions.NotFoundException;
 import com.agpf.finance.hub.services.subdomain.SubdomainInviteService;
 import com.agpf.finance.hub.utils.UserUtils;
@@ -43,6 +45,15 @@ public class SubdomainInviteController {
         } catch (Exception _) {
             redirectAttributes.addFlashAttribute("negativeFeedback", "Ocorreu um erro ao enviar o convite!");
         }
+
+        return "redirect:/subdomain/by-user";
+    }
+
+    @PostMapping(value = "/response-invitation")
+    String responseInvitation(@ModelAttribute("response") ResponseInvitationDTO response, Authentication authentication) {
+        var user = UserUtils.getUser(authentication);
+
+        inviteService.responseInvitation(response, user);
 
         return "redirect:/subdomain/by-user";
     }

@@ -22,4 +22,11 @@ public interface SubdomainInviteRepository extends JpaRepository<SubdomainInvite
     )
     List<OutputInvitationDTO> checkInvitations(@Param("email") String email);
 
+    @Query(
+            value = """
+                    select * from subdomain_invite si where si.token = :token and si.email_guest = :email 
+                    """, nativeQuery = true
+    )
+    SubdomainInvite findByTokenAndEmail(@Param("token") UUID token, @Param("email") String email);
+
 }

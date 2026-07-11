@@ -5,6 +5,7 @@ public enum StatusInviteSubdomain {
     PENDING,
     ACCEPTED,
     EXPIRED,
-    REVOKED
+    REVOKED,
+    DECLINED
 
 }

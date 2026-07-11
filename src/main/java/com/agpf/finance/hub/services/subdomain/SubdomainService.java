@@ -1,7 +1,7 @@
 package com.agpf.finance.hub.services.subdomain;
 
 import com.agpf.finance.hub.dtos.subdomain.EditSubdomainDTO;
-import com.agpf.finance.hub.dtos.subdomain.OutputSubdomain;
+import com.agpf.finance.hub.dtos.subdomain.OutputSubdomainDTO;
 import com.agpf.finance.hub.dtos.subdomain.RegisterSubdomainDTO;
 import com.agpf.finance.hub.exceptions.BusinessException;
 import com.agpf.finance.hub.exceptions.NotFoundException;
@@ -33,7 +33,7 @@ public class SubdomainService {
         subdomainRepository.save(entity);
     }
 
-    public List<OutputSubdomain> subdomainsByUser(User user) {
+    public List<OutputSubdomainDTO> subdomainsByUser(User user) {
         return subdomainRepository.subdomainsByUser(user.getId());
     }
 
@@ -46,12 +46,12 @@ public class SubdomainService {
         if (subdomains.isEmpty())
             return null;
 
-        return subdomains.stream().findFirst().map(OutputSubdomain::id)
+        return subdomains.stream().findFirst().map(OutputSubdomainDTO::id)
                 .orElseThrow(() -> new NotFoundException("Subdomain não encontrado!"));
     }
 
-    public OutputSubdomain getSubdomainByIdAndUser(UUID idSubdomain, User user) {
-        return OutputSubdomain.fromEntity(resolve(user, idSubdomain));
+    public OutputSubdomainDTO getSubdomainByIdAndUser(UUID idSubdomain, User user) {
+        return OutputSubdomainDTO.fromEntity(resolve(user, idSubdomain), true);
     }
 
     @Transactional

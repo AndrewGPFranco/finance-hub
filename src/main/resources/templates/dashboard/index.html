@@ -51,7 +51,7 @@
                         <div>
                             <span class="table-title" th:text="${invitation.username()}">Usuário</span>
                             <span class="table-meta">convidou você para o subdomínio:
-                                <span style="font-weight: bold;" th:text="${invitation.titleSubdomain()}"></span>
+                                <strong th:text="${invitation.titleSubdomain()}"></strong>
                             </span>
                         </div>
                         <div>
@@ -60,6 +60,20 @@
                                   th:text="${#temporals.format(invitation.expiresAt().atZone(T(java.time.ZoneId).systemDefault()).toLocalDateTime(), 'dd/MM/yyyy HH:mm')}">
                                 18/07/2026 06:15
                             </span>
+                        </div>
+                        <div class="invitation-actions">
+                            <form th:action="@{/subdomain/invite/response-invitation}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <input type="hidden" name="token" th:value="${invitation.token()}">
+                                <input type="hidden" name="response" value="DECLINE">
+                                <button class="btn btn-secondary btn-sm" type="submit">Recusar</button>
+                            </form>
+                            <form th:action="@{/subdomain/invite/response-invitation}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <input type="hidden" name="token" th:value="${invitation.token()}">
+                                <input type="hidden" name="response" value="ACCEPT">
+                                <button class="btn btn-primary btn-primary-inline btn-sm" type="submit">Aceitar</button>
+                            </form>
                         </div>
                     </article>
                 </div>

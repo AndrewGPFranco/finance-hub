@@ -50,7 +50,6 @@
                     <tr th:each="subdomain : ${subdomains}">
                         <td data-label="Subdomínio">
                             <span class="table-title" th:text="${subdomain.name()}">Financeiro</span>
-                            <span class="table-meta" th:text="${subdomain.id()}">id</span>
                         </td>
                         <td data-label="Imagem">
                             <a th:if="${subdomain.urlPhoto() != null and !subdomain.urlPhoto().isBlank()}"
@@ -63,11 +62,19 @@
                             <div class="table-actions">
                                 <button class="btn btn-primary btn-primary-inline btn-sm btn-invite-subdomain"
                                         type="button"
+                                        th:if="${subdomain.isOwner()}"
                                         th:data-subdomain-id="${subdomain.id()}"
                                         th:data-subdomain-name="${subdomain.name()}">
                                     Convidar
                                 </button>
+                                <span class="status-badge" th:if="${!subdomain.isOwner() and subdomain.permission().name() == 'EDITOR'}">
+                                    Editor
+                                </span>
+                                <span class="status-badge" th:if="${!subdomain.isOwner() and subdomain.permission().name() == 'VIEWER'}">
+                                    Visualização
+                                </span>
                                 <a class="btn btn-secondary btn-sm"
+                                   th:if="${subdomain.isOwner() or subdomain.permission().name() == 'EDITOR'}"
                                    th:href="@{/subdomain/{id}/edit(id=${subdomain.id()})}">
                                     Editar
                                 </a>

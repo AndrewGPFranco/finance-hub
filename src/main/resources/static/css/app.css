@@ -565,6 +565,16 @@ body:not(.sidebar-open) .sidebar-logout .btn {
     text-overflow: ellipsis;
 }
 
+.invitation-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.invitation-actions form {
+    margin: 0;
+}
+
 .expense-form-panel {
     max-width: 860px;
     margin-left: auto;
@@ -1052,6 +1062,16 @@ body:not(.sidebar-open) .sidebar-logout .btn {
 
     .invitation-item .status-badge {
         justify-self: start;
+    }
+
+    .invitation-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-content: stretch;
+    }
+
+    .invitation-actions .btn {
+        width: 100%;
     }
 
     .list-panel {

@@ -33,8 +33,7 @@ public class SubdomainController {
 
     @PostMapping(value = "/register")
     String register(@Valid @ModelAttribute("subdomain") RegisterSubdomainDTO dto,
-                    BindingResult bindingResult, Model model, Authentication authentication,
-                    RedirectAttributes redirectAttributes) {
+                    BindingResult bindingResult, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors())
             return SUBDOMAIN_REGISTER;
 

@@ -1,0 +1,1 @@
+alter table subdomain_invite rename column accepted_at to answered_at;
