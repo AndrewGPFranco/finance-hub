@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${HOST_DB}:${FINANCE_DB_PORT}/${FINANCE_DB}
+    username: ${FINANCE_USER_DB}
+    password: ${FINANCE_PASSWORD_DB}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
