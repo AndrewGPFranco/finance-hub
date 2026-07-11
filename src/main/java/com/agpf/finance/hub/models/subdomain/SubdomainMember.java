@@ -4,6 +4,7 @@ import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
 import com.agpf.finance.hub.models.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,6 +12,11 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(
         name = "subdomain_member",
         uniqueConstraints = {
