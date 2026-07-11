@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class SubdomainInviteController {
 
     private final SubdomainInviteService inviteService;
+
+    @GetMapping(value = "/check-invitations")
+    String checkInvitations(RedirectAttributes redirectAttributes, Authentication authentication) {
+        var invitations = inviteService.checkInvitations(UserUtils.getUser(authentication));
+
+        redirectAttributes.addFlashAttribute("invitations", invitations);
+
+        return "redirect:/dashboard";
+    }
 
     @PostMapping
     String invite(RedirectAttributes redirectAttributes,

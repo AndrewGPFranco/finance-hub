@@ -5,13 +5,66 @@
 <div class="app-shell">
     <header th:replace="~{fragments/header :: appHeader('dashboard')}"></header>
 
-    <main class="app-main">
+    <main class="app-main" data-dashboard-invitations
+          th:data-invitation-check-url="@{/subdomain/invite/check-invitations}">
         <section class="dashboard-header">
             <div>
                 <h1 class="page-title">Dashboard</h1>
                 <p class="page-subtitle">Resumo financeiro do mês.</p>
             </div>
+
+            <a class="btn btn-secondary btn-primary-inline invitation-check-button"
+               th:href="@{/subdomain/invite/check-invitations}">
+                <span class="invitation-button-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
+                        <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8a6 6 0 0 0-12 0c0 4.499-1.411 5.956-2.738 7.326"></path>
+                    </svg>
+                </span>
+                <span>Convites</span>
+                <span class="invitation-count" data-invitation-count
+                      th:hidden="${invitations == null or #lists.isEmpty(invitations)}"
+                      th:text="${invitations != null ? #lists.size(invitations) : 0}">0</span>
+            </a>
         </section>
+
+        <div data-invitation-panel-slot>
+            <section class="content-panel invitation-panel" th:if="${invitations != null}">
+                <div class="list-toolbar invitation-toolbar">
+                    <div>
+                        <h2 class="panel-title">Convites recebidos</h2>
+                        <p class="panel-text" th:text="${#lists.size(invitations)} + ' convite(s) pendente(s)'">
+                            0 convite(s) pendente(s)
+                        </p>
+                    </div>
+                </div>
+
+                <div class="empty-state" th:if="${#lists.isEmpty(invitations)}">
+                    <h3>Nenhum convite pendente</h3>
+                    <p>Quando alguém convidar você para um subdomínio, o convite aparecerá aqui.</p>
+                </div>
+
+                <div class="invitation-list" th:if="${!#lists.isEmpty(invitations)}">
+                    <article class="invitation-item" th:each="invitation : ${invitations}">
+                        <div>
+                            <span class="table-title" th:text="${invitation.username()}">Usuário</span>
+                            <span class="table-meta">convidou você para o subdomínio:
+                                <span style="font-weight: bold;" th:text="${invitation.titleSubdomain()}"></span>
+                            </span>
+                        </div>
+                        <div>
+                            <span class="table-meta">Expira em</span>
+                            <span class="table-title"
+                                  th:text="${#temporals.format(invitation.expiresAt().atZone(T(java.time.ZoneId).systemDefault()).toLocalDateTime(), 'dd/MM/yyyy HH:mm')}">
+                                18/07/2026 06:15
+                            </span>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
 
         <section class="dashboard-grid" aria-label="Resumo financeiro">
             <article class="metric-card">

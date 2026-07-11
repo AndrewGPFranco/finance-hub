@@ -17,8 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.setItem(sidebarStorageKey, open ? "true" : "false");
         };
 
-        setSidebarOpen(window.matchMedia("(min-width: 761px)").matches &&
-            localStorage.getItem(sidebarStorageKey) === "true", false);
+        setSidebarOpen(window.matchMedia("(min-width: 761px)").matches, false);
 
         sidebarToggleButtons.forEach(function (button) {
             button.addEventListener("click", function () {
@@ -100,6 +99,52 @@ document.addEventListener("DOMContentLoaded", function () {
             previewEmpty.hidden = false;
         });
         updatePreview();
+    }
+
+    let dashboardInvitations = document.querySelector("[data-dashboard-invitations]");
+
+    if (dashboardInvitations) {
+        let invitationCheckUrl = dashboardInvitations.dataset.invitationCheckUrl;
+        let invitationPanelSlot = dashboardInvitations.querySelector("[data-invitation-panel-slot]");
+        let invitationCount = dashboardInvitations.querySelector("[data-invitation-count]");
+
+        let setInvitationCount = function (count) {
+            if (!invitationCount)
+                return;
+
+            invitationCount.textContent = String(count);
+            invitationCount.hidden = count <= 0;
+        };
+
+        let updateInvitationsFromHtml = function (html) {
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(html, "text/html");
+            let nextPanelSlot = doc.querySelector("[data-invitation-panel-slot]");
+            let nextInvitationCount = doc.querySelector("[data-invitation-count]");
+
+            if (invitationPanelSlot && nextPanelSlot)
+                invitationPanelSlot.innerHTML = nextPanelSlot.innerHTML;
+
+            if (nextInvitationCount) {
+                let count = Number.parseInt(nextInvitationCount.textContent.trim(), 10);
+                setInvitationCount(Number.isNaN(count) ? 0 : count);
+            }
+        };
+
+        if (invitationCheckUrl) {
+            fetch(invitationCheckUrl, {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+                .then(function (response) {
+                    return response.text();
+                })
+                .then(updateInvitationsFromHtml)
+                .catch(function () {
+                    setInvitationCount(0);
+                });
+        }
     }
 
     let inviteModal = document.querySelector("[data-invite-modal]");

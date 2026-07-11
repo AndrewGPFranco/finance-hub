@@ -41,7 +41,12 @@ public class SubdomainService {
         if (idSubdomain != null && subdomainRepository.findByIdAndUser(idSubdomain, user).isPresent())
             return idSubdomain;
 
-        return subdomainsByUser(user).stream().findFirst().map(OutputSubdomain::id)
+        var subdomains = subdomainsByUser(user);
+
+        if (subdomains.isEmpty())
+            return null;
+
+        return subdomains.stream().findFirst().map(OutputSubdomain::id)
                 .orElseThrow(() -> new NotFoundException("Subdomain não encontrado!"));
     }
 

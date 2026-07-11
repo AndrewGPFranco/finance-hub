@@ -1,5 +1,6 @@
 package com.agpf.finance.hub.services.subdomain;
 
+import com.agpf.finance.hub.dtos.subdomain.invite.OutputInvitationDTO;
 import com.agpf.finance.hub.dtos.subdomain.invite.RegisterSubdomainInviteDTO;
 import com.agpf.finance.hub.exceptions.NotFoundException;
 import com.agpf.finance.hub.models.user.User;
@@ -9,6 +10,8 @@ import com.agpf.finance.hub.repositories.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,4 +34,7 @@ public class SubdomainInviteService {
         subdomainInviteRepository.save(entity);
     }
 
+    public List<OutputInvitationDTO> checkInvitations(User user) {
+        return subdomainInviteRepository.checkInvitations(user.getEmail());
+    }
 }
