@@ -3,6 +3,7 @@ package com.agpf.finance.hub.services.subdomain;
 import com.agpf.finance.hub.dtos.subdomain.EditSubdomainDTO;
 import com.agpf.finance.hub.dtos.subdomain.OutputSubdomainDTO;
 import com.agpf.finance.hub.dtos.subdomain.RegisterSubdomainDTO;
+import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
 import com.agpf.finance.hub.exceptions.BusinessException;
 import com.agpf.finance.hub.exceptions.NotFoundException;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
@@ -34,7 +35,15 @@ public class SubdomainService {
     }
 
     public List<OutputSubdomainDTO> subdomainsByUser(User user) {
-        return subdomainRepository.subdomainsByUser(user.getId());
+        return subdomainRepository.subdomainsByUser(user.getId(), PermissionSubdomainType.EDITOR);
+    }
+
+    public boolean canManage(User user, UUID idSubdomain) {
+        if (idSubdomain == null)
+            return false;
+
+        return subdomainRepository.findPermissionByIdAndUser(idSubdomain, user, PermissionSubdomainType.EDITOR)
+                .filter(PermissionSubdomainType.EDITOR::equals).isPresent();
     }
 
     public UUID resolveSelectedSubdomainId(User user, UUID idSubdomain) {

@@ -29,7 +29,15 @@ public class ExpenseController {
     private static final String REDIRECT_EXPENSE_BY_USER = "redirect:/expense/by-user";
 
     @GetMapping(value = "/register")
-    String registerForm(Model model, @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {
+    String registerForm(Model model, Authentication authentication,
+                        @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId, RedirectAttributes redirectAttributes) {
+        var user = UserUtils.getUser(authentication);
+
+        if (!expenseService.canManageExpenses(user, selectedSubdomainId)) {
+            redirectAttributes.addFlashAttribute("listError", "Você não tem permissão para cadastrar despesas neste subdomínio.");
+            return REDIRECT_EXPENSE_BY_USER;
+        }
+
         model.addAttribute("expense", new ExpenseRegisterDTO(selectedSubdomainId));
         expenseService.addRegisterOptions(model);
 
@@ -72,12 +80,14 @@ public class ExpenseController {
 
             model.addAttribute("expenses", expenses);
             model.addAttribute("filters", expenseService.getPossibleFilters());
+            model.addAttribute("canManageExpenses", expenseService.canManageExpenses(user, selectedSubdomainId));
         } catch (Exception _) {
             model.addAttribute("expenses", List.of());
             model.addAttribute("listError", """
                     Ocorreu um erro ao carregar as despesas. Tente novamente mais tarde.
                     """);
             model.addAttribute("filters", expenseService.getPossibleFilters());
+            model.addAttribute("canManageExpenses", false);
         }
 
         return "expense/list";

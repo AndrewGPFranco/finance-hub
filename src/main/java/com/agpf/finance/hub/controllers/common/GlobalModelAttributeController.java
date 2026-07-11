@@ -44,6 +44,7 @@ public class GlobalModelAttributeController {
 
         model.addAttribute("navbarSubdomains", subdomainService.subdomainsByUser(user));
         model.addAttribute(SELECTED_SUBDOMAIN_ID, resolvedSubdomainId);
+        model.addAttribute("canManageSelectedSubdomain", subdomainService.canManage(user, resolvedSubdomainId));
         model.addAttribute("monthOptions", Arrays.asList(Month.values()));
         model.addAttribute(SELECTED_MONTH, selectedMonth);
     }

@@ -42,6 +42,7 @@
                 <span class="sidebar-text">Despesas</span>
             </a>
             <a th:classappend="${active == 'expense-register'} ? 'active' : ''"
+               th:if="${canManageSelectedSubdomain}"
                th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
                 <span class="nav-icon">+</span>
                 <span class="sidebar-text">Nova despesa</span>
