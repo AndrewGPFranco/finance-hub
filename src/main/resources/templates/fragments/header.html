@@ -1,63 +1,103 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <header class="app-header" th:fragment="appHeader(active)">
-    <div class="app-brand">
-        <a th:href="@{/dashboard}" style="text-decoration: none">
+    <div class="app-mobilebar">
+        <a class="app-mobile-brand" th:href="@{/dashboard}">
             <span class="brand-symbol">F</span>
             <span>Finance</span>
         </a>
+        <button class="sidebar-toggle" type="button" data-sidebar-toggle aria-label="Abrir menu"
+                aria-controls="appSidebar" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
 
-    <nav class="app-nav" aria-label="Navegação principal">
-        <a th:classappend="${active == 'dashboard'} ? 'active' : ''"
-           th:href="@{/dashboard(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Dashboard</a>
-        <a th:classappend="${active == 'expense'} ? 'active' : ''"
-           th:href="@{/expense/by-user(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Despesas</a>
-        <a th:classappend="${active == 'expense-register'} ? 'active' : ''"
-           th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Nova despesa</a>
-        <a th:classappend="${active == 'subdomain'} ? 'active' : ''"
-           th:href="@{/subdomain/by-user}">Subdomínios</a>
-    </nav>
+    <button class="sidebar-overlay" type="button" data-sidebar-close aria-label="Fechar menu"></button>
 
-    <div class="app-actions">
-        <div class="navbar-subdomain" th:if="${monthOptions != null}">
-            <label class="field-label" for="globalMonth">Mês</label>
-            <select class="field-input" id="globalMonth" data-global-month-select>
-                <option th:each="monthOption : ${monthOptions}" th:value="${monthOption}"
-                        th:text="${monthOption.name() == 'JANUARY' ? 'Janeiro' :
-                            monthOption.name() == 'FEBRUARY' ? 'Fevereiro' :
-                            monthOption.name() == 'MARCH' ? 'Março' :
-                            monthOption.name() == 'APRIL' ? 'Abril' :
-                            monthOption.name() == 'MAY' ? 'Maio' :
-                            monthOption.name() == 'JUNE' ? 'Junho' :
-                            monthOption.name() == 'JULY' ? 'Julho' :
-                            monthOption.name() == 'AUGUST' ? 'Agosto' :
-                            monthOption.name() == 'SEPTEMBER' ? 'Setembro' :
-                            monthOption.name() == 'OCTOBER' ? 'Outubro' :
-                            monthOption.name() == 'NOVEMBER' ? 'Novembro' : 'Dezembro'}"
-                        th:selected="${selectedMonth == monthOption}">
-                    Janeiro
-                </option>
-            </select>
+    <aside class="app-sidebar" id="appSidebar" data-sidebar>
+        <div class="sidebar-header">
+            <a class="app-brand" th:href="@{/dashboard}">
+                <span class="brand-symbol">F</span>
+                <span class="sidebar-text">Finance</span>
+            </a>
+            <button class="sidebar-toggle sidebar-toggle-inside" type="button" data-sidebar-toggle
+                    aria-label="Alternar menu" aria-controls="appSidebar" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
 
-        <div class="navbar-subdomain" th:if="${navbarSubdomains != null}">
-            <label class="field-label" for="globalSubdomainId">Subdomínio</label>
-            <select class="field-input" id="globalSubdomainId" data-global-subdomain-select
-                    th:disabled="${#lists.isEmpty(navbarSubdomains)}">
-                <option value="" th:if="${#lists.isEmpty(navbarSubdomains)}">Nenhum subdomínio</option>
-                <option th:each="subdomain : ${navbarSubdomains}" th:value="${subdomain.id()}"
-                        th:text="${subdomain.name()}"
-                        th:selected="${selectedSubdomainId != null and subdomain.id().equals(selectedSubdomainId)}">
-                    Principal
-                </option>
-            </select>
+        <nav class="app-nav" aria-label="Navegação principal">
+            <a th:classappend="${active == 'dashboard'} ? 'active' : ''"
+               th:href="@{/dashboard(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
+                <span class="nav-icon">D</span>
+                <span class="sidebar-text">Dashboard</span>
+            </a>
+            <a th:classappend="${active == 'expense'} ? 'active' : ''"
+               th:href="@{/expense/by-user(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
+                <span class="nav-icon">R$</span>
+                <span class="sidebar-text">Despesas</span>
+            </a>
+            <a th:classappend="${active == 'expense-register'} ? 'active' : ''"
+               th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
+                <span class="nav-icon">+</span>
+                <span class="sidebar-text">Nova despesa</span>
+            </a>
+            <a th:classappend="${active == 'subdomain'} ? 'active' : ''"
+               th:href="@{/subdomain/by-user}">
+                <span class="nav-icon">S</span>
+                <span class="sidebar-text">Subdomínios</span>
+            </a>
+        </nav>
+
+        <div class="app-actions">
+            <div class="sidebar-section-title sidebar-text">Contexto</div>
+
+            <div class="navbar-subdomain" th:if="${monthOptions != null}">
+                <label class="field-label sidebar-text" for="globalMonth">Mês</label>
+                <select class="field-input" id="globalMonth" data-global-month-select>
+                    <option th:each="monthOption : ${monthOptions}" th:value="${monthOption}"
+                            th:text="${monthOption.name() == 'JANUARY' ? 'Janeiro' :
+                                monthOption.name() == 'FEBRUARY' ? 'Fevereiro' :
+                                monthOption.name() == 'MARCH' ? 'Março' :
+                                monthOption.name() == 'APRIL' ? 'Abril' :
+                                monthOption.name() == 'MAY' ? 'Maio' :
+                                monthOption.name() == 'JUNE' ? 'Junho' :
+                                monthOption.name() == 'JULY' ? 'Julho' :
+                                monthOption.name() == 'AUGUST' ? 'Agosto' :
+                                monthOption.name() == 'SEPTEMBER' ? 'Setembro' :
+                                monthOption.name() == 'OCTOBER' ? 'Outubro' :
+                                monthOption.name() == 'NOVEMBER' ? 'Novembro' : 'Dezembro'}"
+                            th:selected="${selectedMonth == monthOption}">
+                        Janeiro
+                    </option>
+                </select>
+            </div>
+
+            <div class="navbar-subdomain" th:if="${navbarSubdomains != null}">
+                <label class="field-label sidebar-text" for="globalSubdomainId">Subdomínio</label>
+                <select class="field-input" id="globalSubdomainId" data-global-subdomain-select
+                        th:disabled="${#lists.isEmpty(navbarSubdomains)}">
+                    <option value="" th:if="${#lists.isEmpty(navbarSubdomains)}">Nenhum subdomínio</option>
+                    <option th:each="subdomain : ${navbarSubdomains}" th:value="${subdomain.id()}"
+                            th:text="${subdomain.name()}"
+                            th:selected="${selectedSubdomainId != null and subdomain.id().equals(selectedSubdomainId)}">
+                        Principal
+                    </option>
+                </select>
+            </div>
         </div>
 
-        <form th:action="@{/auth/logout}" method="post">
+        <form class="sidebar-logout" th:action="@{/auth/logout}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <button class="btn btn-secondary" type="submit">Sair</button>
+            <button class="btn btn-secondary" type="submit">
+                <span class="nav-icon">↪</span>
+                <span class="sidebar-text">Sair</span>
+            </button>
         </form>
-    </div>
+    </aside>
 </header>
 </html>

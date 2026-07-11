@@ -34,7 +34,7 @@
             </div>
 
             <div class="table-wrapper" th:if="${!#lists.isEmpty(subdomains)}">
-                <table class="data-table">
+                <table class="data-table subdomain-table">
                     <thead>
                     <tr>
                         <th>Subdomínio</th>
@@ -44,22 +44,21 @@
                     </thead>
                     <tbody>
                     <tr th:each="subdomain : ${subdomains}">
-                        <td>
+                        <td data-label="Subdomínio">
                             <span class="table-title" th:text="${subdomain.name()}">Financeiro</span>
                             <span class="table-meta" th:text="${subdomain.id()}">id</span>
                         </td>
-                        <td>
+                        <td data-label="Imagem">
                             <a th:if="${subdomain.urlPhoto() != null and !subdomain.urlPhoto().isBlank()}"
                                th:href="${subdomain.urlPhoto()}" target="_blank" rel="noopener">
                                 <img class="subdomain-photo" th:src="${subdomain.urlPhoto()}" alt="">
                             </a>
                             <span th:if="${subdomain.urlPhoto() == null or subdomain.urlPhoto().isBlank()}">-</span>
                         </td>
-                        <td>
-                            <div style="display: flex; gap: 8px;">
+                        <td data-label="Ações">
+                            <div class="table-actions">
                                 <a class="btn btn-secondary btn-sm"
-                                   th:href="@{/subdomain/{id}/edit(id=${subdomain.id()})}"
-                                   style="min-height: 32px; padding: 0 10px; font-size: 13px; gap: 6px;">
+                                   th:href="@{/subdomain/{id}/edit(id=${subdomain.id()})}">
                                     Editar
                                 </a>
                             </div>
