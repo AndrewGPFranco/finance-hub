@@ -4,13 +4,10 @@ import com.agpf.finance.hub.dtos.expense.ExpenseRegisterDTO;
 import com.agpf.finance.hub.models.expense.Expense;
 import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static com.agpf.finance.hub.utils.DateUtils.getLocalDateAmericaSP;

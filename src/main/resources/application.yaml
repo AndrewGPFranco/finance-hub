@@ -5,10 +5,6 @@ spring:
         enabled: true
   application:
     name: finance
-  datasource:
-    url: jdbc:postgresql://localhost:${FINANCE_DB_PORT}/${FINANCE_DB}
-    username: ${FINANCE_USER_DB}
-    password: ${FINANCE_PASSWORD_DB}
 
 server:
   port: 8084
