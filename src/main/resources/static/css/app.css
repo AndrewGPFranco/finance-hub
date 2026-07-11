@@ -242,7 +242,7 @@ body.sidebar-open .app-shell {
     inset: 0 auto 0 0;
     display: flex;
     width: 76px;
-    min-height: 100vh;
+    height: 100vh;
     flex-direction: column;
     gap: 18px;
     overflow-x: hidden;
@@ -410,6 +410,10 @@ body:not(.sidebar-open) .sidebar-section-title {
 .sidebar-logout {
     margin-top: auto;
     padding-top: 10px;
+    position: sticky;
+    bottom: 0;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.94);
 }
 
 .sidebar-logout .btn {
@@ -743,10 +747,48 @@ body:not(.sidebar-open) .sidebar-logout .btn {
     color: var(--text-muted);
 }
 
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+}
+
+.modal-overlay[hidden] {
+    display: none;
+}
+
+.modal-container {
+    width: min(100%, 420px);
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.modal-title {
+    margin: 0;
+    color: var(--text);
+    font-size: 18px;
+}
+
+.modal-text {
+    margin: 12px 0 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
 .modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
+    margin-top: 24px;
 }
 
 .modal-actions .btn {

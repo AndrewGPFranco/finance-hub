@@ -17,7 +17,11 @@
 
         <section class="content-panel list-panel">
             <div class="message message-error list-message" th:if="${listError}" th:text="${listError}"></div>
+            <div class="message message-error list-message" th:if="${negativeFeedback}"
+                 th:text="${negativeFeedback}"></div>
             <div class="message message-success list-message" th:if="${result}" th:text="${result}"></div>
+            <div class="message message-success list-message" th:if="${positiveFeedback}"
+                 th:text="${positiveFeedback}"></div>
 
             <div class="list-toolbar">
                 <div>
@@ -57,6 +61,12 @@
                         </td>
                         <td data-label="Ações">
                             <div class="table-actions">
+                                <button class="btn btn-primary btn-primary-inline btn-sm btn-invite-subdomain"
+                                        type="button"
+                                        th:data-subdomain-id="${subdomain.id()}"
+                                        th:data-subdomain-name="${subdomain.name()}">
+                                    Convidar
+                                </button>
                                 <a class="btn btn-secondary btn-sm"
                                    th:href="@{/subdomain/{id}/edit(id=${subdomain.id()})}">
                                     Editar
@@ -69,6 +79,39 @@
             </div>
         </section>
     </main>
+</div>
+
+<div class="modal-overlay invite-modal" data-invite-modal hidden>
+    <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="inviteModalTitle">
+        <h3 class="modal-title" id="inviteModalTitle">Enviar convite</h3>
+        <p class="modal-text">
+            Convide uma pessoa para acessar <strong data-invite-subdomain-name></strong>.
+        </p>
+
+        <form th:action="@{/subdomain/invite}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <input type="hidden" name="idSubdomain" data-invite-subdomain-id>
+
+            <div class="field-group">
+                <label class="field-label" for="emailGuest">E-mail</label>
+                <input class="field-input" id="emailGuest" name="emailGuest" type="email" maxlength="255" required
+                       autocomplete="email">
+            </div>
+
+            <div class="field-group">
+                <label class="field-label" for="permission">Permissão</label>
+                <select class="field-input" id="permission" name="permission" required>
+                    <option value="VIEWER">Visualização</option>
+                    <option value="EDITOR">Edição</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" type="button" data-invite-close>Cancelar</button>
+                <button class="btn btn-primary" type="submit">Enviar convite</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 </body>

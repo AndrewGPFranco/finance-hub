@@ -101,4 +101,42 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         updatePreview();
     }
+
+    let inviteModal = document.querySelector("[data-invite-modal]");
+
+    if (inviteModal) {
+        let inviteForm = inviteModal.querySelector("form");
+        let inviteSubdomainId = inviteModal.querySelector("[data-invite-subdomain-id]");
+        let inviteSubdomainName = inviteModal.querySelector("[data-invite-subdomain-name]");
+        let inviteEmail = inviteModal.querySelector("#emailGuest");
+
+        let closeInviteModal = function () {
+            inviteModal.hidden = true;
+            if (inviteForm)
+                inviteForm.reset();
+        };
+
+        document.querySelectorAll("[data-subdomain-id]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                inviteSubdomainId.value = button.dataset.subdomainId;
+                inviteSubdomainName.textContent = button.dataset.subdomainName || "este subdomínio";
+                inviteModal.hidden = false;
+                inviteEmail.focus();
+            });
+        });
+
+        inviteModal.querySelectorAll("[data-invite-close]").forEach(function (button) {
+            button.addEventListener("click", closeInviteModal);
+        });
+
+        inviteModal.addEventListener("click", function (event) {
+            if (event.target === inviteModal)
+                closeInviteModal();
+        });
+
+        window.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && !inviteModal.hidden)
+                closeInviteModal();
+        });
+    }
 });
