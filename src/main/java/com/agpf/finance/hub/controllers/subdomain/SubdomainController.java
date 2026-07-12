@@ -2,6 +2,7 @@ package com.agpf.finance.hub.controllers.subdomain;
 
 import com.agpf.finance.hub.dtos.subdomain.EditSubdomainDTO;
 import com.agpf.finance.hub.dtos.subdomain.RegisterSubdomainDTO;
+import com.agpf.finance.hub.exceptions.BusinessException;
 import com.agpf.finance.hub.services.subdomain.SubdomainService;
 import com.agpf.finance.hub.utils.UserUtils;
 import jakarta.validation.Valid;
@@ -81,6 +82,22 @@ public class SubdomainController {
         subdomainService.edit(dto, idSubdomain, user);
 
         redirectAttributes.addFlashAttribute("result", "Subdomínio editado com sucesso.");
+        return "redirect:/subdomain/by-user";
+    }
+
+    @DeleteMapping(value = "/{idSubdomain}")
+    String deleteSubdomain(Authentication authentication, @PathVariable UUID idSubdomain, RedirectAttributes redirectAttributes) {
+        var user = UserUtils.getUser(authentication);
+
+        try {
+            subdomainService.delete(idSubdomain, user);
+            redirectAttributes.addFlashAttribute("result", "Subdomínio deletado com sucesso.");
+        } catch (BusinessException businessException) {
+            redirectAttributes.addFlashAttribute("negativeFeedback", businessException.getMessage());
+        } catch (Exception _) {
+            redirectAttributes.addFlashAttribute("negativeFeedback", "Ocorreu um erro ao realizar a deleção do subdomínio");
+        }
+
         return "redirect:/subdomain/by-user";
     }
 

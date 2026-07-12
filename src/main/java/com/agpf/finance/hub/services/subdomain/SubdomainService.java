@@ -124,4 +124,27 @@ public class SubdomainService {
         return subdomainRepository.findByIdAndUser(idSubdomain, user)
                 .orElseThrow(() -> new NotFoundException("Subdomínio não encontrado!"));
     }
+
+    @Transactional
+    public void delete(UUID idSubdomain, User user) {
+        var subdomain = resolve(user, idSubdomain);
+
+        deleteLocalPhoto(subdomain.getUrlPhoto());
+        subdomainRepository.delete(subdomain);
+    }
+
+    private void deleteLocalPhoto(String urlPhoto) {
+        if (urlPhoto == null || urlPhoto.isBlank() || urlPhoto.startsWith("http://") || urlPhoto.startsWith("https://"))
+            return;
+
+        var fileName = urlPhoto.substring(urlPhoto.lastIndexOf("/") + 1);
+        var photoPath = Path.of(pathPhoto.getPath()).normalize().resolve(fileName).normalize();
+
+        try {
+            Files.delete(photoPath);
+        } catch (IOException io) {
+            log.error(io.getMessage(), io);
+            throw new BusinessException("Ocorreu um erro ao deletar a imagem do subdomínio, tente novamente!");
+        }
+    }
 }
