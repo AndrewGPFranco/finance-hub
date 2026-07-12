@@ -74,31 +74,115 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     let previewInput = document.querySelector("[data-image-preview-input]");
+    let previewFileInput = document.querySelector("[data-image-file-input]");
     let previewImage = document.querySelector("[data-image-preview]");
     let previewEmpty = document.querySelector("[data-image-preview-empty]");
+    let filePicker = document.querySelector(".file-picker");
+    let filePickerLabel = document.querySelector("[data-file-picker-label]");
+    let selectedImageObjectUrl = null;
 
     if (previewInput && previewImage && previewEmpty) {
-        let updatePreview = function () {
-            let value = previewInput.value.trim();
-
-            if (!value) {
-                previewImage.removeAttribute("src");
-                previewImage.hidden = true;
-                previewEmpty.hidden = false;
-                return;
+        let revokeSelectedImageObjectUrl = function () {
+            if (selectedImageObjectUrl) {
+                URL.revokeObjectURL(selectedImageObjectUrl);
+                selectedImageObjectUrl = null;
             }
+        };
 
-            previewImage.src = value;
+        let showPreview = function (src) {
+            previewImage.src = src;
             previewImage.hidden = false;
             previewEmpty.hidden = true;
         };
 
-        previewInput.addEventListener("input", updatePreview);
-        previewImage.addEventListener("error", function () {
+        let showEmptyPreview = function () {
+            previewImage.removeAttribute("src");
             previewImage.hidden = true;
             previewEmpty.hidden = false;
+        };
+
+        let normalizeImageSource = function (value) {
+            if (!value)
+                return "";
+
+            if (value.startsWith("http://") || value.startsWith("https://") || value.startsWith("/photos/") || value.startsWith("blob:"))
+                return value;
+
+            return "/photos/".concat(value.substring(value.lastIndexOf("/") + 1));
+        };
+
+        let updatePreviewFromUrl = function () {
+            revokeSelectedImageObjectUrl();
+            let value = previewInput.value.trim();
+
+            if (!value) {
+                showEmptyPreview();
+                return;
+            }
+
+            showPreview(normalizeImageSource(value));
+        };
+
+        let updatePreviewFromFile = function () {
+            if (!previewFileInput)
+                return;
+
+            revokeSelectedImageObjectUrl();
+
+            let file = previewFileInput.files && previewFileInput.files[0];
+
+            if (!file) {
+                if (filePickerLabel)
+                    filePickerLabel.textContent = "Selecionar imagem";
+                updatePreviewFromUrl();
+                return;
+            }
+
+            selectedImageObjectUrl = URL.createObjectURL(file);
+
+            if (filePickerLabel)
+                filePickerLabel.textContent = file.name;
+
+            showPreview(selectedImageObjectUrl);
+        };
+
+        previewInput.addEventListener("input", function () {
+            if (previewFileInput && previewInput.value.trim()) {
+                previewFileInput.value = "";
+                previewFileInput.disabled = true;
+                if (filePicker)
+                    filePicker.classList.add("disabled");
+                if (filePickerLabel)
+                    filePickerLabel.textContent = "Arquivo desativado";
+            } else if (filePicker) {
+                if (previewFileInput)
+                    previewFileInput.disabled = false;
+                filePicker.classList.remove("disabled");
+                if (filePickerLabel)
+                    filePickerLabel.textContent = "Selecionar imagem";
+            }
+
+            updatePreviewFromUrl();
         });
-        updatePreview();
+
+        if (previewFileInput) {
+            previewFileInput.addEventListener("change", function () {
+                let hasFile = previewFileInput.files && previewFileInput.files.length > 0;
+
+                previewInput.disabled = hasFile;
+                if (hasFile)
+                    previewInput.value = "";
+                else if (previewFileInput)
+                    previewFileInput.disabled = false;
+
+                updatePreviewFromFile();
+            });
+        }
+
+        previewImage.addEventListener("error", function () {
+            showEmptyPreview();
+        });
+        updatePreviewFromUrl();
     }
 
     let dashboardInvitations = document.querySelector("[data-dashboard-invitations]");

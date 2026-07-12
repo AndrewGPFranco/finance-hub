@@ -51,12 +51,15 @@
                         <td data-label="Subdomínio">
                             <span class="table-title" th:text="${subdomain.name()}">Financeiro</span>
                         </td>
-                        <td data-label="Imagem">
-                            <a th:if="${subdomain.urlPhoto() != null and !subdomain.urlPhoto().isBlank()}"
-                               th:href="${subdomain.urlPhoto()}" target="_blank" rel="noopener">
-                                <img class="subdomain-photo" th:src="${subdomain.urlPhoto()}" alt="">
+                        <td data-label="Imagem"
+                            th:with="photoUrl=${subdomain.urlPhoto()},
+                                     photoSrc=${photoUrl == null or photoUrl.isBlank() ? null :
+                                        ((#strings.startsWith(photoUrl, 'http://') or #strings.startsWith(photoUrl, 'https://') or #strings.startsWith(photoUrl, '/photos/'))
+                                            ? photoUrl : '/photos/' + #strings.substringAfterLast(photoUrl, '/'))}">
+                            <a th:if="${photoSrc != null}" th:href="${photoSrc}" target="_blank" rel="noopener">
+                                <img class="subdomain-photo" th:src="${photoSrc}" alt="">
                             </a>
-                            <span th:if="${subdomain.urlPhoto() == null or subdomain.urlPhoto().isBlank()}">-</span>
+                            <span th:if="${photoSrc == null}">-</span>
                         </td>
                         <td data-label="Ações">
                             <div class="table-actions">
@@ -67,10 +70,12 @@
                                         th:data-subdomain-name="${subdomain.name()}">
                                     Convidar
                                 </button>
-                                <span class="status-badge" th:if="${!subdomain.isOwner() and subdomain.permission().name() == 'EDITOR'}">
+                                <span class="status-badge"
+                                      th:if="${!subdomain.isOwner() and subdomain.permission().name() == 'EDITOR'}">
                                     Editor
                                 </span>
-                                <span class="status-badge" th:if="${!subdomain.isOwner() and subdomain.permission().name() == 'VIEWER'}">
+                                <span class="status-badge"
+                                      th:if="${!subdomain.isOwner() and subdomain.permission().name() == 'VIEWER'}">
                                     Visualização
                                 </span>
                                 <a class="btn btn-secondary btn-sm"

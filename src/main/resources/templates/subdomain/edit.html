@@ -29,15 +29,19 @@
                                required>
                     </div>
 
-                    <div class="field-group">
+                    <div class="field-group"
+                         th:with="photoUrl=${subdomain.urlPhoto()},
+                                  photoSrc=${photoUrl == null or photoUrl.isBlank() ? null :
+                                     ((#strings.startsWith(photoUrl, 'http://') or #strings.startsWith(photoUrl, 'https://') or #strings.startsWith(photoUrl, '/photos/'))
+                        ? photoUrl : '/photos/' + #strings.substringAfterLast(photoUrl, '/'))}">
                         <label class="field-label" for="urlPhoto">URL da imagem</label>
-                        <input class="field-input" id="urlPhoto" name="urlPhoto" th:value="${subdomain.urlPhoto()}"
+                        <input class="field-input" id="urlPhoto" name="urlPhoto"
+                               th:value="${photoUrl != null and (#strings.startsWith(photoUrl, 'http://') or #strings.startsWith(photoUrl, 'https://')) ? photoUrl : ''}"
                                type="url" maxlength="500" data-image-preview-input>
                         <div class="image-preview">
-                            <img data-image-preview th:src="${subdomain.urlPhoto()}" alt=""
-                                 th:hidden="${subdomain.urlPhoto() == null or subdomain.urlPhoto().isBlank()}">
+                            <img data-image-preview th:src="${photoSrc}" alt="" th:hidden="${photoSrc == null}">
                             <span class="image-preview-empty" data-image-preview-empty
-                                  th:hidden="${subdomain.urlPhoto() != null and !subdomain.urlPhoto().isBlank()}">Informe uma URL para visualizar a imagem.</span>
+                                  th:hidden="${photoSrc != null}">Informe uma URL para visualizar a imagem.</span>
                         </div>
                     </div>
                 </div>

@@ -27,7 +27,7 @@ public class SubdomainController {
 
     @GetMapping(value = "/register")
     String registerForm(Model model) {
-        model.addAttribute("subdomain", new RegisterSubdomainDTO(null, null));
+        model.addAttribute("subdomain", new RegisterSubdomainDTO(null, null, null));
         return SUBDOMAIN_REGISTER;
     }
 

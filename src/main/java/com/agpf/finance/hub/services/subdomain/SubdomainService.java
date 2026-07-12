@@ -11,17 +11,25 @@ import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.subdomains.SubdomainRepository;
 import com.agpf.finance.hub.utils.CrudUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SubdomainService {
 
     private final SubdomainRepository subdomainRepository;
+    private final ClassPathResource pathPhoto = new ClassPathResource("src/main/resources/photos");
 
     @Transactional
     public void register(RegisterSubdomainDTO dto, User user) {
@@ -30,8 +38,44 @@ public class SubdomainService {
         if (subdomainOptional.isPresent())
             throw new BusinessException("Já há um subdomínio com o nome informado!");
 
-        var entity = RegisterSubdomainDTO.toEntity(dto, user);
+        var urlPhoto = handlePhotoSubdomain(dto, user.getUsername());
+
+        var entity = RegisterSubdomainDTO.toEntity(dto, user, urlPhoto);
         subdomainRepository.save(entity);
+    }
+
+    private String handlePhotoSubdomain(RegisterSubdomainDTO dto, String username) {
+        if (dto.photo() == null || dto.photo().isEmpty())
+            return dto.urlPhoto();
+
+        var directory = Path.of(pathPhoto.getPath()).normalize();
+        var fileName = sanitizeFileName(username)
+                .concat("-").concat(sanitizeFileName(dto.name()))
+                .concat(resolveFileExtension(dto.photo().getOriginalFilename()));
+
+        var destination = directory.resolve(fileName).normalize();
+
+        try (var inputStream = dto.photo().getInputStream()) {
+            Files.createDirectories(directory);
+            Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException io) {
+            log.error(io.getMessage(), io);
+            throw new RuntimeException("Não foi possível processar a imagem.");
+        }
+
+        return "/photos/".concat(fileName);
+    }
+
+    private String sanitizeFileName(String value) {
+        return value == null ? "subdomain" : value.trim().replaceAll("[^a-zA-Z0-9._-]", "-");
+    }
+
+    private String resolveFileExtension(String originalFilename) {
+        if (originalFilename == null || !originalFilename.contains("."))
+            return ".png";
+
+        var extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+        return extension.matches("\\.(png|jpg|jpeg|webp|gif)") ? extension : ".png";
     }
 
     public List<OutputSubdomainDTO> subdomainsByUser(User user) {

@@ -16,7 +16,8 @@
         <section class="content-panel expense-form-panel">
             <div class="message message-error" th:if="${registerError}" th:text="${registerError}"></div>
 
-            <form th:action="@{/subdomain/register}" th:object="${subdomain}" method="post">
+            <form th:action="@{/subdomain/register}" th:object="${subdomain}" method="post"
+                  enctype="multipart/form-data">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
                 <div class="form-section">
@@ -28,14 +29,28 @@
                         <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                     </div>
 
-                    <div class="field-group">
-                        <label class="field-label" for="urlPhoto">URL da imagem</label>
+                    <div class="field-group image-source-group" data-image-source-group>
+                        <label class="field-label" for="urlPhoto">Imagem do subdomínio</label>
                         <input class="field-input" id="urlPhoto" th:field="*{urlPhoto}" type="url" maxlength="500"
-                               data-image-preview-input>
-                        <span class="field-error" th:if="${#fields.hasErrors('urlPhoto')}" th:errors="*{urlPhoto}"></span>
+                               placeholder="URL da imagem" data-image-preview-input data-image-url-input>
+                        <span class="field-error" th:if="${#fields.hasErrors('urlPhoto')}"
+                              th:errors="*{urlPhoto}"></span>
+
+                        <div class="image-source-divider">ou</div>
+
+                        <label class="file-picker" for="photo">
+                            <span class="file-picker-icon" aria-hidden="true">+</span>
+                            <span>
+                                <strong data-file-picker-label>Selecionar imagem</strong>
+                                <small>PNG, JPG ou WEBP</small>
+                            </span>
+                        </label>
+                        <input class="file-input" id="photo" name="photo" type="file" accept="image/*"
+                               data-image-file-input>
+
                         <div class="image-preview">
                             <img data-image-preview alt="" hidden>
-                            <span class="image-preview-empty" data-image-preview-empty>Informe uma URL para visualizar a imagem.</span>
+                            <span class="image-preview-empty" data-image-preview-empty>Informe uma URL ou selecione um arquivo para visualizar a imagem.</span>
                         </div>
                     </div>
                 </div>
