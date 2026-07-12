@@ -52,7 +52,7 @@ public class Subdomain {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subdomain")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subdomain", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SubdomainMember> subdomainMembers;
 
 }

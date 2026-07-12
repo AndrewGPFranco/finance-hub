@@ -130,6 +130,7 @@ public class SubdomainService {
         var subdomain = resolve(user, idSubdomain);
 
         deleteLocalPhoto(subdomain.getUrlPhoto());
+
         subdomainRepository.delete(subdomain);
     }
 
