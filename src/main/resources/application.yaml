@@ -5,6 +5,10 @@ spring:
         enabled: true
   application:
     name: finance
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
 
 server:
   port: 8084
