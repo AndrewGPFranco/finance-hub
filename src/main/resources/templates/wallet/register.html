@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Cadastrar carteira')}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/header :: appHeader('wallet')}"></header>
+
+    <main class="app-main">
+        <section class="dashboard-header">
+            <div>
+                <h1 class="page-title">Cadastrar carteira</h1>
+                <p class="page-subtitle">Defina o saldo inicial de um subdomínio financeiro.</p>
+            </div>
+        </section>
+
+        <section class="content-panel expense-form-panel">
+            <div class="message message-error" th:if="${param.negativeFeedback}"
+                 th:text="${param.negativeFeedback[0]}"></div>
+            <div class="message message-success" th:if="${param.positiveFeedback}"
+                 th:text="${param.positiveFeedback[0]}"></div>
+
+            <form th:action="@{/wallets/register}" th:object="${wallet}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <div class="form-section">
+                    <h2 class="panel-title">Dados da carteira</h2>
+
+                    <div class="field-group">
+                        <label class="field-label" for="name">Nome</label>
+                        <input class="field-input" id="name" th:field="*{name}" maxlength="25" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label class="field-label" for="idSubdomain">Subdomínio</label>
+                            <select class="field-input" id="idSubdomain" name="idSubdomain" required
+                                    th:disabled="${navbarSubdomains == null or #lists.isEmpty(navbarSubdomains)}">
+                                <option value=""
+                                        th:if="${navbarSubdomains == null or #lists.isEmpty(navbarSubdomains)}">
+                                    Nenhum subdomínio disponível
+                                </option>
+                                <option value=""
+                                        th:unless="${navbarSubdomains == null or #lists.isEmpty(navbarSubdomains)}">
+                                    Selecione
+                                </option>
+                                <option th:each="subdomain : ${navbarSubdomains}"
+                                        th:value="${subdomain.id()}"
+                                        th:text="${subdomain.name()}"
+                                        th:selected="${selectedSubdomainId != null and subdomain.id().equals(selectedSubdomainId)}">
+                                    Principal
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label" for="balance">Saldo inicial</label>
+                            <input class="field-input" id="balance" th:field="*{balance}" type="number"
+                                   min="0" step="0.01" inputmode="decimal" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a class="btn btn-secondary"
+                       th:href="@{/wallets(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Cancelar</a>
+                    <button class="btn btn-primary btn-primary-inline" type="submit"
+                            th:disabled="${navbarSubdomains == null or #lists.isEmpty(navbarSubdomains)}">
+                        Salvar carteira
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

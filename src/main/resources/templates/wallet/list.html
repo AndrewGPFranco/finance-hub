@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Carteira')}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/header :: appHeader('wallet')}"></header>
+
+    <main class="app-main">
+        <section class="dashboard-header">
+            <div>
+                <h1 class="page-title">Carteira</h1>
+                <p class="page-subtitle">Acompanhe os saldos cadastrados por subdomínio.</p>
+            </div>
+
+            <a class="btn btn-primary btn-primary-inline"
+               th:if="${canManageSelectedSubdomain}"
+               th:href="@{/wallets/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
+                Nova carteira
+            </a>
+        </section>
+
+        <section class="content-panel list-panel">
+            <div class="message message-error list-message" th:if="${param.negativeFeedback}"
+                 th:text="${param.negativeFeedback[0]}"></div>
+            <div class="message message-success list-message" th:if="${param.positiveFeedback}"
+                 th:text="${param.positiveFeedback[0]}"></div>
+
+            <div class="list-toolbar">
+                <div>
+                    <h2 class="panel-title">Carteiras cadastradas</h2>
+                    <p class="panel-text" th:text="${#lists.size(wallets)} + ' carteira(s) cadastrada(s)'">0
+                        carteira(s) cadastrada(s)</p>
+                </div>
+            </div>
+
+            <div class="empty-state" th:if="${#lists.isEmpty(wallets)}">
+                <h3>Nenhuma carteira cadastrada</h3>
+                <p>Cadastre uma carteira para começar a acompanhar o saldo de um subdomínio.</p>
+                <a class="btn btn-primary btn-primary-inline"
+                   th:if="${canManageSelectedSubdomain}"
+                   th:href="@{/wallets/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
+                    Cadastrar carteira
+                </a>
+            </div>
+
+            <div class="table-wrapper" th:if="${!#lists.isEmpty(wallets)}">
+                <table class="data-table subdomain-table">
+                    <thead>
+                    <tr>
+                        <th>Carteira</th>
+                        <th>Subdomínio</th>
+                        <th>Saldo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="wallet : ${wallets}">
+                        <td data-label="Carteira">
+                            <span class="table-title" th:text="${wallet.name()}">Carteira principal</span>
+                        </td>
+                        <td data-label="Subdomínio">
+                            <span class="table-title" th:text="${wallet.subdomainName()}">Principal</span>
+                        </td>
+                        <td data-label="Saldo" class="amount-column"
+                            th:text="'R$ ' + ${#numbers.formatDecimal(wallet.balance(), 1, 'POINT', 2, 'COMMA')}">
+                            R$ 0,00
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
