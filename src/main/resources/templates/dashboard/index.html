@@ -66,13 +66,28 @@
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                 <input type="hidden" name="token" th:value="${invitation.token()}">
                                 <input type="hidden" name="response" value="DECLINE">
-                                <button class="btn btn-secondary btn-sm" type="submit">Recusar</button>
+                                <button class="btn btn-icon btn-icon-danger" type="submit"
+                                        aria-label="Recusar convite" title="Recusar convite">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M18 6 6 18"></path>
+                                        <path d="m6 6 12 12"></path>
+                                    </svg>
+                                </button>
                             </form>
                             <form th:action="@{/subdomain/invite/response-invitation}" method="post">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                 <input type="hidden" name="token" th:value="${invitation.token()}">
                                 <input type="hidden" name="response" value="ACCEPT">
-                                <button class="btn btn-primary btn-primary-inline btn-sm" type="submit">Aceitar</button>
+                                <button class="btn btn-icon btn-icon-primary" type="submit"
+                                        aria-label="Aceitar convite" title="Aceitar convite">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M20 6 9 17l-5-5"></path>
+                                    </svg>
+                                </button>
                             </form>
                         </div>
                     </article>

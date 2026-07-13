@@ -4,7 +4,27 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title th:text="${titulo} + ' | Finance'">Finance</title>
-    <link rel="icon" type="image/png" href="https://i.ibb.co/rG50n4RH/Chat-GPT-Image-5-de-jul-de-2026-02-35-25-1.png">
+        <script>
+            (function () {
+                var storageKey = "FINANCE_THEME";
+                var storedTheme = null;
+
+                try {
+                    storedTheme = localStorage.getItem(storageKey);
+                } catch (error) {
+                    storedTheme = null;
+                }
+
+                if (storedTheme === "dark" || storedTheme === "light") {
+                    document.documentElement.dataset.theme = storedTheme;
+                    document.documentElement.classList.toggle("app-dark", storedTheme === "dark");
+                } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                    document.documentElement.dataset.theme = "dark";
+                    document.documentElement.classList.add("app-dark");
+                }
+            })();
+        </script>
+        <link rel="icon" type="image/png" href="https://i.ibb.co/rG50n4RH/Chat-GPT-Image-5-de-jul-de-2026-02-35-25-1.png">
         <link rel="stylesheet" th:href="@{/css/app.css}">
         <script th:src="@{/js/app.js}" defer></script>
     </head>

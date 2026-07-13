@@ -1,4 +1,93 @@
 document.addEventListener("DOMContentLoaded", function () {
+    let themeStorageKey = "FINANCE_THEME";
+    let themeToggleButtons = document.querySelectorAll("[data-theme-toggle]");
+    let preferredThemeMedia = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+
+    let getStoredTheme = function () {
+        try {
+            return localStorage.getItem(themeStorageKey);
+        } catch (error) {
+            return null;
+        }
+    };
+
+    let storeTheme = function (theme) {
+        try {
+            localStorage.setItem(themeStorageKey, theme);
+        } catch (error) {
+            return;
+        }
+    };
+
+    let getCurrentTheme = function () {
+        let theme = document.documentElement.dataset.theme;
+
+        if (theme === "dark" || theme === "light")
+            return theme;
+
+        return preferredThemeMedia && preferredThemeMedia.matches ? "dark" : "light";
+    };
+
+    let updateThemeToggleButtons = function (theme) {
+        document.querySelectorAll("[data-theme-toggle]").forEach(function (button) {
+            let isDark = theme === "dark";
+            let label = isDark ? "Modo claro" : "Modo escuro";
+            let icon = isDark ? "☀" : "☾";
+            let labelElement = button.querySelector("[data-theme-toggle-label]");
+            let iconElement = button.querySelector("[data-theme-toggle-icon]");
+
+            button.setAttribute("aria-label", label);
+            button.setAttribute("title", label);
+
+            if (labelElement)
+                labelElement.textContent = label;
+
+            if (iconElement)
+                iconElement.textContent = icon;
+        });
+    };
+
+    let applyTheme = function (theme, persist) {
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.classList.toggle("app-dark", theme === "dark");
+        updateThemeToggleButtons(theme);
+
+        if (persist)
+            storeTheme(theme);
+    };
+
+    let bindThemeToggleButtons = function () {
+        document.querySelectorAll("[data-theme-toggle]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                applyTheme(getCurrentTheme() === "dark" ? "light" : "dark", true);
+            });
+        });
+    };
+
+    if (themeToggleButtons.length === 0 && document.body.classList.contains("auth-page")) {
+        let authThemeToggle = document.createElement("button");
+        authThemeToggle.className = "theme-toggle auth-theme-toggle";
+        authThemeToggle.type = "button";
+        authThemeToggle.dataset.themeToggle = "";
+        authThemeToggle.innerHTML = "<span class=\"theme-toggle-icon\" aria-hidden=\"true\" data-theme-toggle-icon></span><span class=\"sidebar-text\" data-theme-toggle-label></span>";
+        document.body.appendChild(authThemeToggle);
+    }
+
+    bindThemeToggleButtons();
+    applyTheme(getCurrentTheme(), false);
+
+    if (preferredThemeMedia) {
+        let syncThemeWithPreference = function (event) {
+            if (!getStoredTheme())
+                applyTheme(event.matches ? "dark" : "light", false);
+        };
+
+        if (preferredThemeMedia.addEventListener)
+            preferredThemeMedia.addEventListener("change", syncThemeWithPreference);
+        else if (preferredThemeMedia.addListener)
+            preferredThemeMedia.addListener(syncThemeWithPreference);
+    }
+
     let sidebar = document.querySelector("[data-sidebar]");
     let sidebarToggleButtons = document.querySelectorAll("[data-sidebar-toggle]");
     let sidebarCloseButtons = document.querySelectorAll("[data-sidebar-close]");
