@@ -115,8 +115,17 @@
         </section>
 
         <section class="content-panel">
-            <h2 class="panel-title">Valor total das despesas</h2>
-            <p class="panel-text" th:text="${output.formattedAmountPayableExpenses()}">R$ 0,00</p>
+            <div class="dashboard-summary-grid">
+                <div>
+                    <h2 class="panel-title">Valor total das despesas</h2>
+                    <p class="panel-text" th:text="${output.formattedAmountPayableExpenses()}">R$ 0,00</p>
+                </div>
+                <div>
+                    <h2 class="panel-title">Valor restante</h2>
+                    <p class="panel-text" th:text="${output.formattedRemainingAmount()}">
+                        (Para exibição do valor é necessário uma carteira vínculada ao subdomínio)</p>
+                </div>
+            </div>
         </section>
     </main>
 </div>

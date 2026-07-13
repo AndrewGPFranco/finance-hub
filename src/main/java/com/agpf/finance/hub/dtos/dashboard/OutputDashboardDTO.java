@@ -12,6 +12,7 @@ public record OutputDashboardDTO(
         int totalExpenses,
         int overduePayments,
         int outstandingExpenses,
+        BigDecimal remainingAmount,
         BigDecimal amountPayableExpenses
 ) {
     private static final Locale BRAZIL = Locale.of("pt", "BR");
@@ -20,5 +21,11 @@ public record OutputDashboardDTO(
         return amountPayableExpenses == null
                 ? NumberFormat.getCurrencyInstance(BRAZIL).format(BigDecimal.ZERO)
                 : NumberFormat.getCurrencyInstance(BRAZIL).format(amountPayableExpenses);
+    }
+
+    public String formattedRemainingAmount() {
+        return remainingAmount == null
+                ? NumberFormat.getCurrencyInstance(BRAZIL).format(BigDecimal.ZERO)
+                : NumberFormat.getCurrencyInstance(BRAZIL).format(remainingAmount);
     }
 }
