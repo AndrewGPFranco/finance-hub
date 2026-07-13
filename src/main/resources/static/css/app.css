@@ -115,6 +115,7 @@ svg {
 }
 
 .auth-panel {
+    position: relative;
     width: min(100%, 430px);
     padding: 32px;
     background: var(--surface);
@@ -195,6 +196,38 @@ svg {
 .field-input:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-field .field-input {
+    padding-right: 46px;
+}
+
+.password-toggle {
+    position: absolute;
+    inset: 4px 4px 4px auto;
+    display: inline-grid;
+    width: 36px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-soft);
+    cursor: pointer;
+}
+
+.password-toggle:hover {
+    background: var(--surface-subtle);
+    color: var(--text);
+}
+
+.password-toggle svg {
+    width: 18px;
+    height: 18px;
 }
 
 .btn {
@@ -562,18 +595,18 @@ body:not(.sidebar-open) .theme-toggle {
 }
 
 .auth-theme-toggle {
-    position: fixed;
+    position: absolute;
     top: 16px;
     right: 16px;
     z-index: 20;
-    width: auto;
+    width: 38px;
     min-height: 38px;
-    padding: 0 12px;
+    padding: 0;
     box-shadow: var(--shadow);
 }
 
 .auth-theme-toggle .sidebar-text {
-    opacity: 1;
+    display: none;
 }
 
 .sidebar-overlay {

@@ -65,12 +65,17 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     if (themeToggleButtons.length === 0 && document.body.classList.contains("auth-page")) {
+        let authPanel = document.querySelector(".auth-panel");
         let authThemeToggle = document.createElement("button");
         authThemeToggle.className = "theme-toggle auth-theme-toggle";
         authThemeToggle.type = "button";
         authThemeToggle.dataset.themeToggle = "";
         authThemeToggle.innerHTML = "<span class=\"theme-toggle-icon\" aria-hidden=\"true\" data-theme-toggle-icon></span><span class=\"sidebar-text\" data-theme-toggle-label></span>";
-        document.body.appendChild(authThemeToggle);
+
+        if (authPanel)
+            authPanel.appendChild(authThemeToggle);
+        else
+            document.body.appendChild(authThemeToggle);
     }
 
     bindThemeToggleButtons();
@@ -87,6 +92,21 @@ document.addEventListener("DOMContentLoaded", function () {
         else if (preferredThemeMedia.addListener)
             preferredThemeMedia.addListener(syncThemeWithPreference);
     }
+
+    document.querySelectorAll("[data-password-toggle]").forEach(function (button) {
+        let passwordInput = document.getElementById(button.dataset.passwordToggle);
+
+        if (!passwordInput)
+            return;
+
+        button.addEventListener("click", function () {
+            let shouldShow = passwordInput.type === "password";
+
+            passwordInput.type = shouldShow ? "text" : "password";
+            button.setAttribute("aria-label", shouldShow ? "Ocultar senha" : "Mostrar senha");
+            button.setAttribute("title", shouldShow ? "Ocultar senha" : "Mostrar senha");
+        });
+    });
 
     let sidebar = document.querySelector("[data-sidebar]");
     let sidebarToggleButtons = document.querySelectorAll("[data-sidebar-toggle]");
