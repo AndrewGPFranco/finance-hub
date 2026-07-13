@@ -13,7 +13,7 @@
             </div>
 
             <a class="btn btn-primary btn-primary-inline"
-               th:if="${canManageSelectedSubdomain}"
+               th:if="${canManageSelectedSubdomain and wallet == null}"
                th:href="@{/wallets/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
                 Nova carteira
             </a>
@@ -27,13 +27,15 @@
 
             <div class="list-toolbar">
                 <div>
-                    <h2 class="panel-title">Carteiras cadastradas</h2>
-                    <p class="panel-text" th:text="${#lists.size(wallets)} + ' carteira(s) cadastrada(s)'">0
-                        carteira(s) cadastrada(s)</p>
+                    <h2 class="panel-title">Carteira cadastrada</h2>
+                    <p class="panel-text"
+                       th:text="${wallet == null ? 'Nenhuma carteira cadastrada' : '1 carteira cadastrada'}">
+                        Nenhuma carteira cadastrada
+                    </p>
                 </div>
             </div>
 
-            <div class="empty-state" th:if="${#lists.isEmpty(wallets)}">
+            <div class="empty-state" th:if="${wallet == null}">
                 <h3>Nenhuma carteira cadastrada</h3>
                 <p>Cadastre uma carteira para começar a acompanhar o saldo de um subdomínio.</p>
                 <a class="btn btn-primary btn-primary-inline"
@@ -43,7 +45,7 @@
                 </a>
             </div>
 
-            <div class="table-wrapper" th:if="${!#lists.isEmpty(wallets)}">
+            <div class="table-wrapper" th:if="${wallet != null}">
                 <table class="data-table subdomain-table">
                     <thead>
                     <tr>
@@ -53,7 +55,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="wallet : ${wallets}">
+                    <tr>
                         <td data-label="Carteira">
                             <span class="table-title" th:text="${wallet.name()}">Carteira principal</span>
                         </td>

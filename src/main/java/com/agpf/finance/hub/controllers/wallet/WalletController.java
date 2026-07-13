@@ -1,7 +1,6 @@
 package com.agpf.finance.hub.controllers.wallet;
 
 import com.agpf.finance.hub.dtos.wallet.InputWalletDTO;
-import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.models.wallet.Wallet;
 import com.agpf.finance.hub.services.wallet.WalletService;
 import com.agpf.finance.hub.utils.UserUtils;
@@ -9,11 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,11 +22,11 @@ public class WalletController {
     private static final String LIST = "wallet/list";
     private static final String REGISTER = "wallet/register";
 
-    @GetMapping
-    String byUser(Model model, Authentication authentication) {
+    @GetMapping(value = "/{idSubdomain}")
+    String byUser(Model model, Authentication authentication, @PathVariable UUID idSubdomain) {
         var user = UserUtils.getUser(authentication);
 
-        model.addAttribute("wallets", walletService.byUser(user));
+        model.addAttribute("wallet", walletService.byUserAndSubdomain(user, idSubdomain).orElse(null));
         return LIST;
     }
 
@@ -57,7 +55,7 @@ public class WalletController {
             return "redirect:/wallets/register";
         }
 
-        return "redirect:/wallets";
+        return "redirect:/wallets/" + input.idSubdomain();
     }
 
 }

@@ -159,11 +159,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (subdomainSelect) {
         subdomainSelect.addEventListener("change", function () {
             let url = new URL(window.location.href);
+            let walletPathPattern = /^\/wallets\/[^/]+$/;
 
-            if (subdomainSelect.value)
+            if (subdomainSelect.value) {
+                if (walletPathPattern.test(url.pathname))
+                    url.pathname = "/wallets/".concat(subdomainSelect.value);
+
                 url.searchParams.set("subdomainId", subdomainSelect.value);
-            else
+            } else {
                 url.searchParams.delete("subdomainId");
+            }
 
             window.location.assign(url.toString());
         });

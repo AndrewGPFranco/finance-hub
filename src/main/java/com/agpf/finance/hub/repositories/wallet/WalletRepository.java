@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -24,8 +24,12 @@ public interface WalletRepository extends JpaRepository<Wallet, UUID> {
                 )
                 from Wallet w
                 left join w.subdomain.subdomainMembers sm with sm.user = :user and sm.ativo = true
-                where w.user = :user
-                   or sm.user = :user
+                where w.subdomain.id = :idSubdomain
+                  and (
+                    w.user = :user
+                    or sm.user = :user
+                  )
             """)
-    List<OutputWalletDTO> findAccessibleByUser(@Param("user") User user);
+    Optional<OutputWalletDTO> findAccessibleByUserAndSubdomain(@Param("user") User user,
+                                                               @Param("idSubdomain") UUID idSubdomain);
 }

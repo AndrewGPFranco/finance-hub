@@ -21,6 +21,7 @@
 
             <form th:action="@{/wallets/register}" th:object="${wallet}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="hidden" name="idSubdomain" th:value="${selectedSubdomainId}">
 
                 <div class="form-section">
                     <h2 class="panel-title">Dados da carteira</h2>
@@ -32,24 +33,17 @@
 
                     <div class="form-row">
                         <div class="field-group">
-                            <label class="field-label" for="idSubdomain">Subdomínio</label>
-                            <select class="field-input" id="idSubdomain" name="idSubdomain" required
-                                    th:disabled="${navbarSubdomains == null or #lists.isEmpty(navbarSubdomains)}">
-                                <option value=""
-                                        th:if="${navbarSubdomains == null or #lists.isEmpty(navbarSubdomains)}">
-                                    Nenhum subdomínio disponível
-                                </option>
-                                <option value=""
-                                        th:unless="${navbarSubdomains == null or #lists.isEmpty(navbarSubdomains)}">
-                                    Selecione
-                                </option>
-                                <option th:each="subdomain : ${navbarSubdomains}"
-                                        th:value="${subdomain.id()}"
-                                        th:text="${subdomain.name()}"
-                                        th:selected="${selectedSubdomainId != null and subdomain.id().equals(selectedSubdomainId)}">
-                                    Principal
-                                </option>
-                            </select>
+                            <span class="field-label">Subdomínio</span>
+                            <div class="field-input readonly-field"
+                                 th:if="${navbarSubdomains != null and selectedSubdomainId != null}">
+                                <span th:each="subdomain : ${navbarSubdomains}"
+                                      th:if="${subdomain.id().equals(selectedSubdomainId)}"
+                                      th:text="${subdomain.name()}">Principal</span>
+                            </div>
+                            <div class="field-input readonly-field"
+                                 th:unless="${navbarSubdomains != null and selectedSubdomainId != null}">
+                                Nenhum subdomínio selecionado
+                            </div>
                         </div>
 
                         <div class="field-group">
@@ -62,9 +56,9 @@
 
                 <div class="form-actions">
                     <a class="btn btn-secondary"
-                       th:href="@{/wallets(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Cancelar</a>
+                       th:href="@{/wallets/{idSubdomain}(idSubdomain=${selectedSubdomainId}, month=${selectedMonth})}">Cancelar</a>
                     <button class="btn btn-primary btn-primary-inline" type="submit"
-                            th:disabled="${navbarSubdomains == null or #lists.isEmpty(navbarSubdomains)}">
+                            th:disabled="${selectedSubdomainId == null}">
                         Salvar carteira
                     </button>
                 </div>

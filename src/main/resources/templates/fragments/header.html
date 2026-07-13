@@ -57,7 +57,7 @@
                 <span class="sidebar-text">Despesas</span>
             </a>
             <a th:classappend="${active == 'wallet'} ? 'active' : ''"
-               th:href="@{/wallets(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}"
+               th:href="@{/wallets/{idSubdomain}(idSubdomain=${selectedSubdomainId}, month=${selectedMonth})}"
                aria-label="Carteira" title="Carteira">
                 <span class="nav-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

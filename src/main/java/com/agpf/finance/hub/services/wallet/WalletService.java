@@ -12,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -23,8 +24,8 @@ public class WalletService {
     private final SubdomainRepository subdomainRepository;
     private final SubdomainService subdomainService;
 
-    public List<OutputWalletDTO> byUser(User user) {
-        return walletRepository.findAccessibleByUser(user);
+    public Optional<OutputWalletDTO> byUserAndSubdomain(User user, UUID idSubdomain) {
+        return walletRepository.findAccessibleByUserAndSubdomain(user, idSubdomain);
     }
 
     public void register(User user, InputWalletDTO input) {
