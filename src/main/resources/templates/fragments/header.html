@@ -31,30 +31,63 @@
 
         <nav class="app-nav" aria-label="Navegação principal">
             <a th:classappend="${active == 'dashboard'} ? 'active' : ''"
-               th:href="@{/dashboard(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
-                <span class="nav-icon">D</span>
+               th:href="@{/dashboard(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}"
+               aria-label="Dashboard" title="Dashboard">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+                        <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+                        <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+                        <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+                    </svg>
+                </span>
                 <span class="sidebar-text">Dashboard</span>
             </a>
             <a th:classappend="${active == 'expense'} ? 'active' : ''"
-               th:href="@{/expense/by-user(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
-                <span class="nav-icon">R$</span>
+               th:href="@{/expense/by-user(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}"
+               aria-label="Despesas" title="Despesas">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v20"></path>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </span>
                 <span class="sidebar-text">Despesas</span>
             </a>
             <a th:classappend="${active == 'expense-register'} ? 'active' : ''"
                th:if="${canManageSelectedSubdomain}"
-               th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
-                <span class="nav-icon">+</span>
+               th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}"
+               aria-label="Nova despesa" title="Nova despesa">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5v14"></path>
+                        <path d="M5 12h14"></path>
+                    </svg>
+                </span>
                 <span class="sidebar-text">Nova despesa</span>
             </a>
             <a th:classappend="${active == 'subdomain'} ? 'active' : ''"
-               th:href="@{/subdomain/by-user}">
-                <span class="nav-icon">S</span>
+               th:href="@{/subdomain/by-user}"
+               aria-label="Subdomínios" title="Subdomínios">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+                        <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+                        <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+                        <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+                    </svg>
+                </span>
                 <span class="sidebar-text">Subdomínios</span>
             </a>
         </nav>
 
         <div class="app-actions">
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="Alternar modo escuro">
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="Alternar modo escuro"
+                    title="Alternar tema">
                 <span class="theme-toggle-icon" aria-hidden="true" data-theme-toggle-icon>☾</span>
                 <span class="sidebar-text" data-theme-toggle-label>Modo escuro</span>
             </button>
@@ -98,8 +131,15 @@
 
         <form class="sidebar-logout" th:action="@{/auth/logout}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <button class="btn btn-secondary" type="submit">
-                <span class="nav-icon">↪</span>
+            <button class="btn btn-secondary" type="submit" aria-label="Sair" title="Sair">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <path d="m16 17 5-5-5-5"></path>
+                        <path d="M21 12H9"></path>
+                    </svg>
+                </span>
                 <span class="sidebar-text">Sair</span>
             </button>
         </form>
