@@ -58,4 +58,19 @@ public class WalletController {
         return "redirect:/wallets/" + input.idSubdomain();
     }
 
+    @DeleteMapping(value = "/{idWallet}")
+    String delete(Authentication authentication, @PathVariable UUID idWallet,
+                  @RequestParam UUID idSubdomain, RedirectAttributes redirectAttributes) {
+        var user = UserUtils.getUser(authentication);
+
+        try {
+            var deletedWalletSubdomainId = walletService.delete(idWallet, user);
+            redirectAttributes.addAttribute("positiveFeedback", "Carteira excluída!");
+            return "redirect:/wallets/" + deletedWalletSubdomainId;
+        } catch (Exception _) {
+            redirectAttributes.addAttribute("negativeFeedback", "Ocorreu um problema ao excluir a carteira!");
+            return "redirect:/wallets/" + idSubdomain;
+        }
+    }
+
 }

@@ -52,6 +52,7 @@
                         <th>Carteira</th>
                         <th>Subdomínio</th>
                         <th>Saldo</th>
+                        <th th:if="${canManageSelectedSubdomain}">Ações</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -66,6 +67,23 @@
                             th:text="'R$ ' + ${#numbers.formatDecimal(wallet.balance(), 1, 'POINT', 2, 'COMMA')}">
                             R$ 0,00
                         </td>
+                        <td data-label="Ações" th:if="${canManageSelectedSubdomain}">
+                            <div class="table-actions">
+                                <button class="btn btn-icon btn-icon-danger btn-delete-wallet" type="button"
+                                        th:data-id="${wallet.id()}"
+                                        th:data-name="${wallet.name()}"
+                                        aria-label="Excluir carteira"
+                                        title="Excluir carteira">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M3 6h18"></path>
+                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -73,5 +91,63 @@
         </section>
     </main>
 </div>
+
+<div class="modal-overlay" data-delete-wallet-modal hidden>
+    <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="deleteWalletModalTitle">
+        <h3 class="modal-title" id="deleteWalletModalTitle">Excluir carteira</h3>
+        <p class="modal-text">
+            Tem certeza que deseja excluir <strong data-delete-wallet-name></strong>? Esta ação não pode ser desfeita.
+        </p>
+
+        <form method="post" data-delete-wallet-form>
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="idSubdomain" th:value="${selectedSubdomainId}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" type="button" data-delete-wallet-close>Cancelar</button>
+                <button class="btn btn-danger" type="submit">Excluir</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var deleteModal = document.querySelector('[data-delete-wallet-modal]');
+        var deleteForm = document.querySelector('[data-delete-wallet-form]');
+        var deleteName = document.querySelector('[data-delete-wallet-name]');
+
+        if (!deleteModal || !deleteForm || !deleteName)
+            return;
+
+        var closeDeleteModal = function () {
+            deleteModal.hidden = true;
+            deleteForm.removeAttribute('action');
+        };
+
+        document.querySelectorAll('.btn-delete-wallet').forEach(function (button) {
+            button.addEventListener('click', function () {
+                deleteName.textContent = button.dataset.name || 'esta carteira';
+                deleteForm.action = '/wallets/' + button.dataset.id;
+                deleteModal.hidden = false;
+            });
+        });
+
+        deleteModal.querySelectorAll('[data-delete-wallet-close]').forEach(function (button) {
+            button.addEventListener('click', closeDeleteModal);
+        });
+
+        deleteModal.addEventListener('click', function (event) {
+            if (event.target === deleteModal)
+                closeDeleteModal();
+        });
+
+        window.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape')
+                closeDeleteModal();
+        });
+    });
+</script>
 </body>
 </html>

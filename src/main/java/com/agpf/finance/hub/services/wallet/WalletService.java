@@ -35,8 +35,21 @@ public class WalletService {
         var subdomain = subdomainRepository.findByIdAndUser(input.idSubdomain(), user)
                 .orElseThrow(() -> new NotFoundException("Subdomínio não encontrado!"));
 
-        var entity = InputWalletDTO.toEntity(input, user, subdomain);
+        var entity = InputWalletDTO.toEntity(input, subdomain.getUser(), subdomain);
 
         walletRepository.save(entity);
+    }
+
+    public UUID delete(UUID idWallet, User user) {
+        var wallet = walletRepository.findAccessibleEntityByIdAndUser(idWallet, user)
+                .orElseThrow(() -> new NotFoundException("Carteira não encontrada!"));
+
+        if (!subdomainService.canManage(user, wallet.getSubdomain().getId()))
+            throw new BusinessException("Você não tem permissão para excluir carteira neste subdomínio.");
+
+        var idSubdomain = wallet.getSubdomain().getId();
+        walletRepository.delete(wallet);
+
+        return idSubdomain;
     }
 }

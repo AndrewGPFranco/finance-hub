@@ -32,4 +32,17 @@ public interface WalletRepository extends JpaRepository<Wallet, UUID> {
             """)
     Optional<OutputWalletDTO> findAccessibleByUserAndSubdomain(@Param("user") User user,
                                                                @Param("idSubdomain") UUID idSubdomain);
+
+    @Query("""
+                select distinct w
+                from Wallet w
+                left join w.subdomain.subdomainMembers sm with sm.user = :user and sm.ativo = true
+                where w.id = :idWallet
+                  and (
+                    w.user = :user
+                    or sm.user = :user
+                  )
+            """)
+    Optional<Wallet> findAccessibleEntityByIdAndUser(@Param("idWallet") UUID idWallet,
+                                                     @Param("user") User user);
 }
