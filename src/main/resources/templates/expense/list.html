@@ -19,6 +19,7 @@
         </section>
 
         <section class="content-panel list-panel">
+            <div class="message message-success list-message" th:if="${result}" th:text="${result}"></div>
             <div class="message message-error list-message" th:if="${listError}" th:text="${listError}"></div>
 
             <div class="list-toolbar">
@@ -131,6 +132,20 @@
                         <td data-label="Valor" class="amount-column" th:text="${expense.formattedAmount()}">R$ 0,00</td>
                         <td data-label="Ações" th:if="${canManageExpenses}">
                             <div class="table-actions">
+                                <form th:if="${expense.status() == null or expense.status().name() != 'PAID'}"
+                                      th:action="@{/expense/{id}/mark-paid(id=${expense.id()})}" method="post">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button class="btn btn-sm btn-mark-paid" type="submit"
+                                            aria-label="Marcar despesa como paga"
+                                            title="Marcar como pago">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                             stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </svg>
+                                        <span>Pago</span>
+                                    </button>
+                                </form>
                                 <a class="btn btn-icon btn-secondary"
                                    th:href="@{/expense/{id}/edit(id=${expense.id()})}"
                                    aria-label="Editar despesa"

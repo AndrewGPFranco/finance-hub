@@ -123,6 +123,17 @@ public class ExpenseController {
         return REDIRECT_EXPENSE_BY_USER;
     }
 
+    @PostMapping(value = "/{idExpense}/mark-paid")
+    String markExpenseAsPaid(Authentication authentication, @PathVariable UUID idExpense,
+                             RedirectAttributes redirectAttributes) {
+        var user = UserUtils.getUser(authentication);
+
+        expenseService.markAsPaid(idExpense, user);
+        redirectAttributes.addFlashAttribute("result", "Despesa marcada como paga.");
+
+        return REDIRECT_EXPENSE_BY_USER;
+    }
+
     @PostMapping(value = "/repeat-next-month")
     String repeatExpenseForNextMonth(@RequestParam List<UUID> idExpense, Authentication authentication,
                                      @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {

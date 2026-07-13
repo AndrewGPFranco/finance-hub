@@ -26,6 +26,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.agpf.finance.hub.utils.DateUtils.getLocalDateAmericaSP;
+
 @Service
 @RequiredArgsConstructor
 public class ExpenseService {
@@ -98,6 +100,17 @@ public class ExpenseService {
                 .orElseThrow(() -> new NotFoundException("Despesa não encontrada!"));
 
         expenseRepository.delete(expense);
+    }
+
+    @Transactional
+    public void markAsPaid(UUID idExpense, User user) {
+        var expense = expenseRepository.findManageableByIdAndUser(idExpense, user, PermissionSubdomainType.EDITOR)
+                .orElseThrow(() -> new NotFoundException("Despesa não encontrada!"));
+
+        expense.setStatus(StatusExpenseType.PAID);
+        expense.setPaymentDate(getLocalDateAmericaSP());
+
+        expenseRepository.save(expense);
     }
 
     public List<OutputExpenseDTO> getExpensesByUser(User user, UUID subdomainId, Month month) {

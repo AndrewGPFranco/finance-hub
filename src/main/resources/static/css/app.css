@@ -1010,6 +1010,27 @@ body:not(.sidebar-open) .theme-toggle {
     text-decoration: none;
 }
 
+.btn-mark-paid {
+    background: var(--surface);
+    color: var(--success);
+    border-color: var(--border);
+    min-width: 74px;
+    white-space: nowrap;
+    overflow-wrap: normal;
+}
+
+.btn-mark-paid:hover {
+    background: var(--success-bg);
+    border-color: var(--success);
+    text-decoration: none;
+}
+
+.btn-mark-paid svg {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+}
+
 .btn-repeat-selected {
     min-height: 38px;
     padding: 0 12px;
@@ -1031,6 +1052,10 @@ body:not(.sidebar-open) .theme-toggle {
     display: flex;
     gap: 8px;
     align-items: center;
+}
+
+.table-actions form {
+    display: inline-flex;
 }
 
 .table-wrapper {
