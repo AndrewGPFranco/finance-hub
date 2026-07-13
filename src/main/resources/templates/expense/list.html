@@ -76,7 +76,7 @@
             </div>
 
             <div class="table-wrapper" th:if="${!#lists.isEmpty(expenses)}">
-                <table class="data-table">
+                <table class="data-table expense-table">
                     <thead>
                     <tr>
                         <th th:if="${canManageExpenses}">
@@ -101,8 +101,22 @@
                                    aria-label="Selecionar despesa">
                         </td>
                         <td data-label="Despesa">
-                            <span class="table-title" th:text="${expense.title()}">Mercado</span>
-                            <span class="table-meta" th:text="${expense.recurringLabel()}">Única</span>
+                            <span class="expense-mobile-summary">
+                                <span>
+                                    <span class="table-title" th:text="${expense.title()}">Mercado</span>
+                                    <span class="table-meta" th:text="${expense.recurringLabel()}">Única</span>
+                                </span>
+                                <button class="btn btn-icon btn-secondary expense-details-button" type="button"
+                                        aria-label="Ver detalhes da despesa" title="Ver detalhes">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="1"></circle>
+                                        <circle cx="19" cy="12" r="1"></circle>
+                                        <circle cx="5" cy="12" r="1"></circle>
+                                    </svg>
+                                </button>
+                            </span>
                         </td>
                         <td data-label="Categoria" th:text="${expense.categoryLabel()}">Alimentação</td>
                         <td data-label="Vencimento" th:text="${expense.formattedDueDate()}">01/01/2026</td>
@@ -149,6 +163,27 @@
             </div>
         </section>
     </main>
+</div>
+
+<div class="modal-overlay expense-detail-modal" data-expense-detail-modal hidden>
+    <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="expenseDetailTitle">
+        <div class="expense-detail-header">
+            <div>
+                <h3 class="modal-title" id="expenseDetailTitle">Detalhes da despesa</h3>
+                <p class="modal-text" data-expense-detail-subtitle></p>
+            </div>
+            <button class="btn btn-icon btn-secondary" type="button" data-expense-detail-close
+                    aria-label="Fechar detalhes" title="Fechar">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <dl class="expense-detail-list" data-expense-detail-list></dl>
+    </div>
 </div>
 
 <div id="deleteModal" class="modal-overlay"
@@ -245,6 +280,10 @@
     var repeatForm = document.getElementById('repeatForm');
     var repeatSelectedIds = document.getElementById('repeatSelectedIds');
     var repeatSelectedCount = document.getElementById('repeatSelectedCount');
+    var expenseDetailModal = document.querySelector('[data-expense-detail-modal]');
+    var expenseDetailTitle = document.getElementById('expenseDetailTitle');
+    var expenseDetailSubtitle = document.querySelector('[data-expense-detail-subtitle]');
+    var expenseDetailList = document.querySelector('[data-expense-detail-list]');
 
     function getSelectedExpenseCheckboxes() {
         return Array.prototype.slice.call(document.querySelectorAll('.expense-checkbox:checked'));
@@ -278,6 +317,35 @@
     });
 
     document.querySelector('.list-panel').addEventListener('click', function (e) {
+        var btn = e.target.closest('.expense-details-button');
+        if (!btn || !expenseDetailModal || !expenseDetailList) return;
+
+        var row = btn.closest('tr');
+        var title = row.querySelector('[data-label="Despesa"] .table-title');
+        var subtitle = row.querySelector('[data-label="Despesa"] .table-meta');
+        var detailLabels = ['Categoria', 'Vencimento', 'Pagamento', 'Status', 'Forma', 'Parcelas', 'Valor'];
+
+        expenseDetailTitle.textContent = title ? title.textContent.trim() : 'Detalhes da despesa';
+        expenseDetailSubtitle.textContent = subtitle ? subtitle.textContent.trim() : '';
+        expenseDetailList.innerHTML = '';
+
+        detailLabels.forEach(function (label) {
+            var cell = row.querySelector('[data-label="' + label + '"]');
+            if (!cell) return;
+
+            var term = document.createElement('dt');
+            var description = document.createElement('dd');
+
+            term.textContent = label;
+            description.textContent = cell.textContent.trim() || '-';
+            expenseDetailList.appendChild(term);
+            expenseDetailList.appendChild(description);
+        });
+
+        expenseDetailModal.hidden = false;
+    });
+
+    document.querySelector('.list-panel').addEventListener('click', function (e) {
         var btn = e.target.closest('.btn-repeat-selected');
         if (!btn) return;
 
@@ -304,6 +372,11 @@
         repeatModal.style.display = 'none';
     }
 
+    function closeExpenseDetailModal() {
+        if (expenseDetailModal)
+            expenseDetailModal.hidden = true;
+    }
+
     if (deleteModal) {
         deleteModal.addEventListener('click', function (e) {
             if (e.target === deleteModal) {
@@ -317,6 +390,17 @@
             if (e.target === repeatModal) {
                 closeRepeatModal();
             }
+        });
+    }
+
+    if (expenseDetailModal) {
+        expenseDetailModal.addEventListener('click', function (e) {
+            if (e.target === expenseDetailModal)
+                closeExpenseDetailModal();
+        });
+
+        expenseDetailModal.querySelectorAll('[data-expense-detail-close]').forEach(function (button) {
+            button.addEventListener('click', closeExpenseDetailModal);
         });
     }
 

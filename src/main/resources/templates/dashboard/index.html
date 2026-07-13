@@ -127,6 +127,81 @@
                 </div>
             </div>
         </section>
+
+        <section class="dashboard-charts-grid" aria-label="Gráficos financeiros">
+            <article class="content-panel chart-panel">
+                <div class="chart-header">
+                    <h2 class="panel-title">Status das despesas</h2>
+                    <p class="panel-text" th:text="${output.totalExpenses()} + ' despesa(s) no mês'">0 despesa(s) no mês</p>
+                </div>
+
+                <div class="chart-bars">
+                    <div class="chart-bar-row">
+                        <div class="chart-bar-label">
+                            <span>Pagas</span>
+                            <strong th:text="${output.expensesPaid()}">0</strong>
+                        </div>
+                        <div class="chart-track">
+                            <div class="chart-fill chart-fill-success"
+                                 th:style="'width: ' + ${output.expensesPaidPercentage()} + '%'"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-bar-row">
+                        <div class="chart-bar-label">
+                            <span>Pendências</span>
+                            <strong th:text="${output.outstandingExpenses()}">0</strong>
+                        </div>
+                        <div class="chart-track">
+                            <div class="chart-fill chart-fill-warning"
+                                 th:style="'width: ' + ${output.outstandingExpensesPercentage()} + '%'"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-bar-row">
+                        <div class="chart-bar-label">
+                            <span>Atrasadas</span>
+                            <strong th:text="${output.overduePayments()}">0</strong>
+                        </div>
+                        <div class="chart-track">
+                            <div class="chart-fill chart-fill-danger"
+                                 th:style="'width: ' + ${output.overduePaymentsPercentage()} + '%'"></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="content-panel chart-panel">
+                <div class="chart-header">
+                    <h2 class="panel-title">Distribuição financeira</h2>
+                    <p class="panel-text">Despesas previstas e valor restante.</p>
+                </div>
+
+                <div class="finance-chart" th:if="${output.hasWalletBalance()}">
+                    <div class="finance-column">
+                        <div class="finance-bar">
+                            <div class="finance-bar-fill chart-fill-danger"
+                                 th:style="'height: ' + ${output.amountPayableExpensesPercentage()} + '%'"></div>
+                        </div>
+                        <span class="finance-label">Despesas</span>
+                        <strong th:text="${output.formattedAmountPayableExpenses()}">R$ 0,00</strong>
+                    </div>
+
+                    <div class="finance-column">
+                        <div class="finance-bar">
+                            <div class="finance-bar-fill chart-fill-success"
+                                 th:style="'height: ' + ${output.remainingAmountPercentage()} + '%'"></div>
+                        </div>
+                        <span class="finance-label">Restante</span>
+                        <strong th:text="${output.formattedRemainingAmount()}">R$ 0,00</strong>
+                    </div>
+                </div>
+
+                <div class="chart-empty" th:unless="${output.hasWalletBalance()}">
+                    Vincule uma carteira ao subdomínio para visualizar a distribuição financeira.
+                </div>
+            </article>
+        </section>
     </main>
 </div>
 </body>
