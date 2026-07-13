@@ -3,6 +3,7 @@ package com.agpf.finance.hub.models.wallet;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
@@ -39,6 +40,10 @@ public class Wallet {
     @NotNull(message = "Um usuário deve ser vínculado a carteira.")
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
+
+    @Column(name = "name", nullable = false, length = 25)
+    @NotBlank(message = "É necessário informar um nome a carteira.")
+    private String name;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @NotNull(message = "Um subdomínio deve ser vínculado a carteira.")

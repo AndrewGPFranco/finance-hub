@@ -4,6 +4,7 @@ create table if not exists wallets
     user_id      uuid                        not null,
     subdomain_id uuid                        not null,
     balance      decimal(12, 2)              not null,
+    name         varchar(25)                 not null,
     created_at   timestamp without time zone not null,
     updated_at   timestamp without time zone,
     constraint pk_wallets primary key (id),
