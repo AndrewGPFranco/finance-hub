@@ -1,8 +1,11 @@
 package com.agpf.finance.hub.controllers.subdomain;
 
+import com.agpf.finance.hub.dtos.expense.OutputExpenseDTO;
 import com.agpf.finance.hub.dtos.subdomain.EditSubdomainDTO;
 import com.agpf.finance.hub.dtos.subdomain.RegisterSubdomainDTO;
+import com.agpf.finance.hub.dtos.subdomain.UpdateExpenseSubdomainDTO;
 import com.agpf.finance.hub.exceptions.BusinessException;
+import com.agpf.finance.hub.services.expense.ExpenseService;
 import com.agpf.finance.hub.services.subdomain.SubdomainService;
 import com.agpf.finance.hub.utils.UserUtils;
 import jakarta.validation.Valid;
@@ -24,6 +27,7 @@ public class SubdomainController {
 
     private static final String SUBDOMAIN_REGISTER = "subdomain/register";
 
+    private final ExpenseService expenseService;
     private final SubdomainService subdomainService;
 
     @GetMapping(value = "/register")
@@ -99,6 +103,24 @@ public class SubdomainController {
         }
 
         return "redirect:/subdomain/by-user";
+    }
+
+    @PutMapping(value = "/change-subdomain")
+    String changeExpenseSubdomain(Authentication authentication, RedirectAttributes redirectAttributes,
+                                  @Valid @ModelAttribute("update") UpdateExpenseSubdomainDTO dto) {
+        var user = UserUtils.getUser(authentication);
+
+        try {
+            var expense = expenseService.getExpenseByIdAndUser(dto.idExpense(), user);
+            var response = subdomainService.changeExpenseSubdomain(dto, user, expense);
+            redirectAttributes.addFlashAttribute("result", response);
+        } catch (BusinessException businessException) {
+            redirectAttributes.addFlashAttribute("negativeFeedback", businessException.getMessage());
+        } catch (Exception _) {
+            redirectAttributes.addFlashAttribute("negativeFeedback", "Ocorreu um erro ao realizar a deleção do subdomínio");
+        }
+
+        return "redirect:/dashboard";
     }
 
 }

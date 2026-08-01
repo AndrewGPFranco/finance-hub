@@ -1,13 +1,16 @@
 package com.agpf.finance.hub.services.subdomain;
 
+import com.agpf.finance.hub.dtos.expense.OutputExpenseDTO;
 import com.agpf.finance.hub.dtos.subdomain.EditSubdomainDTO;
 import com.agpf.finance.hub.dtos.subdomain.OutputSubdomainDTO;
 import com.agpf.finance.hub.dtos.subdomain.RegisterSubdomainDTO;
+import com.agpf.finance.hub.dtos.subdomain.UpdateExpenseSubdomainDTO;
 import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
 import com.agpf.finance.hub.exceptions.BusinessException;
 import com.agpf.finance.hub.exceptions.NotFoundException;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
+import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
 import com.agpf.finance.hub.repositories.subdomains.SubdomainRepository;
 import com.agpf.finance.hub.utils.CrudUtils;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SubdomainService {
 
+    private final ExpenseRepository expenseRepository;
     private final SubdomainRepository subdomainRepository;
     private final ClassPathResource pathPhoto = new ClassPathResource("src/main/resources/photos");
 
@@ -147,5 +151,15 @@ public class SubdomainService {
             log.error(io.getMessage(), io);
             throw new BusinessException("Ocorreu um erro ao deletar a imagem do subdomínio, tente novamente!");
         }
+    }
+
+    @Transactional
+    public String changeExpenseSubdomain(UpdateExpenseSubdomainDTO dto, User user, OutputExpenseDTO expense) {
+        var subdomainFrom = resolve(user, dto.idSubFrom());
+        var subdomainTo = resolve(user, dto.idSubTo());
+
+        expenseRepository.changeExpenseSubdomain(subdomainFrom, subdomainTo, user, expense.id());
+
+        return String.format("Despesa %s foi alterada para o subdomínio %s", expense.title(), subdomainTo.getName());
     }
 }

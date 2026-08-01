@@ -3,11 +3,13 @@ package com.agpf.finance.hub.repositories.expense;
 import com.agpf.finance.hub.dtos.expense.OutputExpenseDTO;
 import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
 import com.agpf.finance.hub.models.expense.Expense;
+import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -105,4 +107,10 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
 
     Page<Expense> findAllByDueDate(LocalDate dueDate, Pageable pageable);
 
+    @Modifying
+    @Query("""
+            update Expense set subdomain = :subTo where user = :user and id = :idExpense
+            """)
+    void changeExpenseSubdomain(@Param("subFrom") Subdomain subFrom,
+                                @Param("subTo") Subdomain subTo, @Param("user") User user, @Param("idExpense") UUID idExpense);
 }
