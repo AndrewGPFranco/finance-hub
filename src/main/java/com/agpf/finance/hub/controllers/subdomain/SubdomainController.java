@@ -1,6 +1,5 @@
 package com.agpf.finance.hub.controllers.subdomain;
 
-import com.agpf.finance.hub.dtos.expense.OutputExpenseDTO;
 import com.agpf.finance.hub.dtos.subdomain.EditSubdomainDTO;
 import com.agpf.finance.hub.dtos.subdomain.RegisterSubdomainDTO;
 import com.agpf.finance.hub.dtos.subdomain.UpdateExpenseSubdomainDTO;
@@ -113,7 +112,7 @@ public class SubdomainController {
         try {
             var expense = expenseService.getExpenseByIdAndUser(dto.idExpense(), user);
             var response = subdomainService.changeExpenseSubdomain(dto, user, expense);
-            redirectAttributes.addFlashAttribute("result", response);
+            redirectAttributes.addFlashAttribute("positiveFeedback", response);
         } catch (BusinessException businessException) {
             redirectAttributes.addFlashAttribute("negativeFeedback", businessException.getMessage());
         } catch (Exception _) {

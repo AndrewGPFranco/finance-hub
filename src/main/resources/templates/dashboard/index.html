@@ -30,6 +30,13 @@
             </a>
         </section>
 
+        <div class="message message-success list-message" data-dashboard-feedback
+             th:if="${result}" th:text="${result}"></div>
+        <div class="message message-success list-message" data-dashboard-feedback th:if="${positiveFeedback}"
+             th:text="${positiveFeedback}"></div>
+        <div class="message message-error list-message" data-dashboard-feedback th:if="${negativeFeedback}"
+             th:text="${negativeFeedback}"></div>
+
         <div data-invitation-panel-slot>
             <section class="content-panel invitation-panel" th:if="${invitations != null}">
                 <div class="list-toolbar invitation-toolbar">
@@ -204,5 +211,12 @@
         </section>
     </main>
 </div>
+<script>
+    document.querySelectorAll('[data-dashboard-feedback]').forEach(function (feedback) {
+        window.setTimeout(function () {
+            feedback.remove();
+        }, 5000);
+    });
+</script>
 </body>
 </html>
