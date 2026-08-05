@@ -1082,6 +1082,12 @@ body:not(.sidebar-open) .theme-toggle {
     white-space: nowrap;
 }
 
+.expense-table th,
+.expense-table td {
+    padding-right: 12px;
+    padding-left: 12px;
+}
+
 .data-table th {
     color: var(--text-soft);
     background: var(--surface-subtle);
