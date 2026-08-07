@@ -1,0 +1,1 @@
+alter table wallets add column date_to_use date;

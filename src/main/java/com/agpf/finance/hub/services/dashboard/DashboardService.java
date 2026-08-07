@@ -1,7 +1,6 @@
 package com.agpf.finance.hub.services.dashboard;
 
 import com.agpf.finance.hub.dtos.dashboard.OutputDashboardDTO;
-import com.agpf.finance.hub.dtos.wallet.OutputWalletDTO;
 import com.agpf.finance.hub.enums.expense.StatusExpenseType;
 import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.services.expense.ExpenseService;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Month;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

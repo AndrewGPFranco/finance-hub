@@ -2,7 +2,6 @@ package com.agpf.finance.hub.controllers.subdomain;
 
 import com.agpf.finance.hub.dtos.subdomain.invite.RegisterSubdomainInviteDTO;
 import com.agpf.finance.hub.dtos.subdomain.invite.ResponseInvitationDTO;
-import com.agpf.finance.hub.enums.subdomain.ResponseInvitationType;
 import com.agpf.finance.hub.exceptions.NotFoundException;
 import com.agpf.finance.hub.services.subdomain.SubdomainInviteService;
 import com.agpf.finance.hub.utils.UserUtils;

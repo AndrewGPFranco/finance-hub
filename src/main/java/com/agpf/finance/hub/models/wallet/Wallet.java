@@ -12,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -53,6 +54,10 @@ public class Wallet {
     @PositiveOrZero(message = "A quantidade deve ser 0 ou positivo.")
     @Column(name = "balance", precision = 12, scale = 2, nullable = false)
     private BigDecimal balance;
+
+    @Column(name = "date_to_use")
+//     @NotNull(message = "É necessário informar a data de uso da carteira.")
+    private LocalDate dateToUse;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)

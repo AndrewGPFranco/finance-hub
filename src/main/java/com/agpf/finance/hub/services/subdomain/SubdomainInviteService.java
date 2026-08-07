@@ -6,7 +6,6 @@ import com.agpf.finance.hub.dtos.subdomain.invite.ResponseInvitationDTO;
 import com.agpf.finance.hub.enums.subdomain.ResponseInvitationType;
 import com.agpf.finance.hub.enums.subdomain.StatusInviteSubdomain;
 import com.agpf.finance.hub.exceptions.NotFoundException;
-import com.agpf.finance.hub.models.subdomain.SubdomainInvite;
 import com.agpf.finance.hub.models.subdomain.SubdomainMember;
 import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.subdomains.SubdomainInviteRepository;
