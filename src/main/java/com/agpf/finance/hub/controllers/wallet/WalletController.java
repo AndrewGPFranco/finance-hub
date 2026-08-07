@@ -33,7 +33,7 @@ public class WalletController {
     @GetMapping(value = "/register")
     String register(Model model) {
         model.addAttribute("wallet", new Wallet(
-                null, null, null, null, null, null, null
+                null, null, null, null, null, null, null, null
         ));
         return REGISTER;
     }

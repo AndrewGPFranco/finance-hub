@@ -9,6 +9,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Builder
@@ -19,7 +20,7 @@ public record InputWalletDTO(
 ) {
 
     public static Wallet toEntity(InputWalletDTO input, User user, Subdomain subdomain) {
-        return Wallet.builder().name(input.name()).user(user)
+        return Wallet.builder().name(input.name()).user(user).dateToUse(LocalDate.now())
                 .subdomain(subdomain).balance(input.balance()).build();
     }
 

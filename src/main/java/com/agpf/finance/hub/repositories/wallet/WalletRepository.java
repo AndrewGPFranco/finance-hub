@@ -45,4 +45,7 @@ public interface WalletRepository extends JpaRepository<Wallet, UUID> {
             """)
     Optional<Wallet> findAccessibleEntityByIdAndUser(@Param("idWallet") UUID idWallet,
                                                      @Param("user") User user);
+
+    @Query("select count(w) = 0 from Wallet w where w.dateToUse is null")
+    boolean existsDateToUseNull();
 }

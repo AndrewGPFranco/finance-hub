@@ -55,8 +55,8 @@ public class Wallet {
     @Column(name = "balance", precision = 12, scale = 2, nullable = false)
     private BigDecimal balance;
 
-    @Column(name = "date_to_use")
-//     @NotNull(message = "É necessário informar a data de uso da carteira.")
+    @Column(name = "date_to_use", nullable = false)
+     @NotNull(message = "É necessário informar a data de uso da carteira.")
     private LocalDate dateToUse;
 
     @CreationTimestamp
