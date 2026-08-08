@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.time.Month;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Controller
@@ -22,11 +22,11 @@ public class DashboardController {
 
     @GetMapping
     public String dashboard(Model model, Authentication authentication,
-                            @ModelAttribute("selectedMonth") Month selectedMonth,
+                            @ModelAttribute("selectedDate") LocalDate selectedDate,
                             @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {
         var user = UserUtils.getUser(authentication);
 
-        model.addAttribute("output", dashboardService.outputExpenses(user, selectedSubdomainId, selectedMonth));
+        model.addAttribute("output", dashboardService.outputExpenses(user, selectedSubdomainId, selectedDate));
         return "dashboard/index";
     }
 

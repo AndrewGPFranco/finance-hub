@@ -8,10 +8,12 @@ import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.subdomains.SubdomainRepository;
 import com.agpf.finance.hub.repositories.wallet.WalletRepository;
 import com.agpf.finance.hub.services.subdomain.SubdomainService;
+import com.agpf.finance.hub.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,18 +26,19 @@ public class WalletService {
     private final SubdomainRepository subdomainRepository;
     private final SubdomainService subdomainService;
 
-    public Optional<OutputWalletDTO> byUserAndSubdomain(User user, UUID idSubdomain) {
-        return walletRepository.findAccessibleByUserAndSubdomain(user, idSubdomain);
+    public Optional<OutputWalletDTO> byUserAndSubdomain(User user, UUID idSubdomain, LocalDate dateToUse) {
+        return walletRepository.findAccessibleByUserAndSubdomain(user, idSubdomain, DateUtils.firstDayOfMonth(dateToUse));
     }
 
-    public void register(User user, InputWalletDTO input) {
+    public void register(User user, InputWalletDTO input, LocalDate dateToUse) {
         if (!subdomainService.canManage(user, input.idSubdomain()))
             throw new BusinessException("Você não tem permissão para cadastrar carteira neste subdomínio.");
 
         var subdomain = subdomainRepository.findByIdAndUser(input.idSubdomain(), user)
                 .orElseThrow(() -> new NotFoundException("Subdomínio não encontrado!"));
 
-        var entity = InputWalletDTO.toEntity(input, subdomain.getUser(), subdomain);
+        var entity = InputWalletDTO.toEntity(input, subdomain.getUser(), subdomain,
+                DateUtils.firstDayOfMonth(dateToUse));
 
         walletRepository.save(entity);
     }

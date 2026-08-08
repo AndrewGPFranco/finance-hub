@@ -19,8 +19,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GlobalModelAttributeController {
 
-    private static final String SELECTED_SUBDOMAIN_ID = "selectedSubdomainId";
+    private static final String SELECTED_DATE = "selectedDate";
     private static final String SELECTED_MONTH = "selectedMonth";
+    private static final String SELECTED_SUBDOMAIN_ID = "selectedSubdomainId";
 
     private final SubdomainService subdomainService;
 
@@ -31,8 +32,8 @@ public class GlobalModelAttributeController {
         if (authentication == null || !(authentication.getPrincipal() instanceof AuthenticatedUser(var user)))
             return;
 
-        var resolvedSubdomainId = subdomainService.resolveSelectedSubdomainId(user,
-                subdomainId != null ? subdomainId : getSessionSubdomainId(session));
+        var resolvedSubdomainId = subdomainService.
+                resolveSelectedSubdomainId(user, subdomainId != null ? subdomainId : getSessionSubdomainId(session));
 
         if (resolvedSubdomainId != null)
             session.setAttribute(SELECTED_SUBDOMAIN_ID, resolvedSubdomainId.toString());
@@ -41,12 +42,14 @@ public class GlobalModelAttributeController {
 
         var selectedMonth = month != null ? month : getSessionMonth(session);
         session.setAttribute(SELECTED_MONTH, selectedMonth.name());
+        var selectedDate = DateUtils.firstDayOfMonth(DateUtils.getLocalDateTimeAmericaSP().toLocalDate().withMonth(selectedMonth.getValue()));
 
         model.addAttribute("navbarSubdomains", subdomainService.subdomainsByUser(user));
         model.addAttribute(SELECTED_SUBDOMAIN_ID, resolvedSubdomainId);
         model.addAttribute("canManageSelectedSubdomain", subdomainService.canManage(user, resolvedSubdomainId));
         model.addAttribute("monthOptions", Arrays.asList(Month.values()));
         model.addAttribute(SELECTED_MONTH, selectedMonth);
+        model.addAttribute(SELECTED_DATE, selectedDate);
     }
 
     private UUID getSessionSubdomainId(HttpSession session) {

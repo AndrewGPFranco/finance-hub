@@ -24,7 +24,7 @@ import java.util.UUID;
 @Table(
         name = "wallets",
         uniqueConstraints = {
-                @UniqueConstraint(name = "UK_WALLET_SUBDOMAIN", columnNames = {"subdomain_id"})
+                @UniqueConstraint(name = "UK_WALLET_SUBDOMAIN", columnNames = {"subdomain_id", "date_to_use"})
         },
         indexes = {
                 @Index(name = "IDX_WALLET_USER", columnList = "user_id")

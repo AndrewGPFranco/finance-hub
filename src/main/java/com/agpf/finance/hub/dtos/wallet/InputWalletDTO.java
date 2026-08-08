@@ -19,8 +19,8 @@ public record InputWalletDTO(
         @PositiveOrZero(message = "A quantidade deve ser 0 ou positivo.") BigDecimal balance
 ) {
 
-    public static Wallet toEntity(InputWalletDTO input, User user, Subdomain subdomain) {
-        return Wallet.builder().name(input.name()).user(user).dateToUse(LocalDate.now())
+    public static Wallet toEntity(InputWalletDTO input, User user, Subdomain subdomain, LocalDate dateToUse) {
+        return Wallet.builder().name(input.name()).user(user).dateToUse(dateToUse)
                 .subdomain(subdomain).balance(input.balance()).build();
     }
 

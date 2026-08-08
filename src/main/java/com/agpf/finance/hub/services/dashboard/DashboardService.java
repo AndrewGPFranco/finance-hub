@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Month;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -19,9 +19,8 @@ public class DashboardService {
     private final WalletService walletService;
     private final ExpenseService expenseService;
 
-    public OutputDashboardDTO outputExpenses(User user, UUID subdomainId, Month month) {
-        var expenses = expenseService.getExpensesByUser(user, subdomainId, month);
-
+    public OutputDashboardDTO outputExpenses(User user, UUID subdomainId, LocalDate dateToUse) {
+        var expenses = expenseService.getExpensesByUser(user, subdomainId, dateToUse.getMonth());
 
         var expensesPaid = (int) expenses.stream()
                 .filter(expense -> expense.status() == StatusExpenseType.PAID).count();
@@ -35,7 +34,7 @@ public class DashboardService {
                 .map(expense -> expense.amount() == null ? BigDecimal.ZERO : expense.amount())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        var wallet = walletService.byUserAndSubdomain(user, subdomainId);
+        var wallet = walletService.byUserAndSubdomain(user, subdomainId, dateToUse);
 
         BigDecimal remainingAmount = null;
 

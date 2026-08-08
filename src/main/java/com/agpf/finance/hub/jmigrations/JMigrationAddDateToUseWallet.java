@@ -45,7 +45,7 @@ public class JMigrationAddDateToUseWallet {
 
             var dateToUse = LocalDate.ofInstant(createdAt, ZoneId.of(DateUtils.ZONE_ID));
 
-            currentWallet.setDateToUse(dateToUse.with(TemporalAdjusters.firstDayOfMonth()));
+            currentWallet.setDateToUse(DateUtils.firstDayOfMonth(dateToUse));
 
             walletsToSave.add(currentWallet);
         }

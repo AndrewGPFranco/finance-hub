@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Controller
@@ -23,10 +24,12 @@ public class WalletController {
     private static final String REGISTER = "wallet/register";
 
     @GetMapping(value = "/{idSubdomain}")
-    String byUser(Model model, Authentication authentication, @PathVariable UUID idSubdomain) {
+    String byUser(Model model, Authentication authentication,
+                  @PathVariable UUID idSubdomain,
+                  @ModelAttribute("selectedDate") LocalDate selectedDate) {
         var user = UserUtils.getUser(authentication);
 
-        model.addAttribute("wallet", walletService.byUserAndSubdomain(user, idSubdomain).orElse(null));
+        model.addAttribute("wallet", walletService.byUserAndSubdomain(user, idSubdomain, selectedDate).orElse(null));
         return LIST;
     }
 
@@ -40,18 +43,19 @@ public class WalletController {
 
     @PostMapping(value = "/register")
     String register(@ModelAttribute("dto") InputWalletDTO input,
+                    @ModelAttribute("selectedDate") LocalDate selectedDate,
                     RedirectAttributes redirectAttributes, Authentication authentication) {
         var user = UserUtils.getUser(authentication);
 
         try {
-            walletService.register(user, input);
+            walletService.register(user, input, selectedDate);
             redirectAttributes.addAttribute("positiveFeedback", "Carteira registrada!");
         } catch (Exception _) {
             redirectAttributes.addAttribute("negativeFeedback",
                     """
                             Ocorreu um problema ao registrar a carteira!
                             """);
-            redirectAttributes.addAttribute("dto", input);
+            redirectAttributes.addFlashAttribute("dto", input);
             return "redirect:/wallets/register";
         }
 
