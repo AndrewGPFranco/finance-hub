@@ -7,3 +7,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+
+logging:
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      max-history: 7
+      total-size-cap: 1GB
