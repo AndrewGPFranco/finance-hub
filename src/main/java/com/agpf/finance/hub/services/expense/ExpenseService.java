@@ -9,9 +9,11 @@ import com.agpf.finance.hub.enums.expense.PaymentMethod;
 import com.agpf.finance.hub.enums.expense.StatusExpenseType;
 import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
 import com.agpf.finance.hub.exceptions.NotFoundException;
+import com.agpf.finance.hub.models.subdomain.AggregatedSubdomain;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
+import com.agpf.finance.hub.repositories.subdomains.SubdomainAggregatedRepository;
 import com.agpf.finance.hub.repositories.subdomains.SubdomainRepository;
 import com.agpf.finance.hub.services.subdomain.SubdomainService;
 import com.agpf.finance.hub.utils.CrudUtils;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import java.math.BigDecimal;
 import java.time.Month;
 import java.util.*;
 import java.util.function.Function;
@@ -32,9 +35,10 @@ import static com.agpf.finance.hub.utils.DateUtils.getLocalDateAmericaSP;
 @RequiredArgsConstructor
 public class ExpenseService {
 
+    private final SubdomainService subdomainService;
     private final ExpenseRepository expenseRepository;
     private final SubdomainRepository subdomainRepository;
-    private final SubdomainService subdomainService;
+    private final SubdomainAggregatedRepository subdomainAggregatedRepository;
 
     @Transactional
     public void register(ExpenseRegisterDTO dto, User user) {
@@ -50,8 +54,31 @@ public class ExpenseService {
         if (subdomainId == null)
             return List.of();
 
-        return expenseRepository.findByUserAndSubdomainId(user, subdomainId,
-                Sort.by(direction, filter.getFieldName()), month);
+        var despesasDoUsuario = expenseRepository
+                .findByUserAndSubdomainId(user, subdomainId, Sort.by(direction, filter.getFieldName()), month);
+
+        var subdominioEncontrado = subdomainRepository.findById(subdomainId)
+                .orElseThrow(() -> new NotFoundException("Subdomínio não encontrado"));
+
+        var subAlvo = subdomainAggregatedRepository.findBySubdomainTarget(subdominioEncontrado);
+
+        if (!subAlvo.isEmpty()) {
+            for (var subdominio : subAlvo) {
+                var agregado = subdominio.getSubdomainAggregate();
+
+                var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), month);
+
+                var amount = despesasDoAgregado.stream().map(OutputExpenseDTO::amount).reduce((a, b) -> a.add(b));
+
+                if (amount.isPresent()) {
+                    despesasDoUsuario.add(new OutputExpenseDTO(null, agregado.getName(), amount.get(), null,
+                            null, null, null, null, false, null,
+                            null));
+                }
+            }
+        }
+
+        return despesasDoUsuario;
     }
 
     public Map<FilterListExpenseType, String> getPossibleFilters() {
