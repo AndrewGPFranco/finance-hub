@@ -8,9 +8,11 @@ import com.agpf.finance.hub.dtos.subdomain.UpdateExpenseSubdomainDTO;
 import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
 import com.agpf.finance.hub.exceptions.BusinessException;
 import com.agpf.finance.hub.exceptions.NotFoundException;
+import com.agpf.finance.hub.models.subdomain.AggregatedSubdomain;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
+import com.agpf.finance.hub.repositories.subdomains.SubdomainAggregatedRepository;
 import com.agpf.finance.hub.repositories.subdomains.SubdomainRepository;
 import com.agpf.finance.hub.utils.CrudUtils;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +36,7 @@ public class SubdomainService {
 
     private final ExpenseRepository expenseRepository;
     private final SubdomainRepository subdomainRepository;
+    private final SubdomainAggregatedRepository subdomainAggregatedRepository;
     private final ClassPathResource pathPhoto = new ClassPathResource("src/main/resources/photos");
 
     @Transactional
@@ -161,5 +165,18 @@ public class SubdomainService {
         expenseRepository.changeExpenseSubdomain(subdomainFrom, subdomainTo, user, expense.id());
 
         return String.format("Despesa %s foi alterada para o subdomínio %s", expense.title(), subdomainTo.getName());
+    }
+
+    @Transactional
+    public String associarSubdominioAOutro(UUID subdominioAlvo, UUID subdominioAgregado, User user) {
+        var subAgregado = resolve(user, subdominioAgregado);
+        var subAlvo = resolve(user, subdominioAlvo);
+
+        var entity = AggregatedSubdomain.builder().subdomainAggregate(subAgregado).subdomainTarget(subAlvo).build();
+
+        var aggregatedSubdomain = subdomainAggregatedRepository.save(entity);
+
+        return String.format("Subdomínio %s foi agregado ao subdomínio %s",
+                aggregatedSubdomain.getSubdomainAggregate().getName(), aggregatedSubdomain.getSubdomainTarget().getName());
     }
 }

@@ -122,4 +122,20 @@ public class SubdomainController {
         return "redirect:/dashboard";
     }
 
+    @PostMapping(value = "/associar-subdominios")
+    String associarSubdominioAOutro(Authentication authentication, RedirectAttributes redirectAttributes,
+                                    @RequestParam UUID idSubdominioAlvo, @RequestParam UUID idSubdominioAgregado) {
+        var user = UserUtils.getUser(authentication);
+
+        try {
+            var resposta = subdomainService.associarSubdominioAOutro(idSubdominioAlvo, idSubdominioAgregado, user);
+            redirectAttributes.addFlashAttribute("positiveFeedback", resposta);
+        } catch (Exception _) {
+            redirectAttributes.addFlashAttribute("negativeFeedback",
+                    "Ocorreu um erro ao associar subdomínios, tente novamente.");
+        }
+
+        return "redirect:/dashboard";
+    }
+
 }

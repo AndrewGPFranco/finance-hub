@@ -382,4 +382,75 @@ document.addEventListener("DOMContentLoaded", function () {
                 closeInviteModal();
         });
     }
+
+    let associateModal = document.querySelector("[data-associate-modal]");
+
+    if (associateModal) {
+        let associateForm = associateModal.querySelector("[data-associate-form]");
+        let associateTargetId = associateModal.querySelector("[data-associate-target-id]");
+        let associateTargetName = associateModal.querySelector("[data-associate-target-name]");
+        let associateSourceSelect = associateModal.querySelector("[data-associate-source-select]");
+        let associateSubmit = associateModal.querySelector("[data-associate-submit]");
+        let lastAssociateTrigger = null;
+
+        let resetAssociateOptions = function () {
+            Array.from(associateSourceSelect.options).forEach(function (option) {
+                option.hidden = false;
+                option.disabled = false;
+            });
+        };
+
+        let closeAssociateModal = function () {
+            associateModal.hidden = true;
+            associateForm.reset();
+            associateTargetId.value = "";
+            resetAssociateOptions();
+
+            if (lastAssociateTrigger)
+                lastAssociateTrigger.focus();
+        };
+
+        document.querySelectorAll("[data-associate-target-id]").forEach(function (button) {
+            if (!button.matches("button"))
+                return;
+
+            button.addEventListener("click", function () {
+                let targetId = button.dataset.associateTargetId;
+                let availableOption = null;
+
+                lastAssociateTrigger = button;
+                associateTargetId.value = targetId;
+                associateTargetName.textContent = button.dataset.associateTargetName || "este subdomínio";
+
+                Array.from(associateSourceSelect.options).forEach(function (option) {
+                    let isTarget = option.value === targetId;
+
+                    option.hidden = isTarget;
+                    option.disabled = isTarget;
+
+                    if (!isTarget && !availableOption)
+                        availableOption = option;
+                });
+
+                associateSourceSelect.value = availableOption ? availableOption.value : "";
+                associateSubmit.disabled = !availableOption;
+                associateModal.hidden = false;
+                associateSourceSelect.focus();
+            });
+        });
+
+        associateModal.querySelectorAll("[data-associate-close]").forEach(function (button) {
+            button.addEventListener("click", closeAssociateModal);
+        });
+
+        associateModal.addEventListener("click", function (event) {
+            if (event.target === associateModal)
+                closeAssociateModal();
+        });
+
+        window.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && !associateModal.hidden)
+                closeAssociateModal();
+        });
+    }
 });
