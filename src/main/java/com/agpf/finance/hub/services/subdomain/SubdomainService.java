@@ -8,7 +8,7 @@ import com.agpf.finance.hub.dtos.subdomain.UpdateExpenseSubdomainDTO;
 import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
 import com.agpf.finance.hub.exceptions.BusinessException;
 import com.agpf.finance.hub.exceptions.NotFoundException;
-import com.agpf.finance.hub.models.subdomain.AggregatedSubdomain;
+import com.agpf.finance.hub.models.subdomain.SubdomainAggregated;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -172,7 +171,7 @@ public class SubdomainService {
         var subAgregado = resolve(user, subdominioAgregado);
         var subAlvo = resolve(user, subdominioAlvo);
 
-        var entity = AggregatedSubdomain.builder().subdomainAggregate(subAgregado).subdomainTarget(subAlvo).build();
+        var entity = SubdomainAggregated.builder().subdomainAggregate(subAgregado).subdomainTarget(subAlvo).build();
 
         var aggregatedSubdomain = subdomainAggregatedRepository.save(entity);
 

@@ -9,7 +9,6 @@ import com.agpf.finance.hub.enums.expense.PaymentMethod;
 import com.agpf.finance.hub.enums.expense.StatusExpenseType;
 import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
 import com.agpf.finance.hub.exceptions.NotFoundException;
-import com.agpf.finance.hub.models.subdomain.AggregatedSubdomain;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
-import java.math.BigDecimal;
 import java.time.Month;
 import java.util.*;
 import java.util.function.Function;

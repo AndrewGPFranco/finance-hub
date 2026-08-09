@@ -27,7 +27,7 @@ import java.util.UUID;
                 )
         }
 )
-public class AggregatedSubdomain {
+public class SubdomainAggregated {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
