@@ -81,11 +81,14 @@
                                 </button>
                                 <button class="btn btn-icon btn-icon-primary btn-associate-subdomain"
                                         type="button"
-                                        th:if="${subdomain.isOwner() and #lists.size(subdomains) > 1}"
-                                        th:data-associate-target-id="${subdomain.id()}"
-                                        th:data-associate-target-name="${subdomain.name()}"
-                                        aria-label="Associar despesas de outro subdomínio"
-                                        title="Associar despesas de outro subdomínio">
+                                        th:if="${subdomain.isOwner()
+                                            and #lists.size(subdomains) > 1
+                                            and selectedSubdomainId != null
+                                            and !subdomain.id().equals(selectedSubdomainId)}"
+                                        th:data-associate-source-id="${subdomain.id()}"
+                                        th:data-associate-source-name="${subdomain.name()}"
+                                        aria-label="Agregar este subdomínio ao atual"
+                                        title="Agregar este subdomínio ao atual">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                          stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                          stroke-linejoin="round" aria-hidden="true">
@@ -195,25 +198,24 @@
          aria-describedby="associateModalDescription">
         <h3 class="modal-title" id="associateModalTitle">Associar despesas</h3>
         <p class="modal-text" id="associateModalDescription">
-            Selecione o subdomínio cujas despesas também serão utilizadas em
+            As despesas de <strong data-associate-source-name></strong> serão agregadas a
             <strong data-associate-target-name></strong>.
         </p>
 
         <form th:action="@{/subdomain/associar-subdominios}" method="post" data-associate-form>
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <input type="hidden" name="idSubdominioAlvo" data-associate-target-id>
+            <input type="hidden" name="idSubdominioAgregado" data-associate-source-id>
 
             <div class="field-group">
-                <label class="field-label" for="idSubdominioAgregado">Subdomínio de origem</label>
-                <select class="field-input" id="idSubdominioAgregado" name="idSubdominioAgregado" required
-                        data-associate-source-select>
-                    <option th:each="availableSubdomain : ${subdomains}"
-                            th:value="${availableSubdomain.id()}"
-                            th:text="${availableSubdomain.name()}">
-                        Financeiro
-                    </option>
-                </select>
-                <span class="field-help">As despesas existentes na origem serão consideradas de forma unificada no subdomínio alvo.</span>
+                <span class="field-label">Subdomínio de origem</span>
+                <div class="field-input readonly-field" data-associate-source-field></div>
+            </div>
+
+            <div class="field-group">
+                <span class="field-label">Subdomínio alvo</span>
+                <div class="field-input readonly-field" data-associate-target-field></div>
+                <span class="field-help">A associação utiliza as despesas da origem de forma unificada no subdomínio alvo.</span>
             </div>
 
             <div class="modal-actions">

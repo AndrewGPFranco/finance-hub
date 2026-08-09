@@ -95,19 +95,24 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="expense : ${expenses}">
-                        <td data-label="Selecionar" th:if="${canManageExpenses}">
+                    <tr th:each="expense : ${expenses}"
+                        th:classappend="${expense.id() == null ? ' aggregated-expense-row' : ''}">
+                        <td data-label="Selecionar" th:if="${canManageExpenses and expense.id() != null}">
                             <input class="expense-checkbox" type="checkbox" name="idExpense"
                                    th:value="${expense.id()}" th:data-title="${expense.title()}"
                                    aria-label="Selecionar despesa">
                         </td>
-                        <td data-label="Despesa">
+                        <td class="aggregate-selection-spacer" th:if="${canManageExpenses and expense.id() == null}"
+                            aria-hidden="true"></td>
+                        <td data-label="Despesa" th:colspan="${expense.id() == null ? 7 : 1}">
                             <span class="expense-mobile-summary">
                                 <span>
                                     <span class="table-title" th:text="${expense.title()}">Mercado</span>
-                                    <span class="table-meta" th:text="${expense.recurringLabel()}">Única</span>
+                                    <span class="table-meta" th:if="${expense.id() != null}"
+                                          th:text="${expense.recurringLabel()}">Única</span>
                                 </span>
                                 <button class="btn btn-icon btn-secondary expense-details-button" type="button"
+                                        th:if="${expense.id() != null}"
                                         aria-label="Ver detalhes da despesa" title="Ver detalhes">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -119,18 +124,23 @@
                                 </button>
                             </span>
                         </td>
-                        <td data-label="Categoria" th:text="${expense.categoryLabel()}">Alimentação</td>
-                        <td data-label="Vencimento" th:text="${expense.formattedDueDate()}">01/01/2026</td>
-                        <td data-label="Pagamento" th:text="${expense.formattedPaymentDate()}">-</td>
-                        <td data-label="Status">
+                        <td data-label="Categoria" th:if="${expense.id() != null}"
+                            th:text="${expense.categoryLabel()}">Alimentação</td>
+                        <td data-label="Vencimento" th:if="${expense.id() != null}"
+                            th:text="${expense.formattedDueDate()}">01/01/2026</td>
+                        <td data-label="Pagamento" th:if="${expense.id() != null}"
+                            th:text="${expense.formattedPaymentDate()}">-</td>
+                        <td data-label="Status" th:if="${expense.id() != null}">
                             <span class="status-badge"
                                   th:classappend="${expense.status() != null ? ' status-' + expense.status().name().toLowerCase() : ''}"
                                   th:text="${expense.statusLabel()}">Pendente</span>
                         </td>
-                        <td data-label="Forma" th:text="${expense.paymentMethodLabel()}">PIX</td>
-                        <td data-label="Parcelas" th:text="${expense.installmentsLabel()}">-</td>
+                        <td data-label="Forma" th:if="${expense.id() != null}"
+                            th:text="${expense.paymentMethodLabel()}">PIX</td>
+                        <td data-label="Parcelas" th:if="${expense.id() != null}"
+                            th:text="${expense.installmentsLabel()}">-</td>
                         <td data-label="Valor" class="amount-column" th:text="${expense.formattedAmount()}">R$ 0,00</td>
-                        <td data-label="Ações" th:if="${canManageExpenses}">
+                        <td data-label="Ações" th:if="${canManageExpenses and expense.id() != null}">
                             <div class="table-actions">
                                 <form th:if="${expense.status() == null or expense.status().name() != 'PAID'}"
                                       th:action="@{/expense/{id}/mark-paid(id=${expense.id()})}" method="post">

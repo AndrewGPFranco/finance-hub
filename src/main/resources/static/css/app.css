@@ -1740,6 +1740,25 @@ body:not(.sidebar-open) .theme-toggle {
         padding-top: 2px;
     }
 
+    .expense-table .aggregated-expense-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+    }
+
+    .expense-table .aggregated-expense-row .aggregate-selection-spacer {
+        display: none;
+    }
+
+    .expense-table .aggregated-expense-row td[data-label="Despesa"] {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .expense-table .aggregated-expense-row td[data-label="Valor"] {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
     .expense-mobile-summary {
         display: flex;
         align-items: flex-start;

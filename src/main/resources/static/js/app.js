@@ -389,53 +389,46 @@ document.addEventListener("DOMContentLoaded", function () {
         let associateForm = associateModal.querySelector("[data-associate-form]");
         let associateTargetId = associateModal.querySelector("[data-associate-target-id]");
         let associateTargetName = associateModal.querySelector("[data-associate-target-name]");
-        let associateSourceSelect = associateModal.querySelector("[data-associate-source-select]");
+        let associateTargetField = associateModal.querySelector("[data-associate-target-field]");
+        let associateSourceId = associateModal.querySelector("[data-associate-source-id]");
+        let associateSourceName = associateModal.querySelector("[data-associate-source-name]");
+        let associateSourceField = associateModal.querySelector("[data-associate-source-field]");
         let associateSubmit = associateModal.querySelector("[data-associate-submit]");
+        let globalSubdomainSelect = document.querySelector("[data-global-subdomain-select]");
         let lastAssociateTrigger = null;
-
-        let resetAssociateOptions = function () {
-            Array.from(associateSourceSelect.options).forEach(function (option) {
-                option.hidden = false;
-                option.disabled = false;
-            });
-        };
 
         let closeAssociateModal = function () {
             associateModal.hidden = true;
             associateForm.reset();
             associateTargetId.value = "";
-            resetAssociateOptions();
+            associateSourceId.value = "";
 
             if (lastAssociateTrigger)
                 lastAssociateTrigger.focus();
         };
 
-        document.querySelectorAll("[data-associate-target-id]").forEach(function (button) {
-            if (!button.matches("button"))
-                return;
-
+        document.querySelectorAll(".btn-associate-subdomain").forEach(function (button) {
             button.addEventListener("click", function () {
-                let targetId = button.dataset.associateTargetId;
-                let availableOption = null;
+                let targetId = globalSubdomainSelect ? globalSubdomainSelect.value : "";
+                let targetOption = globalSubdomainSelect && globalSubdomainSelect.selectedOptions[0];
+                let targetName = targetOption ? targetOption.textContent.trim() : "";
+                let sourceId = button.dataset.associateSourceId;
+                let sourceName = button.dataset.associateSourceName || "este subdomínio";
+
+                if (!targetId || targetId === sourceId)
+                    return;
 
                 lastAssociateTrigger = button;
                 associateTargetId.value = targetId;
-                associateTargetName.textContent = button.dataset.associateTargetName || "este subdomínio";
+                associateSourceId.value = sourceId;
+                associateTargetName.textContent = targetName;
+                associateTargetField.textContent = targetName;
+                associateSourceName.textContent = sourceName;
+                associateSourceField.textContent = sourceName;
 
-                Array.from(associateSourceSelect.options).forEach(function (option) {
-                    let isTarget = option.value === targetId;
-
-                    option.hidden = isTarget;
-                    option.disabled = isTarget;
-
-                    if (!isTarget && !availableOption)
-                        availableOption = option;
-                });
-
-                associateSourceSelect.value = availableOption ? availableOption.value : "";
-                associateSubmit.disabled = !availableOption;
+                associateSubmit.disabled = false;
                 associateModal.hidden = false;
-                associateSourceSelect.focus();
+                associateSubmit.focus();
             });
         });
 
