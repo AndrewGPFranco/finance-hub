@@ -1,5 +1,6 @@
 package com.agpf.finance.hub.config;
 
+import com.agpf.finance.hub.utils.UserUtils;
 import org.springframework.boot.flyway.autoconfigure.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +19,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableMethodSecurity
+@Slf4j
 public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
@@ -39,7 +42,10 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .loginProcessingUrl("/auth/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/dashboard", true)
+                        .successHandler((request, response, authentication) -> {
+                            log.info("Login realizado com sucesso: usuário = {}", UserUtils.getUser(authentication).getUsername());
+                            response.sendRedirect(request.getContextPath() + "/dashboard");
+                        })
                         .failureUrl("/auth/login?error")
                         .permitAll())
                 .logout(logout -> logout
