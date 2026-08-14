@@ -171,6 +171,9 @@ public class SubdomainService {
         var subAgregado = resolve(user, subdominioAgregado);
         var subAlvo = resolve(user, subdominioAlvo);
 
+        if (subdomainAggregatedRepository.verificaSeJaHaVinculoEntreSubdominios(subdominioAlvo, subdominioAgregado))
+            throw new BusinessException("Os subdomínios já contém vínculo.");
+
         var entity = SubdomainAggregated.builder().subdomainAggregate(subAgregado).subdomainTarget(subAlvo).build();
 
         var aggregatedSubdomain = subdomainAggregatedRepository.save(entity);

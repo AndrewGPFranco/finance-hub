@@ -130,6 +130,8 @@ public class SubdomainController {
         try {
             var resposta = subdomainService.associarSubdominioAOutro(idSubdominioAlvo, idSubdominioAgregado, user);
             redirectAttributes.addFlashAttribute("positiveFeedback", resposta);
+        } catch (BusinessException be) {
+            redirectAttributes.addFlashAttribute("negativeFeedback", be.getMessage());
         } catch (Exception _) {
             redirectAttributes.addFlashAttribute("negativeFeedback",
                     "Ocorreu um erro ao associar subdomínios, tente novamente.");
