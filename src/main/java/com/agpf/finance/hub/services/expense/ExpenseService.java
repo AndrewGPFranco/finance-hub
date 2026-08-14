@@ -2,9 +2,9 @@ package com.agpf.finance.hub.services.expense;
 
 import com.agpf.finance.hub.dtos.expense.EditExpenseDTO;
 import com.agpf.finance.hub.dtos.expense.ExpenseRegisterDTO;
-import com.agpf.finance.hub.enums.expense.FilterListExpenseType;
 import com.agpf.finance.hub.dtos.expense.OutputExpenseDTO;
 import com.agpf.finance.hub.enums.expense.CategoryExpenseType;
+import com.agpf.finance.hub.enums.expense.FilterListExpenseType;
 import com.agpf.finance.hub.enums.expense.PaymentMethod;
 import com.agpf.finance.hub.enums.expense.StatusExpenseType;
 import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import java.math.BigDecimal;
 import java.time.Month;
 import java.util.*;
 import java.util.function.Function;
@@ -52,31 +53,30 @@ public class ExpenseService {
         if (subdomainId == null)
             return List.of();
 
-        var despesasDoUsuario = expenseRepository
-                .findByUserAndSubdomainId(user, subdomainId, Sort.by(direction, filter.getFieldName()), month);
+        var despesasDoUsuario = expenseRepository.findByUserAndSubdomainId(user, subdomainId, Sort.by(direction, filter.getFieldName()), month);
 
         var subdominioEncontrado = subdomainRepository.findById(subdomainId)
                 .orElseThrow(() -> new NotFoundException("Subdomínio não encontrado"));
 
         var subAlvo = subdomainAggregatedRepository.findBySubdomainTarget(subdominioEncontrado);
 
+        var despesasTotal = new ArrayList<>(despesasDoUsuario);
+
         if (!subAlvo.isEmpty()) {
             for (var subdominio : subAlvo) {
                 var agregado = subdominio.getSubdomainAggregate();
 
-                var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), month);
+                var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), user, month);
 
-                var amount = despesasDoAgregado.stream().map(OutputExpenseDTO::amount).reduce((a, b) -> a.add(b));
+                var amount = despesasDoAgregado.stream().map(OutputExpenseDTO::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-                if (amount.isPresent()) {
-                    despesasDoUsuario.add(new OutputExpenseDTO(null, agregado.getName(), amount.get(), null,
-                            null, null, null, null, false, null,
-                            null));
-                }
+                despesasTotal.add(new OutputExpenseDTO(null, agregado.getName(), amount, null,
+                        null, null, null, null, false, null,
+                        null));
             }
         }
 
-        return despesasDoUsuario;
+        return despesasTotal;
     }
 
     public Map<FilterListExpenseType, String> getPossibleFilters() {

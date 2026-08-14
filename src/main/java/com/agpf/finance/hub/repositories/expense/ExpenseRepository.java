@@ -70,11 +70,17 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
                                         e.installmentNumber, e.totalInstallments
              )
              from Expense e
+             left join e.subdomain.subdomainMembers sm
              where e.month = :month
                and e.subdomain.id = :subdomainId
+               and (
+                    e.subdomain.user = :user
+                    or (sm.user = :user and sm.ativo = true)
+               )
             """
     )
-    List<OutputExpenseDTO> buscaDespesasDoSubAgregado(@Param("subdomainId") UUID subdomainId, @Param("month") Month month);
+    List<OutputExpenseDTO> buscaDespesasDoSubAgregado(@Param("subdomainId") UUID subdomainId,
+                                                      @Param("user") User user, @Param("month") Month month);
 
     @Query("""
                 select distinct e
