@@ -103,16 +103,16 @@
                                    aria-label="Selecionar despesa">
                         </td>
                         <td class="aggregate-selection-spacer" th:if="${canManageExpenses and expense.id() == null}"
-                            aria-hidden="true"></td>
+                            aria-hidden="true">
+                            <span class="aggregate-indicator-bullet" title="Subdomínio agregado"></span>
+                        </td>
                         <td data-label="Despesa" th:colspan="${expense.id() == null ? 7 : 1}">
-                            <span class="expense-mobile-summary">
+                            <span class="expense-mobile-summary" th:if="${expense.id() != null}">
                                 <span>
                                     <span class="table-title" th:text="${expense.title()}">Mercado</span>
-                                    <span class="table-meta" th:if="${expense.id() != null}"
-                                          th:text="${expense.recurringLabel()}">Única</span>
+                                    <span class="table-meta" th:text="${expense.recurringLabel()}">Única</span>
                                 </span>
                                 <button class="btn btn-icon btn-secondary expense-details-button" type="button"
-                                        th:if="${expense.id() != null}"
                                         aria-label="Ver detalhes da despesa" title="Ver detalhes">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -123,6 +123,24 @@
                                     </svg>
                                 </button>
                             </span>
+                            <div class="aggregated-expense-card" th:if="${expense.id() == null}">
+                                <div class="aggregated-icon-wrap" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                    </svg>
+                                </div>
+                                <div class="aggregated-info">
+                                    <div class="aggregated-header">
+                                        <span class="table-title" th:text="${expense.title()}">Cartão</span>
+                                        <span class="aggregate-badge">Agregado</span>
+                                    </div>
+                                    <span class="table-meta">Total consolidado do subdomínio</span>
+                                </div>
+                            </div>
                         </td>
                         <td data-label="Categoria" th:if="${expense.id() != null}"
                             th:text="${expense.categoryLabel()}">Alimentação</td>
@@ -195,6 +213,18 @@
                                     </svg>
                                 </button>
                             </div>
+                        </td>
+                        <td data-label="Ações" class="aggregate-actions-spacer" th:if="${canManageExpenses and expense.id() == null}">
+                            <span class="aggregate-status-tag" title="Despesas consolidadas deste subdomínio">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                <span>Consolidado</span>
+                            </span>
                         </td>
                     </tr>
                     </tbody>

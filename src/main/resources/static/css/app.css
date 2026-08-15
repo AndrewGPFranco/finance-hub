@@ -1171,6 +1171,106 @@ body:not(.sidebar-open) .theme-toggle {
     color: var(--text-soft);
 }
 
+.data-table tbody tr.aggregated-expense-row {
+    background: var(--surface-subtle);
+}
+
+.data-table tbody tr.aggregated-expense-row:hover {
+    background: var(--surface-subtle);
+    filter: brightness(0.98);
+}
+
+html[data-theme="dark"] .data-table tbody tr.aggregated-expense-row:hover,
+:root.app-dark .data-table tbody tr.aggregated-expense-row:hover {
+    filter: brightness(1.06);
+}
+
+.aggregated-expense-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.aggregated-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-muted);
+    border: 1px solid var(--border-soft);
+    flex-shrink: 0;
+}
+
+.aggregated-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.aggregated-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.aggregate-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 750;
+    line-height: 1;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    background: rgba(17, 24, 39, 0.06);
+    color: var(--text);
+    border: 1px solid var(--border-soft);
+}
+
+html[data-theme="dark"] .aggregate-badge,
+:root.app-dark .aggregate-badge {
+    background: rgba(66, 201, 135, 0.12);
+    color: var(--primary);
+    border-color: rgba(66, 201, 135, 0.25);
+}
+
+.aggregate-indicator-bullet {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    margin: 0 auto;
+}
+
+.aggregate-status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-soft);
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    user-select: none;
+}
+
+.aggregate-status-tag svg {
+    color: var(--text-soft);
+}
+
+.aggregated-expense-row .amount-column {
+    font-weight: 780;
+    color: var(--text);
+}
+
 .subdomain-photo {
     width: 56px;
     height: 56px;
@@ -1743,6 +1843,8 @@ body:not(.sidebar-open) .theme-toggle {
     .expense-table .aggregated-expense-row {
         grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
+        background: var(--surface-subtle);
+        border: 1px dashed var(--border);
     }
 
     .expense-table .aggregated-expense-row .aggregate-selection-spacer {
@@ -1750,13 +1852,19 @@ body:not(.sidebar-open) .theme-toggle {
     }
 
     .expense-table .aggregated-expense-row td[data-label="Despesa"] {
+        display: block;
         grid-column: 1;
         grid-row: 1;
     }
 
     .expense-table .aggregated-expense-row td[data-label="Valor"] {
+        display: block;
         grid-column: 2;
         grid-row: 1;
+    }
+
+    .expense-table .aggregated-expense-row td[data-label="Ações"] {
+        display: none;
     }
 
     .expense-mobile-summary {
