@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -89,6 +90,18 @@ public class SubdomainService {
         return subdomainRepository.subdomainsByUser(user.getId(), PermissionSubdomainType.EDITOR);
     }
 
+    public List<OutputSubdomainDTO> subdomainsByUser(User user, UUID idSubAtual) {
+        var subdominioAtual = resolve(user, idSubAtual);
+
+        var subdominios = subdomainRepository.subdomainsByUser(user.getId(), PermissionSubdomainType.EDITOR);
+
+        return subdominios.stream().map(s -> {
+            var sub = subdomainRepository.findById(s.id()).orElseThrow(() -> new RuntimeException("Subdomínio não encontrado!"));
+            var associacao = subdomainAggregatedRepository.obterAssociacaoEntreSubdominios(subdominioAtual.getId(), sub.getId());
+            return OutputSubdomainDTO.copiaComAgregado(s, associacao.isPresent());
+        }).toList();
+    }
+
     public boolean canManage(User user, UUID idSubdomain) {
         if (idSubdomain == null)
             return false;
@@ -111,7 +124,7 @@ public class SubdomainService {
     }
 
     public OutputSubdomainDTO getSubdomainByIdAndUser(UUID idSubdomain, User user) {
-        return OutputSubdomainDTO.fromEntity(resolve(user, idSubdomain), true);
+        return OutputSubdomainDTO.fromEntity(resolve(user, idSubdomain), true, false);
     }
 
     @Transactional

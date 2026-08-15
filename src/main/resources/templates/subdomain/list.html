@@ -84,7 +84,8 @@
                                         th:if="${subdomain.isOwner()
                                             and #lists.size(subdomains) > 1
                                             and selectedSubdomainId != null
-                                            and !subdomain.id().equals(selectedSubdomainId)}"
+                                            and !subdomain.id().equals(selectedSubdomainId)
+                                            and !subdomain.isAggregated}"
                                         th:data-associate-source-id="${subdomain.id()}"
                                         th:data-associate-source-name="${subdomain.name()}"
                                         aria-label="Agregar este subdomínio ao atual"
@@ -101,7 +102,8 @@
                                         th:if="${subdomain.isOwner()
                                             and #lists.size(subdomains) > 1
                                             and selectedSubdomainId != null
-                                            and !subdomain.id().equals(selectedSubdomainId)}"
+                                            and !subdomain.id().equals(selectedSubdomainId)
+                                            and subdomain.isAggregated}"
                                         th:data-disassociate-source-id="${subdomain.id()}"
                                         th:data-disassociate-source-name="${subdomain.name()}"
                                         aria-label="Desassociar este subdomínio do atual"

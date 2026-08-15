@@ -50,6 +50,7 @@ public interface SubdomainRepository extends JpaRepository<Subdomain, UUID> {
                     case when s.user.id = :idUser then true else false end,
                     s.urlPhoto,
                     s.id,
+                    null,
                     s.name,
                     case when s.user.id = :idUser then :ownerPermission else sm.permission end
                 )

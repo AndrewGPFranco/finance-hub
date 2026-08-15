@@ -69,7 +69,7 @@
                 <span class="sidebar-text">Carteira</span>
             </a>
             <a th:classappend="${active == 'subdomain'} ? 'active' : ''"
-               th:href="@{/subdomain/by-user}"
+               th:href="@{/subdomain/by-user(idSubdomain=${selectedSubdomainId})}"
                aria-label="Subdomínios" title="Subdomínios">
                 <span class="nav-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

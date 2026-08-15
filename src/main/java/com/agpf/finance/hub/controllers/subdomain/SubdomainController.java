@@ -52,11 +52,11 @@ public class SubdomainController {
     }
 
     @GetMapping(value = "/by-user")
-    String getSubdomainsByUser(Model model, Authentication authentication) {
+    String getSubdomainsByUser(Model model, Authentication authentication, @RequestParam UUID idSubdomain) {
         var user = UserUtils.getUser(authentication);
 
         try {
-            var subdomains = subdomainService.subdomainsByUser(user);
+            var subdomains = subdomainService.subdomainsByUser(user, idSubdomain);
             model.addAttribute("subdomains", subdomains);
         } catch (Exception _) {
             model.addAttribute("subdomains", List.of());
