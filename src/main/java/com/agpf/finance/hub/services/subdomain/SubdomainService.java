@@ -151,6 +151,7 @@ public class SubdomainService {
         var subdomain = resolve(user, idSubdomain);
 
         deleteLocalPhoto(subdomain.getUrlPhoto());
+        subdomainAggregatedRepository.deletarAssociacao(subdomain.getId());
 
         subdomainRepository.delete(subdomain);
     }

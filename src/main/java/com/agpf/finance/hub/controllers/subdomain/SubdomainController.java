@@ -9,6 +9,7 @@ import com.agpf.finance.hub.services.subdomain.SubdomainService;
 import com.agpf.finance.hub.utils.UserUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/subdomain")
@@ -45,7 +47,7 @@ public class SubdomainController {
         try {
             subdomainService.register(dto, UserUtils.getUser(authentication));
             redirectAttributes.addFlashAttribute("result", "Subdomínio cadastrado com sucesso.");
-            return "redirect:/subdomain/by-user";
+            return "redirect:/dashboard";
         } catch (Exception exception) {
             model.addAttribute("registerError", exception.getMessage());
             return SUBDOMAIN_REGISTER;
@@ -87,7 +89,7 @@ public class SubdomainController {
         subdomainService.edit(dto, idSubdomain, user);
 
         redirectAttributes.addFlashAttribute("result", "Subdomínio editado com sucesso.");
-        return "redirect:/subdomain/by-user";
+        return "redirect:/dashboard";
     }
 
     @DeleteMapping(value = "/{idSubdomain}")
@@ -99,11 +101,12 @@ public class SubdomainController {
             redirectAttributes.addFlashAttribute("result", "Subdomínio deletado com sucesso.");
         } catch (BusinessException businessException) {
             redirectAttributes.addFlashAttribute("negativeFeedback", businessException.getMessage());
-        } catch (Exception _) {
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             redirectAttributes.addFlashAttribute("negativeFeedback", "Ocorreu um erro ao realizar a deleção do subdomínio");
         }
 
-        return "redirect:/subdomain/by-user";
+        return "redirect:/dashboard";
     }
 
     @PutMapping(value = "/change-subdomain")

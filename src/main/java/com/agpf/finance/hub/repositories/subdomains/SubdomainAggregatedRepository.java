@@ -3,6 +3,7 @@ package com.agpf.finance.hub.repositories.subdomains;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.subdomain.SubdomainAggregated;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -44,4 +45,9 @@ public interface SubdomainAggregatedRepository extends JpaRepository<SubdomainAg
                                                                   @Param("segundoSub") UUID segundoSubId,
                                                                   @Param("dateToUse") LocalDate dateToUse);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = """
+            delete from subdomain_aggregates sa where sa.subdomain_id = :idSubdominio or sa.subdomain_aggregate_id = :idSubdominio
+            """, nativeQuery = true)
+    void deletarAssociacao(@Param("idSubdominio") UUID id);
 }
