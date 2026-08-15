@@ -44,7 +44,7 @@ public class GlobalModelAttributeController {
         session.setAttribute(SELECTED_MONTH, selectedMonth.name());
         var selectedDate = DateUtils.firstDayOfMonth(DateUtils.getLocalDateTimeAmericaSP().toLocalDate().withMonth(selectedMonth.getValue()));
 
-        model.addAttribute("navbarSubdomains", subdomainService.subdomainsByUser(user, resolvedSubdomainId));
+        model.addAttribute("navbarSubdomains", subdomainService.subdomainsByUser(user, resolvedSubdomainId, selectedDate));
         model.addAttribute(SELECTED_SUBDOMAIN_ID, resolvedSubdomainId);
         model.addAttribute("canManageSelectedSubdomain", subdomainService.canManage(user, resolvedSubdomainId));
         model.addAttribute("monthOptions", Arrays.asList(Month.values()));

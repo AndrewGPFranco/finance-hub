@@ -15,7 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.Month;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,12 +71,12 @@ public class ExpenseController {
     String getExpensesByUser(Model model, Authentication authentication,
                              @RequestParam(defaultValue = "ASC") Sort.Direction direction,
                              @RequestParam(defaultValue = "TITLE") FilterListExpenseType filter,
-                             @ModelAttribute("selectedMonth") Month selectedMonth,
+                             @ModelAttribute("selectedDate") LocalDate selectedDate,
                              @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId) {
         var user = UserUtils.getUser(authentication);
 
         try {
-            var expenses = expenseService.byUser(user, selectedSubdomainId, filter, direction, selectedMonth);
+            var expenses = expenseService.byUser(user, selectedSubdomainId, filter, direction, selectedDate);
 
             model.addAttribute("expenses", expenses);
             model.addAttribute("filters", expenseService.getPossibleFilters());

@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -90,14 +90,15 @@ public class SubdomainService {
         return subdomainRepository.subdomainsByUser(user.getId(), PermissionSubdomainType.EDITOR);
     }
 
-    public List<OutputSubdomainDTO> subdomainsByUser(User user, UUID idSubAtual) {
+    public List<OutputSubdomainDTO> subdomainsByUser(User user, UUID idSubAtual, LocalDate dateToUse) {
         var subdominioAtual = resolve(user, idSubAtual);
 
         var subdominios = subdomainRepository.subdomainsByUser(user.getId(), PermissionSubdomainType.EDITOR);
 
         return subdominios.stream().map(s -> {
             var sub = subdomainRepository.findById(s.id()).orElseThrow(() -> new RuntimeException("Subdomínio não encontrado!"));
-            var associacao = subdomainAggregatedRepository.obterAssociacaoEntreSubdominios(subdominioAtual.getId(), sub.getId());
+            var associacao = subdomainAggregatedRepository.obterAssociacaoEntreSubdominios(
+                    subdominioAtual.getId(), sub.getId(), dateToUse);
             return OutputSubdomainDTO.copiaComAgregado(s, associacao.isPresent());
         }).toList();
     }
@@ -180,14 +181,15 @@ public class SubdomainService {
     }
 
     @Transactional
-    public String associarSubdominioAOutro(UUID subdominioAlvo, UUID subdominioAgregado, User user) {
+    public String associarSubdominioAOutro(UUID subdominioAlvo, UUID subdominioAgregado, User user, LocalDate dateToUse) {
         var subAgregado = resolve(user, subdominioAgregado);
         var subAlvo = resolve(user, subdominioAlvo);
 
-        if (subdomainAggregatedRepository.verificaSeJaHaVinculoEntreSubdominios(subdominioAlvo, subdominioAgregado))
+        if (subdomainAggregatedRepository.verificaSeJaHaVinculoEntreSubdominios(subdominioAlvo, subdominioAgregado, dateToUse))
             throw new BusinessException("Os subdomínios já contém vínculo.");
 
-        var entity = SubdomainAggregated.builder().subdomainAggregate(subAgregado).subdomainTarget(subAlvo).build();
+        var entity = SubdomainAggregated.builder().subdomainAggregate(subAgregado).subdomainTarget(subAlvo)
+                .dateToUse(dateToUse).build();
 
         var aggregatedSubdomain = subdomainAggregatedRepository.save(entity);
 
@@ -196,11 +198,11 @@ public class SubdomainService {
     }
 
     @Transactional
-    public String desassociarSubdominios(UUID subdominioAlvo, UUID subdominioAgregado, User user) {
+    public String desassociarSubdominios(UUID subdominioAlvo, UUID subdominioAgregado, User user, LocalDate dateToUse) {
         var subAgregado = resolve(user, subdominioAgregado);
         var subAlvo = resolve(user, subdominioAlvo);
 
-        var agregacao = subdomainAggregatedRepository.obterAssociacaoEntreSubdominios(subdominioAgregado, subdominioAlvo)
+        var agregacao = subdomainAggregatedRepository.obterAssociacaoEntreSubdominios(subdominioAgregado, subdominioAlvo, dateToUse)
                 .orElseThrow(() -> new BusinessException("Os subdomínios informados não possuem vínculos."));
 
         subdomainAggregatedRepository.deleteById(agregacao.getId());

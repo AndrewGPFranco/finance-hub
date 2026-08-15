@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
-import java.time.Month;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -50,11 +50,11 @@ public class ExpenseService {
     }
 
     public List<OutputExpenseDTO> byUser(User user, UUID subdomainId, FilterListExpenseType filter,
-                                         Sort.Direction direction, Month month) {
+                                         Sort.Direction direction, LocalDate dateToUse) {
         if (subdomainId == null)
             return List.of();
 
-        var despesasDoUsuario = expenseRepository.findByUserAndSubdomainId(user, subdomainId, Sort.by(direction, filter.getFieldName()), month);
+        var despesasDoUsuario = expenseRepository.findByUserAndSubdomainId(user, subdomainId, Sort.by(direction, filter.getFieldName()), dateToUse.getMonth());
 
         var subdominioEncontrado = subdomainRepository.findById(subdomainId)
                 .orElseThrow(() -> new NotFoundException("Subdomínio não encontrado"));
@@ -64,16 +64,19 @@ public class ExpenseService {
         var despesasTotal = new ArrayList<>(despesasDoUsuario);
 
         if (!subAlvo.isEmpty())
-            consolidaDespesasAgregadas(user, month, subAlvo, despesasTotal);
+            consolidaDespesasAgregadas(user, dateToUse, subAlvo, despesasTotal);
 
         return despesasTotal;
     }
 
-    private void consolidaDespesasAgregadas(User user, Month month, List<SubdomainAggregated> subAlvo, ArrayList<OutputExpenseDTO> despesasTotal) {
+    private void consolidaDespesasAgregadas(User user, LocalDate dateToUse, List<SubdomainAggregated> subAlvo, ArrayList<OutputExpenseDTO> despesasTotal) {
         for (var subdominio : subAlvo) {
+            if (!subdominio.getDateToUse().equals(dateToUse))
+                continue;
+
             var agregado = subdominio.getSubdomainAggregate();
 
-            var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), user, month);
+            var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), user, dateToUse.getMonth());
 
             var amount = despesasDoAgregado.stream().map(OutputExpenseDTO::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -140,10 +143,9 @@ public class ExpenseService {
         expenseRepository.save(expense);
     }
 
-    public List<OutputExpenseDTO> getExpensesByUser(User user, UUID subdomainId, Month month) {
+    public List<OutputExpenseDTO> getExpensesByUser(User user, UUID subdomainId, LocalDate dateToUse) {
         if (subdomainId == null) return List.of();
-
-        return byUser(user, subdomainId, FilterListExpenseType.AMOUNT, Sort.Direction.ASC, month);
+        return byUser(user, subdomainId, FilterListExpenseType.AMOUNT, Sort.Direction.ASC, dateToUse);
     }
 
     @Transactional

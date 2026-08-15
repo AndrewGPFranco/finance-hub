@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,11 +53,12 @@ public class SubdomainController {
     }
 
     @GetMapping(value = "/by-user")
-    String getSubdomainsByUser(Model model, Authentication authentication, @RequestParam UUID idSubdomain) {
+    String getSubdomainsByUser(Model model, Authentication authentication, @RequestParam UUID idSubdomain,
+                               @ModelAttribute("selectedDate") LocalDate selectedDate) {
         var user = UserUtils.getUser(authentication);
 
         try {
-            var subdomains = subdomainService.subdomainsByUser(user, idSubdomain);
+            var subdomains = subdomainService.subdomainsByUser(user, idSubdomain, selectedDate);
             model.addAttribute("subdomains", subdomains);
         } catch (Exception _) {
             model.addAttribute("subdomains", List.of());
@@ -124,11 +126,12 @@ public class SubdomainController {
 
     @PostMapping(value = "/associar-subdominios")
     String associarSubdominioAOutro(Authentication authentication, RedirectAttributes redirectAttributes,
-                                    @RequestParam UUID idSubdominioAlvo, @RequestParam UUID idSubdominioAgregado) {
+                                    @RequestParam UUID idSubdominioAlvo, @RequestParam UUID idSubdominioAgregado,
+                                    @ModelAttribute("selectedDate") LocalDate selectedDate) {
         var user = UserUtils.getUser(authentication);
 
         try {
-            var resposta = subdomainService.associarSubdominioAOutro(idSubdominioAlvo, idSubdominioAgregado, user);
+            var resposta = subdomainService.associarSubdominioAOutro(idSubdominioAlvo, idSubdominioAgregado, user, selectedDate);
             redirectAttributes.addFlashAttribute("positiveFeedback", resposta);
         } catch (BusinessException be) {
             redirectAttributes.addFlashAttribute("negativeFeedback", be.getMessage());
@@ -142,11 +145,12 @@ public class SubdomainController {
 
     @PutMapping(value = "/desassociar-subdominios")
     String desassociarSubdominios(Authentication authentication, RedirectAttributes redirectAttributes,
-                                  @RequestParam UUID idSubdominioAlvo, @RequestParam UUID idSubdominioAgregado) {
+                                  @RequestParam UUID idSubdominioAlvo, @RequestParam UUID idSubdominioAgregado,
+                                  @ModelAttribute("selectedDate") LocalDate selectedDate) {
         var user = UserUtils.getUser(authentication);
 
         try {
-            var resposta = subdomainService.desassociarSubdominios(idSubdominioAlvo, idSubdominioAgregado, user);
+            var resposta = subdomainService.desassociarSubdominios(idSubdominioAlvo, idSubdominioAgregado, user, selectedDate);
             redirectAttributes.addFlashAttribute("positiveFeedback", resposta);
         } catch (BusinessException be) {
             redirectAttributes.addFlashAttribute("negativeFeedback", be.getMessage());

@@ -20,7 +20,7 @@ public class DashboardService {
     private final ExpenseService expenseService;
 
     public OutputDashboardDTO outputExpenses(User user, UUID subdomainId, LocalDate dateToUse) {
-        var expenses = expenseService.getExpensesByUser(user, subdomainId, dateToUse.getMonth());
+        var expenses = expenseService.getExpensesByUser(user, subdomainId, dateToUse);
 
         var expensesPaid = (int) expenses.stream()
                 .filter(expense -> expense.status() == StatusExpenseType.PAID).count();
