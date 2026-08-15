@@ -70,9 +70,7 @@ public class ExpenseService {
 
                 var amount = despesasDoAgregado.stream().map(OutputExpenseDTO::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-                despesasTotal.add(new OutputExpenseDTO(null, agregado.getName(), amount, null,
-                        null, null, null, null, false, null,
-                        null));
+                despesasTotal.add(OutputExpenseDTO.forAggregate(agregado.getName(), amount));
             }
         }
 

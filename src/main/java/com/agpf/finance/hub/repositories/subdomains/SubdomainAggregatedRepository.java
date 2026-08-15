@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -26,5 +27,13 @@ public interface SubdomainAggregatedRepository extends JpaRepository<SubdomainAg
                         )
             """, nativeQuery = true)
     boolean verificaSeJaHaVinculoEntreSubdominios(@Param("primeiroSub") UUID primeiroSubId, @Param("segundoSub") UUID segundoSubId);
+
+    @Query(value = """
+            SELECT *
+            FROM subdomain_aggregates sa
+            WHERE (sa.subdomain_id = :primeiroSub AND sa.subdomain_aggregate_id = :segundoSub)
+               OR (sa.subdomain_id = :segundoSub AND sa.subdomain_aggregate_id = :primeiroSub)
+            """, nativeQuery = true)
+    Optional<SubdomainAggregated> obterAssociacaoEntreSubdominios(@Param("primeiroSub") UUID primeiroSubId, @Param("segundoSub") UUID segundoSubId);
 
 }

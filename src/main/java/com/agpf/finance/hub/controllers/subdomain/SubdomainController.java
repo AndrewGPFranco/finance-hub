@@ -140,4 +140,22 @@ public class SubdomainController {
         return "redirect:/dashboard";
     }
 
+    @PutMapping(value = "/desassociar-subdominios")
+    String desassociarSubdominios(Authentication authentication, RedirectAttributes redirectAttributes,
+                                  @RequestParam UUID idSubdominioAlvo, @RequestParam UUID idSubdominioAgregado) {
+        var user = UserUtils.getUser(authentication);
+
+        try {
+            var resposta = subdomainService.desassociarSubdominios(idSubdominioAlvo, idSubdominioAgregado, user);
+            redirectAttributes.addFlashAttribute("positiveFeedback", resposta);
+        } catch (BusinessException be) {
+            redirectAttributes.addFlashAttribute("negativeFeedback", be.getMessage());
+        } catch (Exception _) {
+            redirectAttributes.addFlashAttribute("negativeFeedback",
+                    "Ocorreu um erro ao associar subdomínios, tente novamente.");
+        }
+
+        return "redirect:/dashboard";
+    }
+
 }

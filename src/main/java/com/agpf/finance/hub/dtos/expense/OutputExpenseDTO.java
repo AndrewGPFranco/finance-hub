@@ -45,6 +45,11 @@ public record OutputExpenseDTO(
         );
     }
 
+    public static OutputExpenseDTO forAggregate(String name, BigDecimal amount) {
+        return new OutputExpenseDTO(null, name, amount, null, null, null,
+                null, null, false, null, null);
+    }
+
     public static List<OutputExpenseDTO> fromEntities(List<Expense> expenses) {
         return expenses.stream()
                 .map(OutputExpenseDTO::fromEntity)

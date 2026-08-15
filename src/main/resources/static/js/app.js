@@ -446,4 +446,68 @@ document.addEventListener("DOMContentLoaded", function () {
                 closeAssociateModal();
         });
     }
+
+    let disassociateModal = document.querySelector("[data-disassociate-modal]");
+
+    if (disassociateModal) {
+        let disassociateForm = disassociateModal.querySelector("[data-disassociate-form]");
+        let disassociateTargetId = disassociateModal.querySelector("[data-disassociate-target-id]");
+        let disassociateTargetName = disassociateModal.querySelector("[data-disassociate-target-name]");
+        let disassociateTargetField = disassociateModal.querySelector("[data-disassociate-target-field]");
+        let disassociateSourceId = disassociateModal.querySelector("[data-disassociate-source-id]");
+        let disassociateSourceName = disassociateModal.querySelector("[data-disassociate-source-name]");
+        let disassociateSourceField = disassociateModal.querySelector("[data-disassociate-source-field]");
+        let disassociateSubmit = disassociateModal.querySelector("[data-disassociate-submit]");
+        let globalSubdomainSelect = document.querySelector("[data-global-subdomain-select]");
+        let lastDisassociateTrigger = null;
+
+        let closeDisassociateModal = function () {
+            disassociateModal.hidden = true;
+            disassociateForm.reset();
+            disassociateTargetId.value = "";
+            disassociateSourceId.value = "";
+
+            if (lastDisassociateTrigger)
+                lastDisassociateTrigger.focus();
+        };
+
+        document.querySelectorAll(".btn-disassociate-subdomain").forEach(function (button) {
+            button.addEventListener("click", function () {
+                let targetId = globalSubdomainSelect ? globalSubdomainSelect.value : "";
+                let targetOption = globalSubdomainSelect && globalSubdomainSelect.selectedOptions[0];
+                let targetName = targetOption ? targetOption.textContent.trim() : "";
+                let sourceId = button.dataset.disassociateSourceId;
+                let sourceName = button.dataset.disassociateSourceName || "este subdomínio";
+
+                if (!targetId || targetId === sourceId)
+                    return;
+
+                lastDisassociateTrigger = button;
+                disassociateTargetId.value = targetId;
+                disassociateSourceId.value = sourceId;
+                disassociateTargetName.textContent = targetName;
+                disassociateTargetField.textContent = targetName;
+                disassociateSourceName.textContent = sourceName;
+                disassociateSourceField.textContent = sourceName;
+
+                disassociateSubmit.disabled = false;
+                disassociateModal.hidden = false;
+                disassociateSubmit.focus();
+            });
+        });
+
+        disassociateModal.querySelectorAll("[data-disassociate-close]").forEach(function (button) {
+            button.addEventListener("click", closeDisassociateModal);
+        });
+
+        disassociateModal.addEventListener("click", function (event) {
+            if (event.target === disassociateModal)
+                closeDisassociateModal();
+        });
+
+        window.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && !disassociateModal.hidden)
+                closeDisassociateModal();
+        });
+    }
 });

@@ -8,8 +8,8 @@ import com.agpf.finance.hub.dtos.subdomain.UpdateExpenseSubdomainDTO;
 import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
 import com.agpf.finance.hub.exceptions.BusinessException;
 import com.agpf.finance.hub.exceptions.NotFoundException;
-import com.agpf.finance.hub.models.subdomain.SubdomainAggregated;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
+import com.agpf.finance.hub.models.subdomain.SubdomainAggregated;
 import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
 import com.agpf.finance.hub.repositories.subdomains.SubdomainAggregatedRepository;
@@ -180,5 +180,18 @@ public class SubdomainService {
 
         return String.format("Subdomínio %s foi agregado ao subdomínio %s",
                 aggregatedSubdomain.getSubdomainAggregate().getName(), aggregatedSubdomain.getSubdomainTarget().getName());
+    }
+
+    @Transactional
+    public String desassociarSubdominios(UUID subdominioAlvo, UUID subdominioAgregado, User user) {
+        var subAgregado = resolve(user, subdominioAgregado);
+        var subAlvo = resolve(user, subdominioAlvo);
+
+        var agregacao = subdomainAggregatedRepository.obterAssociacaoEntreSubdominios(subdominioAgregado, subdominioAlvo)
+                .orElseThrow(() -> new BusinessException("Os subdomínios informados não possuem vínculos."));
+
+        subdomainAggregatedRepository.deleteById(agregacao.getId());
+
+        return String.format("Subdomínio %s foi desagregado do subdomínio %s", subAgregado.getName(), subAlvo.getName());
     }
 }
