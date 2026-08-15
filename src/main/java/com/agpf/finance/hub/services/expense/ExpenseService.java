@@ -139,7 +139,7 @@ public class ExpenseService {
     public List<OutputExpenseDTO> getExpensesByUser(User user, UUID subdomainId, Month month) {
         if (subdomainId == null) return List.of();
 
-        return expenseRepository.findByUserAndSubdomainId(user, subdomainId, month);
+        return byUser(user, subdomainId, FilterListExpenseType.AMOUNT, Sort.Direction.ASC, month);
     }
 
     @Transactional
