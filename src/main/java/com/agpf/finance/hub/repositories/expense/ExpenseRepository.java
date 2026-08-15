@@ -64,23 +64,19 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
                                                     @Param("subdomainId") UUID subdomainId, @Param("month") Month month);
 
     @Query("""
-            select distinct new com.agpf.finance.hub.dtos.expense.OutputExpenseDTO(
-                e.id, e.title, e.amount, e.dueDate, e.paymentDate,
-                            e.status, e.category, e.paymentMethod, e.recurring,
+             select new com.agpf.finance.hub.dtos.expense.OutputExpenseDTO(
+                                        e.id, e.title, e.amount, e.dueDate,
+                                        e.paymentDate, e.status, e.category,
+                                        e.paymentMethod, e.recurring,
                                         e.installmentNumber, e.totalInstallments
              )
              from Expense e
-             left join e.subdomain.subdomainMembers sm
              where e.month = :month
                and e.subdomain.id = :subdomainId
-               and (
-                    e.subdomain.user = :user
-                    or (sm.user = :user and sm.ativo = true)
-               )
             """
     )
     List<OutputExpenseDTO> buscaDespesasDoSubAgregado(@Param("subdomainId") UUID subdomainId,
-                                                      @Param("user") User user, @Param("month") Month month);
+                                                      @Param("month") Month month);
 
     @Query("""
                 select distinct e

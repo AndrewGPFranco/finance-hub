@@ -64,24 +64,30 @@ public class ExpenseService {
         var despesasTotal = new ArrayList<>(despesasDoUsuario);
 
         if (!subAlvo.isEmpty())
-            consolidaDespesasAgregadas(user, dateToUse, subAlvo, despesasTotal);
+            consolidaDespesasAgregadas(dateToUse, subAlvo, despesasTotal);
 
         return despesasTotal;
     }
 
-    private void consolidaDespesasAgregadas(User user, LocalDate dateToUse, List<SubdomainAggregated> subAlvo, ArrayList<OutputExpenseDTO> despesasTotal) {
+    private void consolidaDespesasAgregadas(LocalDate dateToUse, List<SubdomainAggregated> subAlvo, ArrayList<OutputExpenseDTO> despesasTotal) {
+        var despesasAgregadas = new ArrayList<OutputExpenseDTO>();
+
         for (var subdominio : subAlvo) {
             if (!subdominio.getDateToUse().equals(dateToUse))
                 continue;
 
             var agregado = subdominio.getSubdomainAggregate();
 
-            var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), user, dateToUse.getMonth());
+            var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), dateToUse.getMonth());
 
             var amount = despesasDoAgregado.stream().map(OutputExpenseDTO::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            despesasTotal.add(OutputExpenseDTO.forAggregate(agregado.getName(), amount));
+            despesasAgregadas.add(OutputExpenseDTO.forAggregate(agregado.getName(), amount));
         }
+
+        var despesasOrdenadas = despesasAgregadas.stream().sorted(Comparator.comparing(OutputExpenseDTO::title)).toList();
+
+        despesasTotal.addAll(despesasOrdenadas);
     }
 
     public Map<FilterListExpenseType, String> getPossibleFilters() {
