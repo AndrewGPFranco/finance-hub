@@ -10,6 +10,7 @@ import com.agpf.finance.hub.enums.expense.StatusExpenseType;
 import com.agpf.finance.hub.enums.subdomain.PermissionSubdomainType;
 import com.agpf.finance.hub.exceptions.NotFoundException;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
+import com.agpf.finance.hub.models.subdomain.SubdomainAggregated;
 import com.agpf.finance.hub.models.user.User;
 import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
 import com.agpf.finance.hub.repositories.subdomains.SubdomainAggregatedRepository;
@@ -62,19 +63,22 @@ public class ExpenseService {
 
         var despesasTotal = new ArrayList<>(despesasDoUsuario);
 
-        if (!subAlvo.isEmpty()) {
-            for (var subdominio : subAlvo) {
-                var agregado = subdominio.getSubdomainAggregate();
-
-                var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), user, month);
-
-                var amount = despesasDoAgregado.stream().map(OutputExpenseDTO::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                despesasTotal.add(OutputExpenseDTO.forAggregate(agregado.getName(), amount));
-            }
-        }
+        if (!subAlvo.isEmpty())
+            consolidaDespesasAgregadas(user, month, subAlvo, despesasTotal);
 
         return despesasTotal;
+    }
+
+    private void consolidaDespesasAgregadas(User user, Month month, List<SubdomainAggregated> subAlvo, ArrayList<OutputExpenseDTO> despesasTotal) {
+        for (var subdominio : subAlvo) {
+            var agregado = subdominio.getSubdomainAggregate();
+
+            var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), user, month);
+
+            var amount = despesasDoAgregado.stream().map(OutputExpenseDTO::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            despesasTotal.add(OutputExpenseDTO.forAggregate(agregado.getName(), amount));
+        }
     }
 
     public Map<FilterListExpenseType, String> getPossibleFilters() {
