@@ -30,7 +30,9 @@ public class ExpenseController {
 
     @GetMapping(value = "/register")
     String registerForm(Model model, Authentication authentication,
-                        @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId, RedirectAttributes redirectAttributes) {
+                        @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId,
+                        @ModelAttribute("selectedDate") LocalDate selectedDate,
+                        RedirectAttributes redirectAttributes) {
         var user = UserUtils.getUser(authentication);
 
         if (!expenseService.canManageExpenses(user, selectedSubdomainId)) {
@@ -38,7 +40,7 @@ public class ExpenseController {
             return REDIRECT_EXPENSE_BY_USER;
         }
 
-        model.addAttribute("expense", new ExpenseRegisterDTO(selectedSubdomainId));
+        model.addAttribute("expense", expenseService.newExpenseRegisterDTO(selectedSubdomainId, user, selectedDate));
         expenseService.addRegisterOptions(model);
 
         return EXPENSE_REGISTER;

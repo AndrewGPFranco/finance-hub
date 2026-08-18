@@ -642,6 +642,13 @@ body:not(.sidebar-open) .theme-toggle {
     margin-bottom: 24px;
 }
 
+.dashboard-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1654,6 +1661,17 @@ html[data-theme="dark"] .aggregate-badge,
     .dashboard-header .btn {
         width: 100%;
         margin-top: 16px;
+    }
+
+    .dashboard-header-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .dashboard-header-actions .btn {
+        margin-top: 0;
     }
 
     .metric-card {

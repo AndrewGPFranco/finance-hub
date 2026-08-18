@@ -12,12 +12,14 @@ import com.agpf.finance.hub.exceptions.NotFoundException;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.subdomain.SubdomainAggregated;
 import com.agpf.finance.hub.models.user.User;
+import com.agpf.finance.hub.repositories.configs.ExpenseConfigRepository;
 import com.agpf.finance.hub.repositories.expense.ExpenseRepository;
 import com.agpf.finance.hub.repositories.subdomains.SubdomainAggregatedRepository;
 import com.agpf.finance.hub.repositories.subdomains.SubdomainRepository;
 import com.agpf.finance.hub.services.subdomain.SubdomainService;
 import com.agpf.finance.hub.utils.CrudUtils;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +40,7 @@ public class ExpenseService {
     private final SubdomainService subdomainService;
     private final ExpenseRepository expenseRepository;
     private final SubdomainRepository subdomainRepository;
+    private final ExpenseConfigRepository expenseConfigRepository;
     private final SubdomainAggregatedRepository subdomainAggregatedRepository;
 
     @Transactional
@@ -175,5 +178,22 @@ public class ExpenseService {
 
         return subdomainRepository.findByIdAndUser(subdomainId, user)
                 .orElseThrow(() -> new NotFoundException("Subdomínio não encontrado!"));
+    }
+
+    public ExpenseRegisterDTO newExpenseRegisterDTO(UUID idSubdominio, User user, LocalDate dateToUse) {
+        var subdomain = resolveManageableSubdomain(idSubdominio, user);
+
+        var config = expenseConfigRepository.buscarConfigPeloSubdominioEMes(
+                subdomain.getId(), user.getId(), dateToUse);
+
+        if (config.isPresent()) {
+            var dto = config.get();
+            return ExpenseRegisterDTO.builder()
+                    .subdomainId(idSubdominio).paymentDate(dto.getPaymentDate())
+                    .amount(dto.getAmount()).dueDate(dto.getDueDate()).category(dto.getCategory())
+                    .status(dto.getStatus()).paymentMethod(dto.getPaymentMethod()).build();
+        }
+
+        return new ExpenseRegisterDTO(idSubdominio);
     }
 }

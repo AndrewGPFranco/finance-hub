@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 import static com.agpf.finance.hub.utils.DateUtils.getLocalDateTimeAmericaSP;
 
+@Builder
 public record ExpenseRegisterDTO(
         @NotBlank(message = "O título é obrigatório!")
         @Size(max = 120, message = "O título deve ter no máximo 120 caracteres.")

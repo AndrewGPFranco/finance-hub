@@ -64,14 +64,16 @@
                     <div class="form-row">
                         <div class="field-group">
                             <label class="field-label" for="dueDate">Vencimento</label>
-                            <input class="field-input" id="dueDate" th:field="*{dueDate}" type="date" required>
+                            <input class="field-input" id="dueDate" name="dueDate" type="date" required
+                                   th:value="${expense.dueDate() != null ? #temporals.format(expense.dueDate(), 'yyyy-MM-dd') : ''}">
                             <span class="field-error" th:if="${#fields.hasErrors('dueDate')}"
                                   th:errors="*{dueDate}"></span>
                         </div>
 
                         <div class="field-group">
                             <label class="field-label" for="paymentDate">Data de pagamento</label>
-                            <input class="field-input" id="paymentDate" th:field="*{paymentDate}" type="date">
+                            <input class="field-input" id="paymentDate" name="paymentDate" type="date"
+                                   th:value="${expense.paymentDate() != null ? #temporals.format(expense.paymentDate(), 'yyyy-MM-dd') : ''}">
                             <span class="field-error" th:if="${#fields.hasErrors('paymentDate')}"
                                   th:errors="*{paymentDate}"></span>
                         </div>

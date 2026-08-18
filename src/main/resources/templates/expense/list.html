@@ -12,10 +12,15 @@
                 <p class="page-subtitle">Acompanhe os gastos cadastrados para sua conta.</p>
             </div>
 
-            <a class="btn btn-primary btn-primary-inline"
-               th:if="${canManageExpenses}"
-               th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Nova
-                despesa</a>
+            <div class="dashboard-header-actions" th:if="${canManageExpenses}">
+                <a class="btn btn-secondary"
+                   th:href="@{/config/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
+                    Configurar despesa
+                </a>
+                <a class="btn btn-primary btn-primary-inline"
+                   th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Nova
+                    despesa</a>
+            </div>
         </section>
 
         <section class="content-panel list-panel">
