@@ -16,9 +16,9 @@ CREATE TABLE expense_configs
 );
 
 ALTER TABLE expense_configs
-    ADD CONSTRAINT uk_subdomain_date_to_use UNIQUE (subdomain_id, date_to_use);
+    ADD CONSTRAINT uk_user_subdomain_date_to_use UNIQUE (user_id, subdomain_id, date_to_use);
 
-CREATE INDEX idx_subdomain_date_to_use ON expense_configs (subdomain_id, date_to_use);
+CREATE INDEX idx_user_subdomain_date_to_use ON expense_configs (user_id, subdomain_id, date_to_use);
 
 ALTER TABLE expense_configs
     ADD CONSTRAINT FK_EXPENSE_CONFIGS_ON_SUBDOMAIN FOREIGN KEY (subdomain_id) REFERENCES subdomains (id);

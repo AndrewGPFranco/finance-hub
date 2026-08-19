@@ -18,9 +18,11 @@ import java.util.UUID;
 @Builder
 public record ExpenseConfigRegisterDTO(
         UUID idSubdominio,
+
         @NotNull(message = "O mês e ano são obrigatórios.")
         @DateTimeFormat(pattern = "yyyy-MM")
         YearMonth dataDeUso,
+
         LocalDate dataDoPagamento,
         BigDecimal valor,
         LocalDate dataDeVencimento,

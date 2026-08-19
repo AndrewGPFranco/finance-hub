@@ -21,10 +21,10 @@ import java.time.YearMonth;
 @Table(
         name = "expense_configs",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_subdomain_date_to_use", columnNames = {"subdomain_id", "date_to_use"})
+                @UniqueConstraint(name = "uk_user_subdomain_date_to_use", columnNames = {"user_id", "subdomain_id", "date_to_use"})
         },
         indexes = {
-                @Index(name = "idx_subdomain_date_to_use", columnList = "subdomain_id, date_to_use")
+                @Index(name = "idx_user_subdomain_date_to_use", columnList = "user_id, subdomain_id, date_to_use")
         }
 )
 public class ExpenseConfig extends UserScopedConfig {
@@ -35,7 +35,7 @@ public class ExpenseConfig extends UserScopedConfig {
     @Column(name = "amount", precision = 12, scale = 2)
     private BigDecimal amount;
 
-    @Column(name = "due_date", nullable = false)
+    @Column(name = "due_date")
     private LocalDate dueDate;
 
     @Column(name = "status")

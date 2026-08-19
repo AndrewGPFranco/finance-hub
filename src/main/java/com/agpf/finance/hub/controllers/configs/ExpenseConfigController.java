@@ -45,8 +45,7 @@ public class ExpenseConfigController {
 
     @PostMapping(value = "/register")
     String registrarConfig(Authentication authentication, RedirectAttributes redirectAttributes,
-                           @Valid @ModelAttribute("config") ExpenseConfigRegisterDTO dto,
-                           BindingResult bindingResult, Model model) {
+                           @Valid @ModelAttribute("config") ExpenseConfigRegisterDTO dto, BindingResult bindingResult, Model model) {
         var user = UserUtils.getUser(authentication);
 
         if (!expenseService.canManageExpenses(user, dto.idSubdominio())) {
