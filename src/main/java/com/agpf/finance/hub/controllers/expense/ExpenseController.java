@@ -3,6 +3,7 @@ package com.agpf.finance.hub.controllers.expense;
 import com.agpf.finance.hub.dtos.expense.EditExpenseDTO;
 import com.agpf.finance.hub.dtos.expense.ExpenseRegisterDTO;
 import com.agpf.finance.hub.enums.expense.FilterListExpenseType;
+import com.agpf.finance.hub.services.configs.ExpenseConfigService;
 import com.agpf.finance.hub.services.expense.ExpenseService;
 import com.agpf.finance.hub.utils.UserUtils;
 import jakarta.validation.Valid;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class ExpenseController {
 
     private final ExpenseService expenseService;
+    private final ExpenseConfigService expenseConfigService;
     private static final String EXPENSE_REGISTER = "expense/register";
     private static final String REDIRECT_EXPENSE_BY_USER = "redirect:/expense/by-user";
 

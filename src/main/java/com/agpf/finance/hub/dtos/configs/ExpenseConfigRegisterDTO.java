@@ -1,5 +1,6 @@
 package com.agpf.finance.hub.dtos.configs;
 
+import com.agpf.finance.hub.dtos.expense.ExpenseRegisterDTO;
 import com.agpf.finance.hub.enums.expense.CategoryExpenseType;
 import com.agpf.finance.hub.enums.expense.PaymentMethod;
 import com.agpf.finance.hub.enums.expense.StatusExpenseType;
@@ -39,6 +40,14 @@ public record ExpenseConfigRegisterDTO(
     public ExpenseConfigRegisterDTO(UUID idSubdominio) {
         this(idSubdominio, null, null, null,
                 null, null, null, null);
+    }
+
+    public static ExpenseConfigRegisterDTO fromEntity(ExpenseConfig entidade, UUID idSubdominio) {
+        return ExpenseConfigRegisterDTO.builder()
+                .idSubdominio(idSubdominio).dataDeUso(entidade.getDateToUse())
+                .dataDoPagamento(entidade.getPaymentDate()).valor(entidade.getAmount()).metodoDoPagamento(entidade.getPaymentMethod())
+                .dataDeVencimento(entidade.getDueDate()).status(entidade.getStatus()).categoria(entidade.getCategory())
+                .build();
     }
 
 }

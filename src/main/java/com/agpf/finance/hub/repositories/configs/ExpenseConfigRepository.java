@@ -24,4 +24,12 @@ public interface ExpenseConfigRepository extends JpaRepository<ExpenseConfig, UU
     Optional<ExpenseConfig> buscarConfigPeloSubdominioEMes(@Param("subdominio") UUID idSubdominio,
                                                            @Param("user") UUID user,
                                                            @Param("dataDeUso") LocalDate dataDeUso);
+
+    @Query(value = """
+            select exists
+               (select 1 from expense_configs ec 
+               where ec.subdomain_id = :idSubdominio and ec.user_id = :idUsuario and ec.date_to_use = :dataDeUso
+                           )
+            """, nativeQuery = true)
+    boolean possuiConfig(@Param("idUsuario") UUID idUsuario, @Param("idSubdominio") UUID idSubdominio, @Param("dataDeUso") LocalDate dataUso);
 }

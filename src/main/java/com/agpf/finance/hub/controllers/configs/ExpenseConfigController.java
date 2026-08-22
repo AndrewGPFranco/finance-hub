@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Controller
@@ -28,7 +29,7 @@ public class ExpenseConfigController {
     private final ExpenseConfigService configService;
 
     @GetMapping(value = "/register")
-    String formRegistro(Model model, Authentication authentication,
+    String formRegistro(Model model, Authentication authentication, @ModelAttribute("selectedDate") LocalDate dataUso,
                         @ModelAttribute("selectedSubdomainId") UUID selectedSubdomainId, RedirectAttributes redirectAttributes) {
         var user = UserUtils.getUser(authentication);
 
@@ -37,7 +38,11 @@ public class ExpenseConfigController {
             return "redirect:/dashboard";
         }
 
-        model.addAttribute("config", new ExpenseConfigRegisterDTO(selectedSubdomainId));
+        var configBanco = configService.getConfigDoUsuarioESubdominio(user, selectedSubdomainId, dataUso);
+
+        var configDTO = configBanco.isEmpty() ? new ExpenseConfigRegisterDTO(selectedSubdomainId) : configBanco.get();
+
+        model.addAttribute("config", configDTO);
         expenseService.addRegisterOptions(model);
 
         return "config/expense/register";
@@ -59,11 +64,16 @@ public class ExpenseConfigController {
         }
 
         try {
-            configService.registrarConfig(dto, user);
-            redirectAttributes.addFlashAttribute("result", "Configuração de despesa registrada com sucesso!");
+            if (configService.verificaSeUsuarioPossuiConfig(user, dto.idSubdominio(), dto.dataDeUso().atDay(1))) {
+                configService.atualizaConfig(dto, user);
+                redirectAttributes.addFlashAttribute("result", "Configuração de despesa salva com sucesso!");
+            } else {
+                configService.registrarConfig(dto, user);
+                redirectAttributes.addFlashAttribute("result", "Configuração de despesa registrada com sucesso!");
+            }
         } catch (BusinessException businessException) {
             redirectAttributes.addFlashAttribute("negativeFeedback", businessException.getMessage());
-        } catch (Exception e) {
+        } catch (Exception _) {
             redirectAttributes.addFlashAttribute("negativeFeedback", "Ocorreu um erro ao realizar o registro da configuração");
         }
 

@@ -4,6 +4,8 @@ import com.agpf.finance.hub.models.configurations.converter.YearMonthDateConvert
 import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,6 +13,8 @@ import java.time.Instant;
 import java.time.YearMonth;
 import java.util.UUID;
 
+@Setter
+@Getter
 @MappedSuperclass
 public abstract class UserScopedConfig {
 

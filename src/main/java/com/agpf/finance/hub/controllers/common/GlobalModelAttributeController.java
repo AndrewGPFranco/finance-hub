@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.UUID;
 
 @ControllerAdvice
@@ -26,7 +27,7 @@ public class GlobalModelAttributeController {
     @ModelAttribute
     public void addGlobalAttributes(Model model, Authentication authentication,
                                     @RequestParam(required = false) UUID subdomainId,
-                                    @RequestParam(required = false) LocalDate dataDeUso, HttpSession session) {
+                                    @RequestParam(required = false) String dataDeUso, HttpSession session) {
         if (authentication == null || !(authentication.getPrincipal() instanceof AuthenticatedUser(var user)))
             return;
 
@@ -38,7 +39,8 @@ public class GlobalModelAttributeController {
         else
             session.removeAttribute(SELECTED_SUBDOMAIN_ID);
 
-        var dataSelecionada = dataDeUso != null ? dataDeUso : getSessionData(session);
+        var dataSelecionada = parseDataDeUso(dataDeUso);
+        dataSelecionada = dataSelecionada != null ? dataSelecionada : getSessionData(session);
         session.setAttribute(SELECTED_DATE, dataSelecionada);
 
         model.addAttribute("navbarSubdomains", subdomainService.subdomainsByUser(user, resolvedSubdomainId, dataSelecionada));
@@ -67,6 +69,17 @@ public class GlobalModelAttributeController {
             return data;
 
         return DateUtils.getLocalDateAmericaSP().withDayOfMonth(1);
+    }
+
+    private LocalDate parseDataDeUso(String dataDeUso) {
+        if (dataDeUso == null || dataDeUso.isBlank())
+            return null;
+
+        try {
+            return dataDeUso.length() == 7 ? YearMonth.parse(dataDeUso).atDay(1) : LocalDate.parse(dataDeUso);
+        } catch (RuntimeException _) {
+            return null;
+        }
     }
 
 }

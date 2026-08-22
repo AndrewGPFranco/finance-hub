@@ -65,8 +65,13 @@
                     <div class="form-row">
                         <div class="field-group">
                             <label class="field-label" for="dataDeVencimento">Vencimento</label>
-                            <input class="field-input" id="dataDeVencimento" th:field="*{dataDeVencimento}"
-                                   type="date">
+                            <input class="field-input"
+                                   id="dataDeVencimento"
+                                   name="dataDeVencimento"
+                                   type="date"
+                                   th:value="${config.dataDeVencimento() != null
+                                     ? #temporals.format(config.dataDeVencimento(), 'yyyy-MM-dd')
+                                     : ''}">
                             <span class="field-error" th:if="${#fields.hasErrors('dataDeVencimento')}"
                                   th:errors="*{dataDeVencimento}"></span>
                         </div>
