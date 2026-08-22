@@ -14,11 +14,11 @@
 
             <div class="dashboard-header-actions" th:if="${canManageExpenses}">
                 <a class="btn btn-secondary"
-                   th:href="@{/config/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
+                   th:href="@{/config/expense/register(subdomainId=${selectedSubdomainId}, dataDeUso=${selectedDate})}">
                     Configurar despesa
                 </a>
                 <a class="btn btn-primary btn-primary-inline"
-                   th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Nova
+                   th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, dataDeUso=${selectedDate})}">Nova
                     despesa</a>
             </div>
         </section>
@@ -77,7 +77,7 @@
                 <p>Cadastre sua primeira despesa para começar a acompanhar os gastos.</p>
                 <a class="btn btn-primary btn-primary-inline"
                    th:if="${canManageExpenses}"
-                   th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">Cadastrar
+                   th:href="@{/expense/register(subdomainId=${selectedSubdomainId}, dataDeUso=${selectedDate})}">Cadastrar
                     despesa</a>
             </div>
 

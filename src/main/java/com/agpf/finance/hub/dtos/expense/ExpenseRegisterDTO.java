@@ -11,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -72,7 +71,7 @@ public record ExpenseRegisterDTO(
     public static Expense toEntity(ExpenseRegisterDTO dto, User user, Subdomain subdomain) {
         return Expense.builder()
                 .title(dto.title()).paymentDate(dto.paymentDate()).amount(dto.amount())
-                .paymentMethod(dto.paymentMethod()).user(user).dueDate(dto.dueDate()).dateToUse(YearMonth.from(dto.dueDate))
+                .paymentMethod(dto.paymentMethod()).user(user).dueDate(dto.dueDate()).dateToUse(YearMonth.from(dto.dataDeUso))
                 .createdAt(getLocalDateTimeAmericaSP()).status(dto.status()).category(dto.category())
                 .recurring(dto.recurring()).installmentNumber(dto.installmentNumber()).subdomain(subdomain)
                 .totalInstallments(dto.totalInstallments()).build();

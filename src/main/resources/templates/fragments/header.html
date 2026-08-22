@@ -95,7 +95,7 @@
 
             <div class="navbar-subdomain">
                 <label class="field-label sidebar-text" for="globalAno">Data de Uso</label>
-                <input type="date" id="globalAno" th:value="${selectedDate}" data-global-month-select/>
+                <input type="month" id="globalAno" th:value="${#temporals.format(selectedDate, 'yyyy-MM')}" data-global-month-select/>
             </div>
 
             <div class="navbar-subdomain" th:if="${navbarSubdomains != null}">

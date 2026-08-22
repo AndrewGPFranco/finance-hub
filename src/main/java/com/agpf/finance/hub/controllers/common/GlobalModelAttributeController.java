@@ -38,10 +38,10 @@ public class GlobalModelAttributeController {
         else
             session.removeAttribute(SELECTED_SUBDOMAIN_ID);
 
-        var dataSelecionada = dataDeUso != null ? dataDeUso : getSessionData();
+        var dataSelecionada = dataDeUso != null ? dataDeUso : getSessionData(session);
         session.setAttribute(SELECTED_DATE, dataSelecionada);
 
-        model.addAttribute("navbarSubdomains", subdomainService.subdomainsByUser(user, resolvedSubdomainId, dataDeUso));
+        model.addAttribute("navbarSubdomains", subdomainService.subdomainsByUser(user, resolvedSubdomainId, dataSelecionada));
         model.addAttribute(SELECTED_SUBDOMAIN_ID, resolvedSubdomainId);
         model.addAttribute("canManageSelectedSubdomain", subdomainService.canManage(user, resolvedSubdomainId));
         model.addAttribute(SELECTED_DATE, dataSelecionada);
@@ -60,7 +60,12 @@ public class GlobalModelAttributeController {
         }
     }
 
-    private LocalDate getSessionData() {
+    private LocalDate getSessionData(HttpSession session) {
+        var dataSelecionada = session.getAttribute(SELECTED_DATE);
+
+        if (dataSelecionada instanceof LocalDate data)
+            return data;
+
         return DateUtils.getLocalDateAmericaSP().withDayOfMonth(1);
     }
 

@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let url = new URL(window.location.href);
 
             if (dataSelecionada.value)
-                url.searchParams.set("dataDeUso", dataSelecionada.value);
+                url.searchParams.set("dataDeUso", `${dataSelecionada.value}-01`);
             else
                 url.searchParams.delete("dataDeUso");
 

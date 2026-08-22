@@ -56,7 +56,7 @@
 
                 <div class="form-actions">
                     <a class="btn btn-secondary"
-                       th:href="@{/wallets/{idSubdomain}(idSubdomain=${selectedSubdomainId}, month=${selectedMonth})}">Cancelar</a>
+                       th:href="@{/wallets/{idSubdomain}(idSubdomain=${selectedSubdomainId}, dataDeUso=${selectedDate})}">Cancelar</a>
                     <button class="btn btn-primary btn-primary-inline" type="submit"
                             th:disabled="${selectedSubdomainId == null}">
                         Salvar carteira

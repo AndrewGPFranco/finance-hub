@@ -14,7 +14,7 @@
 
             <a class="btn btn-primary btn-primary-inline"
                th:if="${canManageSelectedSubdomain and wallet == null}"
-               th:href="@{/wallets/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
+               th:href="@{/wallets/register(subdomainId=${selectedSubdomainId}, dataDeUso=${selectedDate})}">
                 Nova carteira
             </a>
         </section>
@@ -40,7 +40,7 @@
                 <p>Cadastre uma carteira para começar a acompanhar o saldo de um subdomínio.</p>
                 <a class="btn btn-primary btn-primary-inline"
                    th:if="${canManageSelectedSubdomain}"
-                   th:href="@{/wallets/register(subdomainId=${selectedSubdomainId}, month=${selectedMonth})}">
+                   th:href="@{/wallets/register(subdomainId=${selectedSubdomainId}, dataDeUso=${selectedDate})}">
                     Cadastrar carteira
                 </a>
             </div>
