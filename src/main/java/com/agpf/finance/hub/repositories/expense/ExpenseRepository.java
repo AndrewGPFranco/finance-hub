@@ -15,7 +15,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,7 +31,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
              )
              from Expense e
              left join e.subdomain.subdomainMembers sm
-             where e.month = :month
+             where e.dateToUse = :dataDeUso
                and e.subdomain.id = :subdomainId
                and (
                     e.subdomain.user = :user
@@ -41,8 +41,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
     )
     List<OutputExpenseDTO> findByUserAndSubdomainId(@Param("user") User user,
                                                     @Param("subdomainId") UUID subdomainId,
-                                                    Sort sort,
-                                                    @Param("month") Month month);
+                                                    Sort sort, @Param("dataDeUso") YearMonth dataDeUso);
 
     @Query("""
             select distinct new com.agpf.finance.hub.dtos.expense.OutputExpenseDTO(
@@ -52,7 +51,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
              )
              from Expense e
              left join e.subdomain.subdomainMembers sm
-             where e.month = :month
+             where e.dateToUse = :dataDeUso
                and e.subdomain.id = :subdomainId
                and (
                     e.subdomain.user = :user
@@ -61,7 +60,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
             """
     )
     List<OutputExpenseDTO> findByUserAndSubdomainId(@Param("user") User user,
-                                                    @Param("subdomainId") UUID subdomainId, @Param("month") Month month);
+                                                    @Param("subdomainId") UUID subdomainId, @Param("dataDeUso") YearMonth dataDeUso);
 
     @Query("""
              select new com.agpf.finance.hub.dtos.expense.OutputExpenseDTO(
@@ -71,12 +70,12 @@ public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
                                         e.installmentNumber, e.totalInstallments
              )
              from Expense e
-             where e.month = :month
+             where e.dateToUse = :dataDeUso
                and e.subdomain.id = :subdomainId
             """
     )
     List<OutputExpenseDTO> buscaDespesasDoSubAgregado(@Param("subdomainId") UUID subdomainId,
-                                                      @Param("month") Month month);
+                                                      @Param("dataDeUso") YearMonth dataDeUso);
 
     @Query("""
                 select distinct e

@@ -11,10 +11,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.YearMonth;
 import java.util.UUID;
 
 import static com.agpf.finance.hub.utils.DateUtils.getLocalDateTimeAmericaSP;
@@ -49,25 +51,29 @@ public record ExpenseRegisterDTO(
 
         Integer totalInstallments,
 
+        @NotNull(message = "O mês e ano são obrigatórios.")
+        @DateTimeFormat(pattern = "yyyy-MM")
+        YearMonth dataDeUso,
+
         @NotNull(message = "Um subdomínio precisa estar vínculado a despesa.")
         UUID subdomainId
 ) {
     public ExpenseRegisterDTO() {
         this(null, null, null,
                 null, null, null, null,
-                false, null, null, null);
+                false, null, null, null, null);
     }
 
     public ExpenseRegisterDTO(UUID subdomainId) {
         this(null, null, null,
                 null, null, null, null,
-                false, null, null, subdomainId);
+                false, null, null, null, subdomainId);
     }
 
     public static Expense toEntity(ExpenseRegisterDTO dto, User user, Subdomain subdomain) {
         return Expense.builder()
                 .title(dto.title()).paymentDate(dto.paymentDate()).amount(dto.amount())
-                .paymentMethod(dto.paymentMethod()).user(user).dueDate(dto.dueDate()).month(getMonth(dto.dueDate()))
+                .paymentMethod(dto.paymentMethod()).user(user).dueDate(dto.dueDate()).dateToUse(dto.dataDeUso())
                 .createdAt(getLocalDateTimeAmericaSP()).status(dto.status()).category(dto.category())
                 .recurring(dto.recurring()).installmentNumber(dto.installmentNumber()).subdomain(subdomain)
                 .totalInstallments(dto.totalInstallments()).build();
@@ -78,7 +84,7 @@ public record ExpenseRegisterDTO(
                 expense.getTitle(), null, expense.getAmount(), expense.getDueDate().plusMonths(1),
                 StatusExpenseType.PENDING, expense.getCategory(), expense.getPaymentMethod(), expense.isRecurring(),
                 getNextInstallmentNumber(expense.getInstallmentNumber(), expense.getTotalInstallments()),
-                expense.getTotalInstallments(), expense.getSubdomain().getId()
+                expense.getTotalInstallments(), expense.getDateToUse().plusMonths(1), expense.getSubdomain().getId()
         );
     }
 

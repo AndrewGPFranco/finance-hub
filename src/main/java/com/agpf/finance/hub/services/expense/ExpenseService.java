@@ -19,7 +19,6 @@ import com.agpf.finance.hub.repositories.subdomains.SubdomainRepository;
 import com.agpf.finance.hub.services.subdomain.SubdomainService;
 import com.agpf.finance.hub.utils.CrudUtils;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +26,7 @@ import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -57,7 +57,8 @@ public class ExpenseService {
         if (subdomainId == null)
             return List.of();
 
-        var despesasDoUsuario = expenseRepository.findByUserAndSubdomainId(user, subdomainId, Sort.by(direction, filter.getFieldName()), dateToUse.getMonth());
+        var despesasDoUsuario = expenseRepository.findByUserAndSubdomainId(user, subdomainId,
+                Sort.by(direction, filter.getFieldName()), YearMonth.from(dateToUse));
 
         var subdominioEncontrado = subdomainRepository.findById(subdomainId)
                 .orElseThrow(() -> new NotFoundException("Subdomínio não encontrado"));
@@ -81,7 +82,7 @@ public class ExpenseService {
 
             var agregado = subdominio.getSubdomainAggregate();
 
-            var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), dateToUse.getMonth());
+            var despesasDoAgregado = expenseRepository.buscaDespesasDoSubAgregado(agregado.getId(), YearMonth.from(dateToUse));
 
             var amount = despesasDoAgregado.stream().map(OutputExpenseDTO::amount).reduce(BigDecimal.ZERO, BigDecimal::add);
 

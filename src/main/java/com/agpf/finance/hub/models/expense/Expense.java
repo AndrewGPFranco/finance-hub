@@ -3,6 +3,7 @@ package com.agpf.finance.hub.models.expense;
 import com.agpf.finance.hub.enums.expense.CategoryExpenseType;
 import com.agpf.finance.hub.enums.expense.PaymentMethod;
 import com.agpf.finance.hub.enums.expense.StatusExpenseType;
+import com.agpf.finance.hub.models.configurations.converter.YearMonthDateConverter;
 import com.agpf.finance.hub.models.subdomain.Subdomain;
 import com.agpf.finance.hub.models.user.User;
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
+import java.time.YearMonth;
 import java.util.UUID;
 
 @Setter
@@ -92,8 +93,8 @@ public class Expense {
     private Subdomain subdomain;
 
     @NotNull
-    @Column(name = "month", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Month month;
+    @Column(name = "date_to_use", nullable = false)
+    @Convert(converter = YearMonthDateConverter.class)
+    private YearMonth dateToUse;
 
 }

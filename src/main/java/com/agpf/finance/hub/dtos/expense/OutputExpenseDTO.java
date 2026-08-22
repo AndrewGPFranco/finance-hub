@@ -31,18 +31,10 @@ public record OutputExpenseDTO(
 
     public static OutputExpenseDTO fromEntity(Expense expense) {
         return new OutputExpenseDTO(
-                expense.getId(),
-                expense.getTitle(),
-                expense.getAmount(),
-                expense.getDueDate(),
-                expense.getPaymentDate(),
-                expense.getStatus(),
-                expense.getCategory(),
-                expense.getPaymentMethod(),
-                expense.isRecurring(),
-                expense.getInstallmentNumber(),
-                expense.getTotalInstallments()
-        );
+                expense.getId(), expense.getTitle(), expense.getAmount(),
+                expense.getDueDate(), expense.getPaymentDate(), expense.getStatus(),
+                expense.getCategory(), expense.getPaymentMethod(), expense.isRecurring(),
+                expense.getInstallmentNumber(), expense.getTotalInstallments());
     }
 
     public static OutputExpenseDTO forAggregate(String name, BigDecimal amount) {
@@ -51,9 +43,7 @@ public record OutputExpenseDTO(
     }
 
     public static List<OutputExpenseDTO> fromEntities(List<Expense> expenses) {
-        return expenses.stream()
-                .map(OutputExpenseDTO::fromEntity)
-                .toList();
+        return expenses.stream().map(OutputExpenseDTO::fromEntity).toList();
     }
 
     public String formattedAmount() {
