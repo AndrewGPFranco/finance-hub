@@ -20,6 +20,7 @@
             <form th:action="@{/expense/register}" th:object="${expense}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <input type="hidden" th:field="*{subdomainId}">
+                <input type="hidden" th:field="*{dataDeUso}">
 
                 <div class="form-section">
                     <h2 class="panel-title">Dados principais</h2>

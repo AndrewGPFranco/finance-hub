@@ -189,12 +189,12 @@ public class ExpenseService {
 
         if (config.isPresent()) {
             var dto = config.get();
-            return ExpenseRegisterDTO.builder()
+            return ExpenseRegisterDTO.builder().dataDeUso(dateToUse)
                     .subdomainId(idSubdominio).paymentDate(dto.getPaymentDate())
                     .amount(dto.getAmount()).dueDate(dto.getDueDate()).category(dto.getCategory())
                     .status(dto.getStatus()).paymentMethod(dto.getPaymentMethod()).build();
         }
 
-        return new ExpenseRegisterDTO(idSubdominio);
+        return new ExpenseRegisterDTO(idSubdominio, dateToUse);
     }
 }

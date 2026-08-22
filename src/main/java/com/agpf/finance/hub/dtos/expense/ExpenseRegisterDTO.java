@@ -52,8 +52,7 @@ public record ExpenseRegisterDTO(
         Integer totalInstallments,
 
         @NotNull(message = "O mês e ano são obrigatórios.")
-        @DateTimeFormat(pattern = "yyyy-MM")
-        YearMonth dataDeUso,
+        LocalDate dataDeUso,
 
         @NotNull(message = "Um subdomínio precisa estar vínculado a despesa.")
         UUID subdomainId
@@ -64,10 +63,10 @@ public record ExpenseRegisterDTO(
                 false, null, null, null, null);
     }
 
-    public ExpenseRegisterDTO(UUID subdomainId) {
+    public ExpenseRegisterDTO(UUID subdomainId, LocalDate dataDeUso) {
         this(null, null, null,
                 null, null, null, null,
-                false, null, null, null, subdomainId);
+                false, null, null, dataDeUso, subdomainId);
     }
 
     public static Expense toEntity(ExpenseRegisterDTO dto, User user, Subdomain subdomain) {
@@ -84,7 +83,7 @@ public record ExpenseRegisterDTO(
                 expense.getTitle(), null, expense.getAmount(), expense.getDueDate().plusMonths(1),
                 StatusExpenseType.PENDING, expense.getCategory(), expense.getPaymentMethod(), expense.isRecurring(),
                 getNextInstallmentNumber(expense.getInstallmentNumber(), expense.getTotalInstallments()),
-                expense.getTotalInstallments(), expense.getDateToUse().plusMonths(1), expense.getSubdomain().getId()
+                expense.getTotalInstallments(), expense.getDateToUse().plusMonths(1).atEndOfMonth(), expense.getSubdomain().getId()
         );
     }
 
