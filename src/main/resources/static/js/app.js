@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (theme === "dark" || theme === "light")
             return theme;
 
-        return preferredThemeMedia && preferredThemeMedia.matches ? "dark" : "light";
+        return preferredThemeMedia?.matches ? "dark" : "light";
     };
 
     let updateThemeToggleButtons = function (theme) {
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     let subdomainSelect = document.querySelector("[data-global-subdomain-select]");
-    let monthSelect = document.querySelector("[data-global-month-select]");
+    let dataSelecionada = document.querySelector("[data-global-month-select]");
 
     if (subdomainSelect) {
         subdomainSelect.addEventListener("change", function () {
@@ -174,14 +174,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    if (monthSelect) {
-        monthSelect.addEventListener("change", function () {
+    if (dataSelecionada) {
+        dataSelecionada.addEventListener("change", function () {
             let url = new URL(window.location.href);
 
-            if (monthSelect.value)
-                url.searchParams.set("month", monthSelect.value);
+            if (dataSelecionada.value)
+                url.searchParams.set("dataDeUso", dataSelecionada.value);
             else
-                url.searchParams.delete("month");
+                url.searchParams.delete("dataDeUso");
 
             window.location.assign(url.toString());
         });

@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.Month;
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @ControllerAdvice
@@ -20,7 +19,6 @@ import java.util.UUID;
 public class GlobalModelAttributeController {
 
     private static final String SELECTED_DATE = "selectedDate";
-    private static final String SELECTED_MONTH = "selectedMonth";
     private static final String SELECTED_SUBDOMAIN_ID = "selectedSubdomainId";
 
     private final SubdomainService subdomainService;
@@ -28,7 +26,7 @@ public class GlobalModelAttributeController {
     @ModelAttribute
     public void addGlobalAttributes(Model model, Authentication authentication,
                                     @RequestParam(required = false) UUID subdomainId,
-                                    @RequestParam(required = false) Month month, HttpSession session) {
+                                    @RequestParam(required = false) LocalDate dataDeUso, HttpSession session) {
         if (authentication == null || !(authentication.getPrincipal() instanceof AuthenticatedUser(var user)))
             return;
 
@@ -40,16 +38,13 @@ public class GlobalModelAttributeController {
         else
             session.removeAttribute(SELECTED_SUBDOMAIN_ID);
 
-        var selectedMonth = month != null ? month : getSessionMonth(session);
-        session.setAttribute(SELECTED_MONTH, selectedMonth.name());
-        var selectedDate = DateUtils.firstDayOfMonth(DateUtils.getLocalDateTimeAmericaSP().toLocalDate().withMonth(selectedMonth.getValue()));
+        var dataSelecionada = dataDeUso != null ? dataDeUso : getSessionData();
+        session.setAttribute(SELECTED_DATE, dataSelecionada);
 
-        model.addAttribute("navbarSubdomains", subdomainService.subdomainsByUser(user, resolvedSubdomainId, selectedDate));
+        model.addAttribute("navbarSubdomains", subdomainService.subdomainsByUser(user, resolvedSubdomainId, dataDeUso));
         model.addAttribute(SELECTED_SUBDOMAIN_ID, resolvedSubdomainId);
         model.addAttribute("canManageSelectedSubdomain", subdomainService.canManage(user, resolvedSubdomainId));
-        model.addAttribute("monthOptions", Arrays.asList(Month.values()));
-        model.addAttribute(SELECTED_MONTH, selectedMonth);
-        model.addAttribute(SELECTED_DATE, selectedDate);
+        model.addAttribute(SELECTED_DATE, dataSelecionada);
     }
 
     private UUID getSessionSubdomainId(HttpSession session) {
@@ -65,16 +60,8 @@ public class GlobalModelAttributeController {
         }
     }
 
-    private Month getSessionMonth(HttpSession session) {
-        var selectedMonth = session.getAttribute(SELECTED_MONTH);
-
-        if (!(selectedMonth instanceof String value))
-            return DateUtils.getLocalDateTimeAmericaSP().getMonth();
-
-        try {
-            return Month.valueOf(value);
-        } catch (IllegalArgumentException _) {
-            return DateUtils.getLocalDateTimeAmericaSP().getMonth();
-        }
+    private LocalDate getSessionData() {
+        return DateUtils.getLocalDateAmericaSP().withDayOfMonth(1);
     }
+
 }

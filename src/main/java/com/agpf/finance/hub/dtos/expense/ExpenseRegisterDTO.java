@@ -73,7 +73,7 @@ public record ExpenseRegisterDTO(
     public static Expense toEntity(ExpenseRegisterDTO dto, User user, Subdomain subdomain) {
         return Expense.builder()
                 .title(dto.title()).paymentDate(dto.paymentDate()).amount(dto.amount())
-                .paymentMethod(dto.paymentMethod()).user(user).dueDate(dto.dueDate()).dateToUse(dto.dataDeUso())
+                .paymentMethod(dto.paymentMethod()).user(user).dueDate(dto.dueDate()).dateToUse(YearMonth.from(dto.dueDate))
                 .createdAt(getLocalDateTimeAmericaSP()).status(dto.status()).category(dto.category())
                 .recurring(dto.recurring()).installmentNumber(dto.installmentNumber()).subdomain(subdomain)
                 .totalInstallments(dto.totalInstallments()).build();
