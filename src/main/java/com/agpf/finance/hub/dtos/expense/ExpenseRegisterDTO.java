@@ -82,7 +82,7 @@ public record ExpenseRegisterDTO(
                 expense.getTitle(), null, expense.getAmount(), expense.getDueDate().plusMonths(1),
                 StatusExpenseType.PENDING, expense.getCategory(), expense.getPaymentMethod(), expense.isRecurring(),
                 getNextInstallmentNumber(expense.getInstallmentNumber(), expense.getTotalInstallments()),
-                expense.getTotalInstallments(), expense.getDateToUse().plusMonths(1).atEndOfMonth(), expense.getSubdomain().getId()
+                expense.getTotalInstallments(), LocalDate.from(expense.getDateToUse()).plusMonths(1), expense.getSubdomain().getId()
         );
     }
 
